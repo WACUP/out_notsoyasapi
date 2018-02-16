@@ -1,0 +1,4 @@
+# out_notsoyasapi
+This is a modified release of the Yet Another (WA)SAPI Output plug-in originally provided by Peter Belkner. This version has been provided to allow for better integration with the Winamp v5.66x &amp; WACUP releases as well as providing changes which the original author (rightfully so) does not feel is warranted or needed for the plug-in, hence this modified release of it.
+
+The source code is provided under the <a target="_blank" href="https://github.com/WACUP/out_notsoyasapi/blob/master/COPYING">GPLv3</a> as per the original license of the source code. It is provided as-is with all changes applied over the top of the existing source code (note: some filenames have been changed to avoid conflict with the original source code release). The Winamp 5.55 SDK as well as some of the newer Winamp 5.666 header files from <a target="_blank" href="https://getwacup.com/sdk/">here</a> are required to build this release.
