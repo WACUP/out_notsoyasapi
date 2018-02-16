@@ -78,9 +78,8 @@ Trace trace;
 
 int TraceFixIdcs(Trace *pTrace, const int *pTraceIdcs)
 {
-  int idc;
-
   if (pTraceIdcs) {
+    int idc;
     if ((idc=gTraceDebugConfig.idc)<0)
       gTraceDebugConfig.idc=pTraceIdcs[-idc-1];
 
@@ -289,9 +288,8 @@ int vtwprintf(Trace *pTrace, const wchar_t *format, va_list ap)
 
 int tprintf(Trace *pTrace, int nLevel, const char *format, ...)
 {
-  va_list ap;
-
   if (TRACE_CLOSE<pTrace->tag&&nLevel<pTrace->nDebug) {
+    va_list ap;
     va_start(ap,format);
     vtprintf(pTrace,format,ap);
     va_end(ap);
@@ -302,9 +300,8 @@ int tprintf(Trace *pTrace, int nLevel, const char *format, ...)
 
 int twprintf(Trace *pTrace, int nLevel, const wchar_t *format, ...)
 {
-  va_list ap;
-
   if (TRACE_CLOSE<pTrace->tag&&nLevel<pTrace->nDebug) {
+    va_list ap;
     va_start(ap,format);
     vtwprintf(pTrace,format,ap);
     va_end(ap);

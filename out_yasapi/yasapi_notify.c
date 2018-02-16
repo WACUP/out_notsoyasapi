@@ -220,15 +220,25 @@ static HRESULT STDMETHODCALLTYPE PlayerNotifyOnDefaultDeviceChanged(
       DPUTS(0,"  GOING TO CLOSE\n");
       PLAYER_SEND(pPlayer,PlayerClose);
     }
-    else if (0!=wcscmp(pPlayer->device.szId,pwstrDefaultDeviceId)) {
+    else if (pwstrDefaultDeviceId!=NULL &&
+             0!=wcscmp(pPlayer->device.szId,pwstrDefaultDeviceId)) {
       DPUTS(0,"  GOING TO MIGRATE\n");
       PLAYER_SEND(pPlayer,PlayerMigrate,pwstrDefaultDeviceId);
     }
+	else if (pwstrDefaultDeviceId==NULL) {
+      // far from ideal but when there's no devices left
+      // then the normal close handling above will fail
+      // so it's simpler (for the moment) to just fake a
+      // stopping by the user in-order for a clean stop.
+      //DPUTS(0,"  GOING TO CLOSE\n");
+	  //PLAYER_SEND(pPlayer,PlayerClose);
+	  PostMessage(plugin.hMainWindow, WM_WA_MPEG_EOF, 0, 0);
+	}
   }
 
   return S_OK;
 }
-        
+
 static HRESULT STDMETHODCALLTYPE PlayerNotifyOnPropertyValueChanged( 
             IMMNotificationClient * This,
             /* [annotation][in] */ 
@@ -254,7 +264,7 @@ int PlayerAddNotify(Player *pPlayer)
     goto malloc;
   }
 
-  ZeroMemory(pNotify,sizeof *pNotify);
+  SecureZeroMemory(pNotify,sizeof *pNotify);
   pNotify->lpVtbl=&gPlayerNotificationClientVtbl;
   pNotify->lRefCount=1;
   pNotify->pPlayer=pPlayer;
@@ -264,8 +274,8 @@ int PlayerAddNotify(Player *pPlayer)
   );
 
   if (FAILED(hr)) {
-    DERROR(E_POINTER,hr);
-    DERROR(E_OUTOFMEMORY,hr);
+    DERROR(E_POINTER,hr,add);
+    DERROR(E_OUTOFMEMORY,hr,add);
     DUNKNOWN(hr);
     DMESSAGEV("adding notifiy");
     goto add;

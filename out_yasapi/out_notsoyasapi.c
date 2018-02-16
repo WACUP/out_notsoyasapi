@@ -60,19 +60,16 @@ static int PlayerSendClose(void)
 }
 
 #if defined (OUT_YASAPI_SUBCLASS) // {
-static WNDPROC WinampProc;
 
 static LRESULT CALLBACK PluginWinampProc(HWND hWnd, UINT uMsg, WPARAM wParam,
-    LPARAM lParam)
+					LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
-  char *m;
-
   switch (uMsg) {
   case WM_WA_IPC:
     switch (lParam) {
     case IPC_CB_OUTPUTCHANGED:
 	{
-      m=(char *)SendMessage(hWnd,WM_WA_IPC,0,IPC_GETOUTPUTPLUGIN);
+      char *m=(char *)SendMessage(hWnd,WM_WA_IPC,0,IPC_GETOUTPUTPLUGIN);
       DPRINTF(0,"  WM_WA_IPC/IPC_CB_OUTPUTCHANGED: \"%s\"\n",m);
 
       if (m && *m) {
@@ -96,46 +93,12 @@ static LRESULT CALLBACK PluginWinampProc(HWND hWnd, UINT uMsg, WPARAM wParam,
     break;
   }
 
-  return CallWindowProc(
-    WinampProc,   // _In_ WNDPROC lpPrevWndFunc,
+  return DefSubclassProc(
     hWnd,         // _In_ HWND    hWnd,
     uMsg,         // _In_ UINT    Msg,
     wParam,       // _In_ WPARAM  wParam,
     lParam        // _In_ LPARAM  lParam
   );
-}
-
-static int SubclassWinamp(HWND hWnd)
-{
-  if (NULL==hWnd||NULL!=WinampProc) {
-    DMESSAGE("failing to subclass winamp window");
-    return -1;
-  }
-
-  WinampProc=(WNDPROC)SetWindowLongPtr(
-    hWnd,                   // _In_ HWND hWnd,
-    GWLP_WNDPROC,            // _In_ int  nIndex,
-    (LONG)PluginWinampProc  // _In_ LONG dwNewLong
-  );
-
-  return 0;
-}
-
-static int UnsubclassWinamp(HWND hWnd)
-{
-  if (loaded) {
-    if (NULL==hWnd||NULL==WinampProc) {
-      DMESSAGE("failing to unsubclass winamp window");
-      return -1;
-    }
-
-    SetWindowLongPtr(
-      hWnd,                   // _In_ HWND hWnd,
-      GWLP_WNDPROC,            // _In_ int  nIndex,
-      (LONG)WinampProc        // _In_ LONG dwNewLong
-    );
-  }
-  return 0;
 }
 #endif // }
 
@@ -177,7 +140,7 @@ void quit()
   PlayerDestroy(&player);
 #if defined (OUT_YASAPI_SUBCLASS) // {
   DPUTS(0,"  unsubclassing winamp\n");
-  UnsubclassWinamp(plugin.hMainWindow);
+  RemoveWindowSubclass(plugin.hMainWindow, PluginWinampProc, (UINT_PTR)PluginWinampProc);
 #endif // }
 #if defined (YASAPI_CO_INITIALIZE) // {
   DPUTS(0,"  destroying com\n");
@@ -258,8 +221,8 @@ int open(int samplerate, int numchannels, int bitspersamp, int bufferlenms,
     bReset=0;
 
     bChange=bChange||wcscmp(device.szId,player.device.szId);
-#if defined (YASAPI_SORROUND) // {
-    bChange=bChange||player.options.common.bSorround!=player.open.bSorround;
+#if defined (YASAPI_SURROUND) // {
+    bChange=bChange||player.options.common.bSurround!=player.open.bSurround;
 #endif // }
     bChange=bChange||numchannels!=nChannels;
     bChange=bChange||samplerate!=nSamplesPerSec;
@@ -540,7 +503,7 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 				#endif // }
 
 				#if defined (OUT_YASAPI_SUBCLASS) // {
-				  if (SubclassWinamp(plugin.hMainWindow)<0) {
+				  if (!SetWindowSubclass(plugin.hMainWindow, PluginWinampProc, (UINT_PTR)PluginWinampProc, 0)) {
 					DMESSAGE("  failed to subclass winamp");
 					goto subclass;
 				  }
@@ -558,9 +521,9 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 				//cleanup:
 				player:
 				#if defined (OUT_YASAPI_SUBCLASS) // {
-				  UnsubclassWinamp(plugin.hMainWindow);
-				#endif // }
+				  RemoveWindowSubclass(plugin.hMainWindow, PluginWinampProc, (UINT_PTR)PluginWinampProc);
 				subclass:
+				#endif // }
 				#if defined (YASAPI_CO_INITIALIZE) // {
 				  CoUninitialize();
 				com:

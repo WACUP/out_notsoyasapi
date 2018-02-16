@@ -46,9 +46,9 @@ int ConnectionGetPosition(Connection *pConnect, UINT64 *pu64Position)
       goto invalid;
     }
 
-    DERROR(E_POINTER,hr);
-    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr);
-    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr);
+    DERROR(E_POINTER,hr,position);
+    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr,position);
+    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr,position);
     DUNKNOWN(hr);
     DMESSAGE("getting position");
     goto position;
@@ -87,9 +87,9 @@ int ConnectionGetFrequency(Connection *pConnect, UINT64 *pu64Frequency)
       goto invalid;
     }
 
-    DERROR(E_POINTER,hr);
-    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr);
-    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr);
+    DERROR(E_POINTER,hr,frequency);
+    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr,frequency);
+    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr,frequency);
     DUNKNOWN(hr);
     DMESSAGE("getting frequency");
     goto frequency;

@@ -37,10 +37,10 @@ int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,
     );
 
     if (FAILED(hr)) {
-      DERROR(E_POINTER,hr);
-      DERROR(E_INVALIDARG,hr);
-      DERROR(E_NOTFOUND,hr);
-      DERROR(E_OUTOFMEMORY,hr);
+      DERROR(E_POINTER,hr,device);
+      DERROR(E_INVALIDARG,hr,device);
+      DERROR(E_NOTFOUND,hr,device);
+      DERROR(E_OUTOFMEMORY,hr,device);
       DUNKNOWN(hr);
       DMESSAGE("getting the default audio device");
       goto device;
@@ -55,8 +55,8 @@ int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,
     );
 
     if (FAILED(hr)) {
-      DERROR(E_OUTOFMEMORY,hr);
-      DERROR(E_POINTER,hr);
+      DERROR(E_OUTOFMEMORY,hr,id);
+      DERROR(E_POINTER,hr,id);
       DUNKNOWN(hr);
       DMESSAGE("getting endpoint ID string");
       goto id;
@@ -89,7 +89,7 @@ int PlayerDeviceDestroy(PlayerDevice *pPlayerDevice)
     pDevice->lpVtbl->Release(pDevice);
   }
 
-  ZeroMemory(pPlayerDevice, sizeof *pPlayerDevice);
+  SecureZeroMemory(pPlayerDevice, sizeof *pPlayerDevice);
 
   return 0;
 }
@@ -111,9 +111,9 @@ int PlayerDeviceGet(PlayerDevice *pPlayerDevice,
     );
 
     if (FAILED(hr)) {
-      DERROR(E_POINTER,hr);
-      DERROR(E_NOTFOUND,hr);
-      DERROR(E_OUTOFMEMORY,hr);
+      DERROR(E_POINTER,hr,device);
+      DERROR(E_NOTFOUND,hr,device);
+      DERROR(E_OUTOFMEMORY,hr,device);
       DUNKNOWN(hr);
       DWMESSAGEV(L"getting the audio device %s",pstrId);
       goto device;

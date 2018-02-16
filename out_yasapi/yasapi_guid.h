@@ -20,6 +20,7 @@
 #ifndef __YASAPI_GUID_H__ // {
 #define __YASAPI_GUID_H__
 #include <windows.h>
+#include <commctrl.h>
 #include <shlobj.h>
 #include <audioclient.h>
 #include <mmdeviceapi.h>

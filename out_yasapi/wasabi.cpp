@@ -1,8 +1,13 @@
 #include <yasapi.h>
 #include <nu/servicebuilder.h>
+#include <nu/autowide.h>
 #include <wasabi/api/service/api_service.h>
 #include <Agave/Language/api_language.h>
 #include <wasabi/api/service/waServiceFactory.h>
+#ifdef WACUP_BUILD
+#include "../../loader/hook/get_api_service.h"
+#include "../../loader/hook/squash.h"
+#endif
 #include <resource.h>
 
 // TODO add to lang.h
@@ -21,9 +26,12 @@ extern "C" void SetupWasabiServices(Out_Module *plugin)
 	// load all of the required wasabi services from the winamp client
 	if (WASABI_API_SVC == NULL)
 	{
-		/*WASABI_API_SVC = GetServiceAPIPtr();/*/
+#ifdef WACUP_BUILD
+		WASABI_API_SVC = GetServiceAPIPtr();
+#else
 		WASABI_API_SVC = reinterpret_cast<api_service*>(SendMessage(plugin->hMainWindow, WM_WA_IPC, 0, IPC_GET_API_SERVICE));
 		if (WASABI_API_SVC == reinterpret_cast<api_service*>(1)) WASABI_API_SVC = NULL;/**/
+#endif
 	}
 	if (WASABI_API_SVC != NULL)
 	{
@@ -55,6 +63,23 @@ extern "C" HWND WACreateDialogParam(UINT id, HWND parent, DLGPROC proc, LPARAM p
 
 extern "C" LPWSTR GetTextResource(UINT id)
 {
+	// the resource is utf-8 encoded so we convert
+	// before passing it on to then be displayed
 	DWORD data_size = 0;
-	return (LPWSTR)WASABI_API_LOADRESFROMFILEW(L"TEXT", MAKEINTRESOURCE(id), &data_size);
+#ifdef WACUP_BUILD
+	unsigned char *data = (unsigned char *)WASABI_API_LOADRESFROMFILEW(L"GZ", MAKEINTRESOURCEW(id), &data_size),
+				  *output = NULL;
+	decompress_resource(data, data_size, &output, 0);
+
+	LPWSTR text = AutoWideDup((LPCSTR)output, CP_UTF8);
+
+	if (output)
+	{
+		free(output);
+	}
+
+	return text;
+#else
+	return AutoWideDup((LPCSTR)WASABI_API_LOADRESFROMFILEW(L"TEXT", MAKEINTRESOURCE(id), &data_size), CP_UTF8);
+#endif
 }

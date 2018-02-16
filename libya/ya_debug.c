@@ -18,62 +18,51 @@
  * along with libya.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <ya.h>
-
+// TODO localise
 static int vmessagea(const char *format, va_list ap)
 {
-  char buf[256],*wp=buf;
-  int code;
+  char buf[256]={0},*wp=buf;
 
-  wp+=vsprintf(wp,format,ap);
-  wp+=sprintf(wp,"Do you want to exit Winamp?");
+  wp+=vsnprintf(wp,256,format,ap);
 
-  code=MessageBoxA(
+  MessageBoxA(
     NULL,                       // _In_opt_  HWND hWnd,
     buf,                        // _In_opt_  LPCTSTR lpText,
     "YASAPI Error Message",     // _In_opt_  LPCTSTR lpCaption,
-	MB_SYSTEMMODAL|MB_YESNO|MB_ICONERROR|MB_DEFBUTTON2
+	MB_SYSTEMMODAL|MB_OK|MB_ICONERROR
                                 // _In_      UINT uType
   );
-
-  if (IDYES==code)
-    exit(1);
 
   return wp-buf;
 }
 
 static int vmessagew(const wchar_t *format, va_list ap)
 {
-  wchar_t buf[256],*wp=buf;
+  wchar_t buf[256]={0},*wp=buf;
   enum { SIZE=(sizeof buf)-(sizeof buf[0]) };
-  int code;
 
   wp+=vswprintf(wp,SIZE,format,ap);
-  wp+=swprintf(wp,SIZE-(wp-buf),L"Do you want to exit Winamp?");
 
-  code=MessageBoxW(
+  MessageBoxW(
     NULL,                       // _In_opt_  HWND hWnd,
     buf,                        // _In_opt_  LPCTSTR lpText,
     L"YASAPI Error Message",    // _In_opt_  LPCTSTR lpCaption,
-    MB_SYSTEMMODAL|MB_YESNO|MB_ICONERROR
+	MB_SYSTEMMODAL|MB_OK|MB_ICONERROR
                                 // _In_      UINT uType
   );
-
-  if (IDYES==code)
-    exit(1);
 
   return wp-buf;
 }
 
 int messagea(int force, HRESULT x, HRESULT *y, const char *m, ...)
 {
-  va_list ap;
+  if ((!force&&x==*y)||force) {
 #if ! defined (YA_DEBUG) // {
 #if defined (YA_DUMP) // {
-  FILE *f;
+    FILE *f;
 #endif // }
 #endif // }
-
-  if ((!force&&x==*y)||force) {
+    va_list ap;
     va_start(ap,m);
 #if defined (YA_DEBUG) // {
     TRACE_CLOSE<trace.tag?vtprintf(&trace,m,ap):vmessagea(m,ap);
@@ -98,14 +87,13 @@ int messagea(int force, HRESULT x, HRESULT *y, const char *m, ...)
 
 int messagew(int force, HRESULT x, HRESULT *y, const wchar_t *m, ...)
 {
-  va_list ap;
+  if ((!force&&x==*y)||force) {
 #if ! defined (YA_DEBUG) // {
 #if defined (YA_DUMP) // {
-  FILE *f;
+    FILE *f;
 #endif // }
 #endif // }
-
-  if ((!force&&x==*y)||force) {
+    va_list ap;
     va_start(ap,m);
 #if defined (YA_DEBUG) // {
     TRACE_CLOSE<trace.tag?vtwprintf(&trace,m,ap):vmessagew(m,ap);

@@ -521,10 +521,10 @@ void QueueUnlockRead(Queue *pQueue, Result *pResult)
 void QueueWrite(Queue *pQueue, int tag, Store *pStore)
 {
   Result *pResult;
-  Request *pRequest;
+  //Request *pRequest;
 
   pResult=pStore?StoreGet(pStore):NULL;
-  pRequest=QueueLockWrite(pQueue,pResult,tag);
+  /*pRequest=*/QueueLockWrite(pQueue,pResult,tag);
   QueueUnlockWrite(pQueue,pResult);
   StorePut(pStore,pResult);
 }

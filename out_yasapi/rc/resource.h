@@ -44,6 +44,7 @@
 #define IDS_SLIDER_PREBUFFER            40
 #define IDR_TEXT1                       106
 #define IDR_ABOUT_TEXT                  106
+#define IDR_ABOUT_GZ                    107
 #define IDD_CONFIG                      168
 #define IDD_PAGE_BUFFERS                169
 #define IDD_PAGE_COMMON                 170
@@ -57,7 +58,7 @@
 #define IDC_RADIOBUTTON_TIME_POSITION   40003
 #define IDC_RADIOBUTTON_TIME_TIME       40004
 #define IDC_STATIC_LABEL_TIME_TAG       40005
-#define IDC_STATIC_LABEL_SORROUND       40006
+#define IDC_STATIC_LABEL_SURROUND       40006
 #define IDC_PROGRESSBAR_SHARED          40007
 #define IDC_STATIC_LABEL_FORMAT_SUPPORTED 40009
 #define IDC_BUTTON_SAVE                 40011
@@ -68,7 +69,7 @@
 #define IDC_COMBOBOX_PULL               40018
 #define IDC_PROGRESSBAR_RING            40019
 #define IDC_STATIC_LABEL_GAPLESS        40020
-#define IDC_CHECKBOX_SORROUND           40021
+#define IDC_CHECKBOX_SURROUND           40021
 #define IDC_COMBOBOX_DEVICE_PERIOD      40022
 #define IDC_STATIC_LABEL_DISCONNECT     40023
 #define IDC_STATIC_RING                 40024
@@ -102,7 +103,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        107
+#define _APS_NEXT_RESOURCE_VALUE        108
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           101

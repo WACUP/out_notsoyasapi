@@ -199,9 +199,9 @@ static void SliderTypeSetStatic(const Control *pControl, HWND hDlg,
 {
   enum { SIZE=128 };
   const ControlSliderConfig *config=pControl->config;
-  wchar_t buf[SIZE];
 
   if (config->format) {
+    wchar_t buf[SIZE]={0};
     StringCchPrintf(buf,SIZE,GetLangString(config->format),x);
 
     SetWindowTextW(
@@ -326,11 +326,10 @@ const ControlType gcComboBoxType={
 static void SliderCascadeSetStatic(HWND hDlg, int idc, UINT/*const wchar_t **/format,
     double x)
 {
-  enum { SIZE=128 };
-  HWND hWnd=GetDlgItem(hDlg,idc);
-  wchar_t buf[SIZE];
-
   if (format) {
+    enum { SIZE=128 };
+    HWND hWnd=GetDlgItem(hDlg,idc);
+    wchar_t buf[SIZE]={0};
     StringCchPrintf(buf,SIZE,GetLangString(format),x);
     SetWindowTextW(hWnd,buf);
   }
@@ -414,7 +413,6 @@ void SliderCascadeSetSlider(HWND hDlg, int idc, LONG *plWidthRoot,
   LRESULT lRangeMin=SendMessageW(hWnd,TBM_GETRANGEMIN,0,0);
   LRESULT lRangeMax=SendMessageW(hWnd,TBM_GETRANGEMAX,0,0);
   LONG lWidth=SliderCascadeGetSliderWidth(hWnd);
-  double q;
   LPARAM lPos;
 
   if (*plWidthRoot<0) {
@@ -422,7 +420,7 @@ void SliderCascadeSetSlider(HWND hDlg, int idc, LONG *plWidthRoot,
     lPos=lRangeMin+(x-min)/(max-min)*(lRangeMax-lRangeMin)+0.5;
   }
   else {
-    q=(double)(*plWidthRoot)/lWidth;
+    double q=(double)(*plWidthRoot)/lWidth;
     lPos=lRangeMin+(q*(x-min)/(max-min)*(lRangeMax-lRangeMin)+0.5);
   }
 
@@ -463,9 +461,9 @@ static void SliderCascadeTypeSet(const Control *pControl, HWND hDlg,
   int idcSliderParent=0;
   LONG lWidthParent=-1;
   int idcSlider;
-  double x;
 
   while (0<(idcSlider=list->idcSlider)) {
+    double x;
     if (idcSliderParent)
       SliderCascadeSetSliderWidth(hDlg,idcSlider,idcSliderParent);
 
@@ -503,9 +501,9 @@ static void SliderCascadeTypeSync(const Control *pControl, HWND hDlg)
   int idcSliderParent=0;
   LONG lWidthParent=-1;
   int idcSlider;
-  double x;
 
   while (0<(idcSlider=list->idcSlider)) {
+    double x;
     x=SliderCascadeGetSlider(hDlg,idcSlider,&lWidthParent,min,max);
 
     if (idcSliderParent)

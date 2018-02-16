@@ -74,8 +74,8 @@ static void PlayerDestroyConnect(Player *pPlayer)
 
   DPUTS(0,"  re-setting execution state\n");
   SetThreadExecutionState(pConnect->eEsPrevFlags);
-#endif // }
 flags:
+#endif // }
 invalid:
 client:
 render:
@@ -83,7 +83,7 @@ clock:
 #if 0 // {
 invalid:
 #endif // }
-  ZeroMemory(&pPlayer->connect,sizeof pPlayer->connect);
+  SecureZeroMemory(&pPlayer->connect,sizeof pPlayer->connect);
 }
 
 static void DisconnectAllDisconnect(Player *pPlayer, int bReset)
@@ -96,10 +96,10 @@ static void DisconnectAllDisconnect(Player *pPlayer, int bReset)
     hr=pClient->lpVtbl->Reset(pClient);
 
     if (FAILED(hr)) {
-      DERROR(AUDCLNT_E_NOT_INITIALIZED,hr);
-      DERROR(AUDCLNT_E_NOT_STOPPED,hr);
-      DERROR(AUDCLNT_E_BUFFER_OPERATION_PENDING,hr);
-      DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr);
+      DERROR(AUDCLNT_E_NOT_INITIALIZED,hr,destroy);
+      DERROR(AUDCLNT_E_NOT_STOPPED,hr,destroy);
+      DERROR(AUDCLNT_E_BUFFER_OPERATION_PENDING,hr,destroy);
+      DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr,destroy);
       DUNKNOWN(hr);
       DPRINTF(0,"  Warning: re-setting audio client failed.\n");
     }
@@ -107,6 +107,7 @@ static void DisconnectAllDisconnect(Player *pPlayer, int bReset)
       DPRINTF(0,"  audio client reset\n");
   }
 
+destroy:
   PlayerDestroyConnect(pPlayer);
 }
 

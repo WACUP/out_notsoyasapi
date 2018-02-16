@@ -337,14 +337,13 @@ void QueueWrite(Queue *pQueue, Store *pStore, int exit, int stamp,
     PlayerProc *pPlayerProc, va_list ap)
 #endif // }
 {
-  Result *pResult;
-  Request *pRequest;
+  //Request *pRequest;
 
-  pResult=pStore?StoreGet(pStore):NULL;
+  Result *pResult=pStore?StoreGet(pStore):NULL;
 #if defined (YA_DEBUG) // {
-  pRequest=QueueLockWrite(pQueue,pResult,exit,stamp,id,pPlayerProc,ap);
+  /*pRequest=*/QueueLockWrite(pQueue,pResult,exit,stamp,id,pPlayerProc,ap);
 #else // } {
-  pRequest=QueueLockWrite(pQueue,pResult,exit,stamp,pPlayerProc,ap);
+  /*pRequest=*/QueueLockWrite(pQueue,pResult,exit,stamp,pPlayerProc,ap);
 #endif // }
   QueueUnlockWrite(pQueue,pResult);
   StorePut(pStore,pResult);

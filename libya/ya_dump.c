@@ -37,13 +37,13 @@ void DumpDestroy(Dump *pDump)
 
 FILE *DumpOpenFile(Dump *pDump)
 {
-  wchar_t filepath[MAX_PATH];
-  wchar_t *pp;
-  size_t len;
-  SYSTEMTIME time;
-  FILE *f;
-
   if (pDump->path) {
+    wchar_t filepath[MAX_PATH]={0};
+    wchar_t *pp;
+    size_t len;
+    SYSTEMTIME time={0};
+    FILE *f;
+
     wcscpy(filepath,pDump->path);
     len=wcslen(filepath)-4;
     pp=filepath+len;

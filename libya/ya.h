@@ -101,11 +101,14 @@ extern "C" {
 ///////////////////////////////////////////////////////////////////////////////
 #define DUNKNOWN(y) \
   messagea(1,0,&y,"UNKNOWN %x: \"%s\" (%d).\n",y,basenamea(__FILE__),__LINE__)
-#define DERROR(x,y) \
+#define DERROR(x,y,z) \
+  messagea(0,x,&y,#x ": \"%s\" (%d).\n",basenamea(__FILE__),__LINE__);\
+  goto z
+#define DERRORC(x,y) \
   messagea(0,x,&y,#x ": \"%s\" (%d).\n",basenamea(__FILE__),__LINE__)
-#define DERRORV(x,y,format,...) \
+/*#define DERRORV(x,y,format,...) \
   messagea(0,x,&y,#x ": \"%s\" (%d).\n",basenamea(__FILE__),__LINE__, \
-      __VA_ARGS__)
+      __VA_ARGS__)*/
 #define DMESSAGE(m) messagea(1,0,NULL,"Error " m ": " \
     "\"%s\" (%d).\n",basenamea(__FILE__),__LINE__)
 #define DMESSAGEV(m,...) messagea(1,0,NULL,"Error " m \

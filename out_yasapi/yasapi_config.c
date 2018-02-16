@@ -363,10 +363,10 @@ static ConfigDevice *ConfigDeviceNew(Config *pConfig, int nDevice)
     );
 
     if (FAILED(hr)) {
-      DERROR(E_POINTER,hr);
-      DERROR(E_INVALIDARG,hr);
-      DERROR(E_NOTFOUND,hr);
-      DERROR(E_OUTOFMEMORY,hr);
+      DERROR(E_POINTER,hr,device);
+      DERROR(E_INVALIDARG,hr,device);
+      DERROR(E_NOTFOUND,hr,device);
+      DERROR(E_OUTOFMEMORY,hr,device);
       DUNKNOWN(hr);
       DMESSAGE("getting the default device");
       goto device;
@@ -383,8 +383,8 @@ static ConfigDevice *ConfigDeviceNew(Config *pConfig, int nDevice)
     );
 
     if (FAILED(hr)) {
-      DERROR(E_POINTER,hr);
-      DERROR(E_INVALIDARG,hr);
+      DERROR(E_POINTER,hr,device);
+      DERROR(E_INVALIDARG,hr,device);
       DUNKNOWN(hr);
       DMESSAGEV("getting the %d. device",nDevice);
       goto device;
@@ -400,8 +400,8 @@ static ConfigDevice *ConfigDeviceNew(Config *pConfig, int nDevice)
   );
 
   if (FAILED(hr)) {
-    DERROR(E_OUTOFMEMORY,hr);
-    DERROR(E_POINTER,hr);
+    DERROR(E_OUTOFMEMORY,hr,id);
+    DERROR(E_POINTER,hr,id);
     DUNKNOWN(hr);
     DMESSAGEV("getting the %d. device's id",nDevice);
     goto id;
@@ -417,9 +417,9 @@ static ConfigDevice *ConfigDeviceNew(Config *pConfig, int nDevice)
   );
 
   if (FAILED(hr)) {
-    DERROR(E_INVALIDARG,hr);
-    DERROR(E_POINTER,hr);
-    DERROR(E_OUTOFMEMORY,hr);
+    DERROR(E_INVALIDARG,hr,properties);
+    DERROR(E_POINTER,hr,properties);
+    DERROR(E_OUTOFMEMORY,hr,properties);
     DMESSAGEV("getting the %d. device's property store",nDevice);
     goto properties;
   }
@@ -434,8 +434,8 @@ static ConfigDevice *ConfigDeviceNew(Config *pConfig, int nDevice)
   );
 
   if (FAILED(hr)) {
-    DERROR(E_OUTOFMEMORY,hr);
-    DERROR(E_POINTER,hr);
+    DERROR(E_OUTOFMEMORY,hr,name);
+    DERROR(E_POINTER,hr,name);
     DUNKNOWN(hr);
     DMESSAGEV("getting the %d. device's name",nDevice);
     goto name;
@@ -581,9 +581,9 @@ static INT_PTR CALLBACK CommonProc(HWND hDlg, UINT uMsg, WPARAM wParam,
 #else // } {
 #endif // }
 #endif // }
-#if ! defined (YASAPI_SORROUND) // {
-    EnableWindow(GetDlgItem(hDlg,IDC_STATIC_LABEL_SORROUND),FALSE);
-    EnableWindow(GetDlgItem(hDlg,IDC_CHECKBOX_SORROUND),FALSE);
+#if ! defined (YASAPI_SURROUND) // {
+    EnableWindow(GetDlgItem(hDlg,IDC_STATIC_LABEL_SURROUND),FALSE);
+    EnableWindow(GetDlgItem(hDlg,IDC_CHECKBOX_SURROUND),FALSE);
 #endif // }
 #if 0 // {
 #if ! defined (YA_DEBUG) // {
@@ -860,6 +860,7 @@ static void ConfigOnSelChangeTabCtrl(HWND hDlg, Config *pConfig, HWND hWndTab)
   pConfig->options.common.nPage=nCurPage;
 }
 
+#ifndef WACUP_BUILD
 static int ResizeComboBoxDropDown(HWND hParent, HWND hComboBox, const wchar_t *str, int width)
 {
 	SIZE size = {0};
@@ -880,6 +881,9 @@ static int ResizeComboBoxDropDown(HWND hParent, HWND hComboBox, const wchar_t *s
 	ReleaseDC(hComboBox, hdc);
 	return size.cx;
 }
+#else
+__declspec(dllimport) int _cdecl ResizeComboBoxDropDown(HWND hwndDlg, UINT id, const wchar_t *str, int width);
+#endif
 
 static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
 {
@@ -910,7 +914,11 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
       pwszLabel=pConfigDevice->vName.pwszVal;
 
     SendMessageW(hComboBox,CB_ADDSTRING,0,(LPARAM)pwszLabel);
+#ifndef WACUP_BUILD
 	comboWidth = ResizeComboBoxDropDown(hDlg,hComboBox,pwszLabel,comboWidth);
+#else
+	comboWidth = ResizeComboBoxDropDown(hDlg,idc,pwszLabel,comboWidth);
+#endif
 
     if (!cDevice)
       free(pwszLabel);
@@ -1144,7 +1152,7 @@ void ConfigSave(Config *pConfig)
   if (pConfigDevice) {
     // should be called before the lock in order to not dead-lock this window.
     ConfigGet(pConfig);
-    PLAYER_SEND(pPlayer,PlayerWriteConfig,pConfig,pConfigDevice);
+    PLAYER_SEND(pPlayer,PlayerWriteConfig,pConfigDevice);
   }
 }
 
@@ -1159,7 +1167,7 @@ void ConfigSaveSpecific(Config *pConfig)
   //if (pConfigDevice) {
     // should be called before the lock in order to not dead-lock this window.
     ConfigGet(pConfig);
-    PLAYER_SEND(pPlayer,PlayerWriteConfigSpecific,pConfig,NULL/*pConfigDevice*/);
+    PLAYER_SEND(pPlayer,PlayerWriteConfigSpecific);
   //}
 }
 
@@ -1167,12 +1175,11 @@ static void ConfigEndDialog(HWND hDlg, Config *pConfig, INT_PTR nResult)
 {
   HWND hComboBox=GetDlgItem(hDlg,IDC_COMBOBOX_DEVICE);
   int nDevices=1+pConfig->nDevices;
-  ConfigDevice *pConfigDevice;
 
   pConfig->pPlayer->hDlgConfig=NULL;
 
   while (0<nDevices) {
-    pConfigDevice
+    ConfigDevice *pConfigDevice
         =(ConfigDevice *)SendMessageW(hComboBox,CB_GETITEMDATA,--nDevices,0);
 
     if (pConfigDevice) {
@@ -1353,9 +1360,9 @@ int ConfigDialog(Player *pPlayer/*, HINSTANCE hInstance*/, HWND hWndParent)
   );
 
   if (FAILED(hr)) {
-    DERROR(E_POINTER,hr);
-    DERROR(E_INVALIDARG,hr);
-    DERROR(E_OUTOFMEMORY,hr);
+    DERROR(E_POINTER,hr,collection);
+    DERROR(E_INVALIDARG,hr,collection);
+    DERROR(E_OUTOFMEMORY,hr,collection);
     DUNKNOWN(hr);
     DMESSAGE("getting the device collection");
     goto collection;
@@ -1370,7 +1377,7 @@ int ConfigDialog(Player *pPlayer/*, HINSTANCE hInstance*/, HWND hWndParent)
   );
 
   if (FAILED(hr)) {
-    DERROR(E_POINTER,hr);
+    DERRORC(E_POINTER,hr);
     DUNKNOWN(hr);
     DMESSAGE("getting the device count");
     goto count;

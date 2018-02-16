@@ -219,15 +219,13 @@ int PlayerStubSendV(PlayerStub *pStub, int exit, int stamp,
 {
   Store *pStore=&pStub->store;
   Queue *pQueue=&pStub->queue;
-  Result *pResult;
-  Request *pRequest;
   int state;
 
-  pResult=StoreGet(pStore);
+  Result *pResult=StoreGet(pStore);
 #if defined (YA_DEBUG) // {
-  pRequest=QueueLockWrite(pQueue,pResult,exit,stamp,id,pPlayerProc,ap);
+  /*pRequest=*/QueueLockWrite(pQueue,pResult,exit,stamp,id,pPlayerProc,ap);
 #else // } {
-  pRequest=QueueLockWrite(pQueue,pResult,exit,stamp,pPlayerProc,ap);
+  /*pRequest=*/QueueLockWrite(pQueue,pResult,exit,stamp,pPlayerProc,ap);
 #endif // }
   QueueUnlockWrite(pQueue,pResult);
     state=pResult->state;

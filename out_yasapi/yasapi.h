@@ -33,7 +33,7 @@ extern Out_Module plugin;
 ///////////////////////////////////////////////////////////////////////////////
 //#define YASAPI_ABOUT
 #define YASAPI_GAPLESS
-#define YASAPI_SORROUND
+#define YASAPI_SURROUND
 #define YASAPI_RING_REALLOC
 #define YASAPI_RING_BUF_SIZE
 #define YASAPI_FORCE24BIT
@@ -54,7 +54,7 @@ extern Out_Module plugin;
 ///////////////////////////////////////////////////////////////////////////////
 #if ! defined (YASAPI_VER) // {
   #define YASAPI_VER            1.7.25
-  #define PLUGIN_VERSION        "1.0 Beta"
+  #define PLUGIN_VERSION        "1.1"
 #endif // }
 
 #define YASAPI_VERSION          YA_STR(YASAPI_VER)
@@ -191,7 +191,7 @@ enum _ChannelLayout {
   CHANNEL_LAYOUT_3POINT1,             // CHANNEL_LAYOUT_QUAD
   CHANNEL_LAYOUT_3POINT1_SURROUND,    // CHANNEL_LAYOUT_SURROUND
   CHANNEL_LAYOUT_5POINT1,
-  CHANNEL_LAYOUT_5POINT1_SORROUND,
+  CHANNEL_LAYOUT_5POINT1_SURROUND,
   CHANNEL_LAYOUT_7POINT1,
   CHANNEL_LAYOUT_7POINT1_SURROUND,
   CHANNEL_LAYOUT_9POINT1,
@@ -274,8 +274,8 @@ struct _OptionsCommon {
   wchar_t szId[YASAPI_ID_SIZE];
   int bMono2Stereo;
   int bVolume;
-#if defined (YASAPI_SORROUND) // {
-  int bSorround;
+#if defined (YASAPI_SURROUND) // {
+  int bSurround;
 #endif // }
 #if defined (YASAPI_GAPLESS) // {
   int bGapless;
@@ -507,8 +507,8 @@ struct _Player {
     const Disconnect *pDisconnect;
     WAVEFORMATEXTENSIBLE wfxx;
     WORD wBytesPerSample;
-#if defined (YASAPI_SORROUND) // {
-    int bSorround;
+#if defined (YASAPI_SURROUND) // {
+    int bSurround;
 #endif // }
 #if defined (YASAPI_FORCE24BIT) // {
     Convert source;
@@ -540,7 +540,6 @@ void PlayerDestroy(Player *pPlayer);
 void PlayerKill(Player *pPlayer, int bReset, const PlayerState state);
 
 int64_t PlayerRun(Player *pPlayer, Request *pRequest);
-int64_t PlayerStop(Player *pPlayer, Request *pRequest);
 int64_t PlayerOpen(Player *pPlayer, Request *pRequest);
 #if defined (YASAPI_GAPLESS) // {
 int64_t PlayerReset(Player *pPlayer, Request *pRequest);
@@ -601,7 +600,6 @@ void PlayerRemoveNotify(Player *pPlayer);
 int PlayerCreate(Player *pPlayer, HINSTANCE hModule, const wchar_t *path);
 void PlayerDestroy(Player *pPlayer);
 int PlayerRun(Player *pPlayer, Request *pRequest);
-int PlayerStop(Player *pPlayer, Request *pRequest);
 int PlayerCreateConnect(Player *pPlayer, int bNegociate, int bReset);
 int PlayerCreateWFXX(Player *pPlayer, Request *pRequest);
 int PlayerCreateRing(Player *pPlayer);

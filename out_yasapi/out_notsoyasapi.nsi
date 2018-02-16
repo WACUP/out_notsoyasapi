@@ -12,11 +12,13 @@
  
 ;--------------------------------
  
+ Unicode true
+ 
 !define MINIMAL_VERSION "5.6.6.3507"
  
 ; common defines for a generic DrO installer :o)
-!define VERSION "1.0 Beta"
-!define ALT_VER "1_0_Beta"
+!define VERSION "1.1"
+!define ALT_VER "1_1"
 !define PLUG "Not So YASAPI Output"
 !define PLUG_ALT "Not_So_YASAPI_Output"
 !define PLUG_FILE "out_notsoyasapi"

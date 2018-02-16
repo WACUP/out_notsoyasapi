@@ -101,7 +101,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,32,140,8
     CONTROL         "Convert mono input to stereo",IDC_CHECKBOX_MONO2STEREO,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,45,130,8
-    CONTROL         "Enable surround support",IDC_CHECKBOX_SORROUND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,59,110,8
+    CONTROL         "Enable surround support",IDC_CHECKBOX_SURROUND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,59,110,8
     CONTROL         "Check format is supported on initialisation",IDC_CHECKBOX_FORMAT_SUPPORTED,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,72,161,8
     CONTROL         "Show buffer usage",IDC_CHECKBOX_VISUALIZATION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,85,100,8
@@ -179,8 +179,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,0
- PRODUCTVERSION 1,0,0,0
+ FILEVERSION 1,1,0,0
+ PRODUCTVERSION 1,1,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -195,14 +195,14 @@ BEGIN
     BEGIN
         BLOCK "080904b0"
         BEGIN
-            VALUE "CompanyName", "Darren Owen aka DrO"
+            VALUE "CompanyName", "WACUP (WinAmp Community Update Pack)"
             VALUE "FileDescription", "Winamp Output Plug-in"
-            VALUE "FileVersion", "1, 0, 0, 0"
+            VALUE "FileVersion", "1, 1, 0, 0"
             VALUE "InternalName", "out_notsoyasapi.dll"
-            VALUE "LegalCopyright", "Copyright © 2015-6 Peter Belkner, Not So YASAPI modifications by Darren Owen aka DrO © 2016"
+            VALUE "LegalCopyright", "Copyright © 2015-2016 Peter Belkner, Not So YASAPI modifications by Darren Owen aka DrO © 2016-2018"
             VALUE "OriginalFilename", "out_notsoyasapi.dll"
             VALUE "ProductName", "Not So YASAPI"
-            VALUE "ProductVersion", "1, 0, 0, 0"
+            VALUE "ProductVersion", "1, 1, 0, 0"
         END
     END
     BLOCK "VarFileInfo"
@@ -217,7 +217,26 @@ END
 // TEXT
 //
 
+#if defined(APSTUDIO_INVOKED) || defined(STANDALONE)
+#if defined(APSTUDIO_INVOKED)
+IDR_ABOUT_TEXT$(STANDALONE) TEXT                    "about.bin"
+#else
 IDR_ABOUT_TEXT          TEXT                    "about.bin"
+#endif
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// GZ
+//
+
+#if defined(APSTUDIO_INVOKED) || defined(WACUP_BUILD)
+#if defined(APSTUDIO_INVOKED)
+IDR_ABOUT_GZ$(WACUP_BUILD) GZ                      "about.bin.gz"
+#else
+IDR_ABOUT_GZ            GZ                      "about.bin.gz"
+#endif
+#endif
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -243,7 +262,7 @@ BEGIN
     IDS_GAPLESS_PLAYBACK    "Whether playback shoud be in gapless mode."
     IDS_DISCONNECT_WHEN_IDLE 
                             "In gapless mode, should the output be automatically\ndisconnected when the device becomes idle."
-    IDS_SURROUND_MODE       "Should 4, 6, or 8 channels  be interpreted as qadrophnic\n(3.1), 5.1, or 7.1 (disabled) or sorround (3.1 sorround),\n5.1 sorround, or 7.1 sorround (enabled), respectively."
+    IDS_SURROUND_MODE       "Should 4, 6, or 8 channels  be interpreted as qadrophnic\n(3.1), 5.1, or 7.1 (disabled) or surround (3.1 surround),\n5.1 surround, or 7.1 surround (enabled), respectively."
     IDS_TEST_FORMAT         "Whether YASAPI should call IAudioClient::IsFormatSupported before IAudioClient::Initialize."
     IDS_WASAPI              "WASAPI"
     IDS_SYSTEM              "System"

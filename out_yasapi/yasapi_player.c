@@ -64,7 +64,7 @@ int PlayerCreate(Player *pPlayer, HINSTANCE hModule, const wchar_t *path)
   DPRINTF(0,"  > %s <\n",__func__);
 
   /////////////////////////////////////////////////////////////////////////////
-  ZeroMemory(pPlayer,sizeof *pPlayer);
+  SecureZeroMemory(pPlayer,sizeof *pPlayer);
   pPlayer->hDlgConfig=NULL;
 
   /////////////////////////////////////////////////////////////////////////////
@@ -203,7 +203,7 @@ int PlayerRun(Player *pPlayer, Request *pRequest)
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  ZeroMemory(&pPlayer->run,sizeof pPlayer->run);
+  SecureZeroMemory(&pPlayer->run,sizeof pPlayer->run);
 
   // create a device enumerator ///////////////////////////////////////////////
   hr=CoCreateInstance(
@@ -215,10 +215,10 @@ int PlayerRun(Player *pPlayer, Request *pRequest)
   );
 
   if (FAILED(hr)) {
-    DERROR(REGDB_E_CLASSNOTREG,hr);
-    DERROR(CLASS_E_NOAGGREGATION,hr);
-    DERROR(E_NOINTERFACE,hr);
-    DERROR(E_POINTER,hr);
+    DERROR(REGDB_E_CLASSNOTREG,hr,enumerator);
+    DERROR(CLASS_E_NOAGGREGATION,hr,enumerator);
+    DERROR(E_NOINTERFACE,hr,enumerator);
+    DERROR(E_POINTER,hr,enumerator);
     DMESSAGE("creating device enumerator");
     goto enumerator;
   }
@@ -324,11 +324,11 @@ retry:
   );
 
   if (FAILED(hr)) {
-    DERROR(E_NOINTERFACE,hr);
-    DERROR(E_POINTER,hr);
-    DERROR(E_INVALIDARG,hr);
-    DERROR(E_OUTOFMEMORY,hr);
-    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr);
+    DERROR(E_NOINTERFACE,hr,client);
+    DERROR(E_POINTER,hr,client);
+    DERROR(E_INVALIDARG,hr,client);
+    DERROR(E_OUTOFMEMORY,hr,client);
+    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr,client);
     DUNKNOWN(hr);
     DMESSAGE("activating audio client");
     goto client;
@@ -359,16 +359,16 @@ retry:
     case S_OK:
       break;
     case S_FALSE:
-      DERROR(S_FALSE,hr);
+      //DERROR(S_FALSE,hr);
       DMESSAGE("format not supported");
       goto support;
     default:
       if (FAILED(hr)) {
-        DERROR(AUDCLNT_E_UNSUPPORTED_FORMAT,hr);
-        DERROR(E_POINTER,hr);
-        DERROR(E_INVALIDARG,hr);
-        DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr);
-        DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr);
+        DERROR(AUDCLNT_E_UNSUPPORTED_FORMAT,hr,support);
+        DERROR(E_POINTER,hr,support);
+        DERROR(E_INVALIDARG,hr,support);
+        DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr,support);
+        DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr,support);
         DUNKNOWN(hr);
         DMESSAGE("format not supported");
         goto support;
@@ -406,9 +406,9 @@ retry:
     );
 
     if (FAILED(hr)) {
-      DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr);
-      DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr);
-      DERROR(E_POINTER,hr);
+      DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr,period);
+      DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr,period);
+      DERROR(E_POINTER,hr,period);
       DUNKNOWN(hr);
       DMESSAGE("getting device period");
       goto period;
@@ -466,10 +466,10 @@ retry:
         );
 
         if (FAILED(hr)) {
-          DERROR(AUDCLNT_E_NOT_INITIALIZED,hr);
-          DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr);
-          DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr);
-          DERROR(E_POINTER,hr);
+          DERROR(AUDCLNT_E_NOT_INITIALIZED,hr,init);
+          DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr,init);
+          DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr,init);
+          DERROR(E_POINTER,hr,init);
           DUNKNOWN(hr);
           DMESSAGE("getting aligned number of frames");
           goto init;
@@ -515,22 +515,22 @@ retry:
       }
     }
 
-    DERROR(AUDCLNT_E_ALREADY_INITIALIZED,hr);
-    DERROR(AUDCLNT_E_WRONG_ENDPOINT_TYPE,hr);
-    DERROR(AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED,hr);
-    DERROR(AUDCLNT_E_BUFFER_SIZE_ERROR,hr);
-    DERROR(AUDCLNT_E_CPUUSAGE_EXCEEDED,hr);
-    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr);
-    DERROR(AUDCLNT_E_DEVICE_IN_USE,hr);
-    DERROR(AUDCLNT_E_ENDPOINT_CREATE_FAILED,hr);
-    DERROR(AUDCLNT_E_INVALID_DEVICE_PERIOD,hr);
-    DERROR(AUDCLNT_E_UNSUPPORTED_FORMAT,hr);
-    DERROR(AUDCLNT_E_EXCLUSIVE_MODE_NOT_ALLOWED,hr);
-    DERROR(AUDCLNT_E_BUFDURATION_PERIOD_NOT_EQUAL,hr);
-    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr);
-    DERROR(E_POINTER,hr);
-    DERROR(E_INVALIDARG,hr);
-    DERROR(E_OUTOFMEMORY,hr);
+    DERROR(AUDCLNT_E_ALREADY_INITIALIZED,hr,init);
+    DERROR(AUDCLNT_E_WRONG_ENDPOINT_TYPE,hr,init);
+    DERROR(AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED,hr,init);
+    DERROR(AUDCLNT_E_BUFFER_SIZE_ERROR,hr,init);
+    DERROR(AUDCLNT_E_CPUUSAGE_EXCEEDED,hr,init);
+    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr,init);
+    DERROR(AUDCLNT_E_DEVICE_IN_USE,hr,init);
+    DERROR(AUDCLNT_E_ENDPOINT_CREATE_FAILED,hr,init);
+    DERROR(AUDCLNT_E_INVALID_DEVICE_PERIOD,hr,init);
+    DERROR(AUDCLNT_E_UNSUPPORTED_FORMAT,hr,init);
+    DERROR(AUDCLNT_E_EXCLUSIVE_MODE_NOT_ALLOWED,hr,init);
+    DERROR(AUDCLNT_E_BUFDURATION_PERIOD_NOT_EQUAL,hr,init);
+    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr,init);
+    DERROR(E_POINTER,hr,init);
+    DERROR(E_INVALIDARG,hr,init);
+    DERROR(E_OUTOFMEMORY,hr,init);
     DUNKNOWN(hr);
     DMESSAGE("initializing audio client");
     goto init;
@@ -542,11 +542,11 @@ retry:
   hr=pStrategy->SetEvent(pPlayer);
 
   if (FAILED(hr)) {
-    DERROR(E_INVALIDARG,hr);
-    DERROR(AUDCLNT_E_EVENTHANDLE_NOT_EXPECTED,hr);
-    DERROR(AUDCLNT_E_NOT_INITIALIZED,hr);
-    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr);
-    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr);
+    DERROR(E_INVALIDARG,hr,event);
+    DERROR(AUDCLNT_E_EVENTHANDLE_NOT_EXPECTED,hr,event);
+    DERROR(AUDCLNT_E_NOT_INITIALIZED,hr,event);
+    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr,event);
+    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr,event);
     DUNKNOWN(hr);
     DMESSAGE("setting event handle");
     goto event;
@@ -566,10 +566,10 @@ retry:
   );
 
   if (FAILED(hr)) {
-    DERROR(AUDCLNT_E_NOT_INITIALIZED,hr);
-    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr);
-    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr);
-    DERROR(E_POINTER,hr);
+    DERROR(AUDCLNT_E_NOT_INITIALIZED,hr,size);
+    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr,size);
+    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr,size);
+    DERROR(E_POINTER,hr,size);
     DUNKNOWN(hr);
     DMESSAGE("getting buffer size");
     goto size;
@@ -590,12 +590,12 @@ retry:
   );
 
   if (FAILED(hr)) {
-    DERROR(E_POINTER,hr);
-    DERROR(E_NOINTERFACE,hr);
-    DERROR(AUDCLNT_E_NOT_INITIALIZED,hr);
-    DERROR(AUDCLNT_E_WRONG_ENDPOINT_TYPE,hr);
-    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr);
-    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr);
+    DERROR(E_POINTER,hr,render);
+    DERROR(E_NOINTERFACE,hr,render);
+    DERROR(AUDCLNT_E_NOT_INITIALIZED,hr,render);
+    DERROR(AUDCLNT_E_WRONG_ENDPOINT_TYPE,hr,render);
+    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr,render);
+    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr,render);
     DUNKNOWN(hr);
     DMESSAGE("getting audio render client");
     goto render;
@@ -611,12 +611,12 @@ retry:
   );
 
   if (FAILED(hr)) {
-    DERROR(E_POINTER,hr);
-    DERROR(E_NOINTERFACE,hr);
-    DERROR(AUDCLNT_E_NOT_INITIALIZED,hr);
-    DERROR(AUDCLNT_E_WRONG_ENDPOINT_TYPE,hr);
-    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr);
-    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr);
+    DERROR(E_POINTER,hr,clock);
+    DERROR(E_NOINTERFACE,hr,clock);
+    DERROR(AUDCLNT_E_NOT_INITIALIZED,hr,clock);
+    DERROR(AUDCLNT_E_WRONG_ENDPOINT_TYPE,hr,clock);
+    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr,clock);
+    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr,clock);
     DUNKNOWN(hr);
     DMESSAGE("getting audio clock");
     goto clock;
@@ -630,10 +630,10 @@ retry:
     hr=pClient->lpVtbl->Reset(pClient);
 
     if (FAILED(hr)) {
-      DERROR(AUDCLNT_E_NOT_INITIALIZED,hr);
-      DERROR(AUDCLNT_E_NOT_STOPPED,hr);
-      DERROR(AUDCLNT_E_BUFFER_OPERATION_PENDING,hr);
-      DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr);
+      DERROR(AUDCLNT_E_NOT_INITIALIZED,hr,reset);
+      DERROR(AUDCLNT_E_NOT_STOPPED,hr,reset);
+      DERROR(AUDCLNT_E_BUFFER_OPERATION_PENDING,hr,reset);
+      DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr,reset);
       DUNKNOWN(hr);
       DMESSAGE("re-setting audio client");
       goto reset;
@@ -684,8 +684,8 @@ int PlayerCreateWFXX(Player *pPlayer, Request *pRequest)
   Convert *pSource=&pPlayer->open.source;
   Convert *pTarget=&pPlayer->open.target;
 #endif // }
-#if defined (YASAPI_SORROUND) // {
-  int bSorround;
+#if defined (YASAPI_SURROUND) // {
+  int bSurround;
 #endif // }
 
   DPRINTF(0,"  > %s (%d, %d, %d) <\n",__func__,
@@ -755,9 +755,9 @@ int PlayerCreateWFXX(Player *pPlayer, Request *pRequest)
   DPRINTF(0,"  bitspersamp: %d\n",bitspersamp);
 #endif // }
 
-#if defined (YASAPI_SORROUND) // {
-  bSorround=pPlayer->open.bSorround=pPlayer->options.common.bSorround;
-  WFXXSetup(pwfxx,samplerate,numchannels,bitspersamp,bSorround,FALSE);
+#if defined (YASAPI_SURROUND) // {
+  bSurround=pPlayer->open.bSurround=pPlayer->options.common.bSurround;
+  WFXXSetup(pwfxx,samplerate,numchannels,bitspersamp,bSurround,FALSE);
 #else // } {
   WFXXSetup(pwfxx,samplerate,numchannels,bitspersamp,FALSE,FALSE);
 #endif // }
@@ -892,10 +892,10 @@ int PlayerOpen(Player *pPlayer, Request *pRequest)
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  ZeroMemory(&pPlayer->device,sizeof pPlayer->device);
-  ZeroMemory(&pPlayer->open,sizeof pPlayer->open);
-  ZeroMemory(&pPlayer->connect,sizeof pPlayer->connect);
-  ZeroMemory(&pPlayer->time,sizeof pPlayer->time);
+  SecureZeroMemory(&pPlayer->device,sizeof pPlayer->device);
+  SecureZeroMemory(&pPlayer->open,sizeof pPlayer->open);
+  SecureZeroMemory(&pPlayer->connect,sizeof pPlayer->connect);
+  SecureZeroMemory(&pPlayer->time,sizeof pPlayer->time);
 
   /////////////////////////////////////////////////////////////////////////////
   OptionsDeviceLoad(&pPlayer->options.device,L"    ",
@@ -912,7 +912,7 @@ int PlayerOpen(Player *pPlayer, Request *pRequest)
 
   /////////////////////////////////////////////////////////////////////////////
   pPlayer->device=*pPlayerDevice;
-  ZeroMemory(pPlayerDevice,sizeof *pPlayerDevice);
+  SecureZeroMemory(pPlayerDevice,sizeof *pPlayerDevice);
   pPlayerDevice=&pPlayer->device;
 
   if (!pPlayerDevice->pDevice
@@ -939,7 +939,7 @@ int PlayerOpen(Player *pPlayer, Request *pRequest)
 /*
 #if defined (YASAPI_EXECUTION_STATE) // {
   if (0==(pPlayer->open.ePrevState=SetThreadExecutionState(ES_FLAGS))) {
-   DMESSAGE("setting execution state");
+    DMESSAGE("setting execution state");
     goto execution;
   }
 
@@ -1003,7 +1003,7 @@ int PlayerMigrate(Player *pPlayer, Request *pRequest)
   }
 
   ////////////////////////////////////////////////////////////////////////////
-  if (0==wcscmp(pwstrId,pPlayerDevice->szId)) {
+  if (pwstrId!=NULL && 0==wcscmp(pwstrId,pPlayerDevice->szId)) {
     DWARNING("device not changed");
     goto device1;
   }
@@ -1026,7 +1026,7 @@ int PlayerMigrate(Player *pPlayer, Request *pRequest)
   ConnectionSetInvalid(pConnect,0);
   
   pPlayer->device=device;
-  ZeroMemory(pPlayerDevice,sizeof *pPlayerDevice);
+  SecureZeroMemory(pPlayerDevice,sizeof *pPlayerDevice);
   pPlayerDevice=&pPlayer->device;
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1142,8 +1142,8 @@ int PlayerReset(Player *pPlayer, Request *pRequest)
 #endif // }
 
   return PlayerGetMaxLatency(pPlayer);
-add:
-padding:
+//add:
+//padding:
 reset:
 connect:
 #if 0 // {
@@ -1160,7 +1160,7 @@ int PlayerClose(Player *pPlayer, Request *pRequest)
   DPRINTF(0,"  > %s <\n",__func__);
 
   if (PLAYER_STATE_RUN<pPlayer->state)
-  PlayerKill(pPlayer,0,PLAYER_STATE_RUN);
+    PlayerKill(pPlayer,0,PLAYER_STATE_RUN);
 
   return 0;
 }
@@ -1316,15 +1316,15 @@ int PlayerPlay(Player *pPlayer, UINT32 uFramesPadding, int bUnderflow)
       goto invalid2;
     }
 
-    DERROR(AUDCLNT_E_BUFFER_ERROR,hr);
-    DERROR(AUDCLNT_E_BUFFER_TOO_LARGE,hr);
-    DERROR(AUDCLNT_E_BUFFER_SIZE_ERROR,hr);
-    DERROR(AUDCLNT_E_OUT_OF_ORDER,hr);
-    DERROR(AUDCLNT_E_OUT_OF_ORDER,hr);
-    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr);
-    DERROR(AUDCLNT_E_BUFFER_OPERATION_PENDING,hr);
-    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr);
-    DERROR(E_POINTER,hr);
+    DERROR(AUDCLNT_E_BUFFER_ERROR,hr,get);
+    DERROR(AUDCLNT_E_BUFFER_TOO_LARGE,hr,get);	// https://social.msdn.microsoft.com/Forums/windowsdesktop/en-US/fe2da61d-1be5-43c9-b4d6-30f97615a298/win-7-core-audio-api-buffer-allocation-failed?forum=windowspro-audiodevelopment
+    DERROR(AUDCLNT_E_BUFFER_SIZE_ERROR,hr,get);
+    DERROR(AUDCLNT_E_OUT_OF_ORDER,hr,get);
+    DERROR(AUDCLNT_E_OUT_OF_ORDER,hr,get);
+    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr,get);
+    DERROR(AUDCLNT_E_BUFFER_OPERATION_PENDING,hr,get);
+    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr,get);
+    DERROR(E_POINTER,hr,get);
     DUNKNOWN(hr);
     DMESSAGE("getting render buffer");
     goto get;
@@ -1345,7 +1345,7 @@ int PlayerPlay(Player *pPlayer, UINT32 uFramesPadding, int bUnderflow)
     dwFramesRead/=pwfx->nBlockAlign;
 
   if (c.dwWriteSize<c.dwSize&&bNeedPadding)
-    ZeroMemory(pData+c.dwWriteSize,c.dwSize-c.dwWriteSize);
+    SecureZeroMemory(pData+c.dwWriteSize,c.dwSize-c.dwWriteSize);
 
   // release the render buffer ////////////////////////////////////////////////
   hr=pRender->lpVtbl->ReleaseBuffer(pRender,
@@ -1360,12 +1360,12 @@ int PlayerPlay(Player *pPlayer, UINT32 uFramesPadding, int bUnderflow)
       goto invalid3;
     }
 
-    DERROR(AUDCLNT_E_INVALID_SIZE,hr);
-    DERROR(AUDCLNT_E_BUFFER_SIZE_ERROR,hr);
-    DERROR(AUDCLNT_E_OUT_OF_ORDER,hr);
-    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr);
-    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr);
-    DERROR(E_INVALIDARG,hr);
+    DERROR(AUDCLNT_E_INVALID_SIZE,hr,release);
+    DERROR(AUDCLNT_E_BUFFER_SIZE_ERROR,hr,release);
+    DERROR(AUDCLNT_E_OUT_OF_ORDER,hr,release);
+    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr,release);
+    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr,release);
+    DERROR(E_INVALIDARG,hr,release);
     DUNKNOWN(hr);
     DMESSAGE("releasing render buffer");
     goto release;
@@ -1380,7 +1380,7 @@ int PlayerPlay(Player *pPlayer, UINT32 uFramesPadding, int bUnderflow)
 
   // no critical section needed in order to block unexpected write
   // requests to the ring buffer because all requests are serialized.
-  ZeroMemory(&error,sizeof error);
+  SecureZeroMemory(&error,sizeof error);
   error.Cleanup=RingErrorNop;
   RingReadEx(pRing,(LPSTR)pData,c.dwWriteSize,RING_COMMIT,&error);
 nop:
@@ -1413,9 +1413,9 @@ int PlayerTryStart(Player *pPlayer, int bUnderflow)
   Ring *pRing=&pPlayer->open.ring;
   UINT32 uFramesRingWritten=pRing->dwWritten/pwfx->nBlockAlign;
   HANDLE hTask=NULL;
-  IAudioClient *pClient;
+  IAudioClient *pClient = NULL;
   UINT32 uFramesPadding;
-  HRESULT hr;
+  HRESULT hr=AUDCLNT_E_NOT_INITIALIZED;
 
   PlayerSetThreadCharacteristics(pPlayer,&hTask);
 
@@ -1433,10 +1433,10 @@ int PlayerTryStart(Player *pPlayer, int bUnderflow)
       DPUTS(0,"  ============================================\n");
 #endif // }
 
-      if (pDisconnect->Reconnect(pPlayer)<0) {
-        DMESSAGE("connecting");
-        goto connect;
-      }
+    if (pDisconnect->Reconnect(pPlayer)<0) {
+      DMESSAGE("connecting");
+      goto connect;
+    }
 
     pClient=pPlayer->connect.pClient;
 
@@ -1463,14 +1463,21 @@ int PlayerTryStart(Player *pPlayer, int bUnderflow)
 #endif // }
 
     // start the audio client /////////////////////////////////////////////////
-    hr=pClient->lpVtbl->Start(pClient);
-  
+	// changed - if we've an underflow state then
+	// we cannot access pClient as it's gone away
+	// TODO need to improve the checking in general
+	if (pPlayer->state == PLAYER_STATE_UNDERFLOW) {
+		goto underflow;
+	} else {
+		hr=pClient->lpVtbl->Start(pClient);
+	}
+
     if (FAILED(hr)) {
-      DERROR(AUDCLNT_E_NOT_INITIALIZED,hr);
-      DERROR(AUDCLNT_E_NOT_STOPPED,hr);
-      DERROR(AUDCLNT_E_EVENTHANDLE_NOT_SET,hr);
-      DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr);
-      DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr);
+      DERROR(AUDCLNT_E_NOT_INITIALIZED,hr,start);
+      DERROR(AUDCLNT_E_NOT_STOPPED,hr,start);
+      DERROR(AUDCLNT_E_EVENTHANDLE_NOT_SET,hr,start);
+      DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr,start);
+      DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr,start);
       DUNKNOWN(hr);
       DMESSAGE("starting audio client");
       goto start;
@@ -1492,7 +1499,7 @@ int PlayerTryStart(Player *pPlayer, int bUnderflow)
     DPRINTF(0,"  %s: start playing: %d\n",__func__,pPlayer->state);
   }
 underflow:
-frames:
+//frames:
   PlayerRevertThreadCharacteristics(pPlayer,&hTask);
   return 0;
 #if 0 // {
@@ -1613,7 +1620,7 @@ int PlayerFlush(Player *pPlayer, Request *pRequest)
     return 0;
 get:
 state:
-reconnect:
+//reconnect:
 invalid:
   return 0;
 }
@@ -1887,10 +1894,10 @@ UINT32 PlayerGetFramesPadding(Player *pPlayer)
       goto invalid2;
     }
 
-    DERROR(AUDCLNT_E_NOT_INITIALIZED,hr);
-    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr);
-    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr);
-    DERROR(E_POINTER,hr);
+    DERROR(AUDCLNT_E_NOT_INITIALIZED,hr,padding);
+    DERROR(AUDCLNT_E_DEVICE_INVALIDATED,hr,padding);
+    DERROR(AUDCLNT_E_SERVICE_NOT_RUNNING,hr,padding);
+    DERROR(E_POINTER,hr,padding);
     DUNKNOWN(hr);
     DMESSAGE("getting padding");
     goto padding;
@@ -2063,7 +2070,7 @@ static void CopySampleDirect(char *wp, int m, const char *rp, int k)
   int l=m-k;
 
   if (0<l) {
-    ZeroMemory(wp,l);
+    SecureZeroMemory(wp,l);
     wp+=l;
   }
 
@@ -2112,7 +2119,6 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
   Convert *pTarget=&pPlayer->open.target;
   int nVolume=pPlayer->options.common.bVolume
       ?pPlayer->base.nVolume:YASAPI_MAX_VOLUME;
-  int nChannel;
   int k;
 #else // } {
   double qVolume=pPlayer->base.qVolume;
@@ -2161,6 +2167,7 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
   }
   else {
     while (wp<mp) {
+      int nChannel;
       for (nChannel=0;nChannel<pTarget->nChannels;++nChannel) {
         if (nChannel<pSource->nChannels) {
           // remember the last write pointer (lwp)

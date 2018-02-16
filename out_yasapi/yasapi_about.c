@@ -163,11 +163,27 @@ void AboutDialog(Player *pPlayer, HINSTANCE hInstance, HWND hWndParent)
   );
 }
 #else // } {
+#ifdef WACUP_BUILD
+#define WA_UTILS_SIMPLE
+#include "../../loader/loader/utils.h"
+#endif
 void AboutDialog(HWND hWndParent)
 {
 	wchar_t message[4096] = {0};
-	StringCchPrintf(message,ARRAYSIZE(message),(LPWSTR)GetTextResource(IDR_ABOUT_TEXT),
-		TEXT(PLUGIN_VERSION), TEXT(YASAPI_VERSION),TEXT("Darren Owen aka DrO"), TEXT("2016"), TEXT(__DATE__));
+#ifdef WACUP_BUILD
+	LPWSTR text = GetTextResource(IDR_ABOUT_GZ);
+#else
+	LPWSTR text = GetTextResource(IDR_ABOUT_TEXT);
+#endif
+
+	StringCchPrintf(message, ARRAYSIZE(message), text, TEXT(PLUGIN_VERSION),
+					TEXT(YASAPI_VERSION), TEXT("Darren Owen aka DrO"),
+					TEXT("2016-2018"), TEXT(__DATE__));
 	MessageBoxW(hWndParent, message, (LPWSTR)GetLangString(IDS_ABOUT_TITLE), MB_OK);
+
+	if (text)
+	{
+		free(text);
+	}
 }
 #endif // }
