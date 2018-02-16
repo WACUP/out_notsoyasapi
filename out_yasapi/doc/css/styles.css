@@ -1,0 +1,30 @@
+body {
+  font-family: arial;
+  font-size: 14px;
+}
+td, th {
+  font-size: 14px;
+}
+td ul {
+ margin-bottom:0;
+ padding-left:1em;
+}
+.preamble {
+  font-size: 12px;
+}
+/* http://visakopu.net/misc/table-border-css/ */
+.history table, .history td {
+  border-color: #600;
+  border-style: solid;
+}
+.history table {
+  border-width: 0 0 1px 1px;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+.history td {
+  margin: 0;
+  padding: 4px;
+  border-width: 1px 1px 0 0;
+  background-color: #FFC;
+}

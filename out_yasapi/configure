@@ -1,0 +1,143 @@
+#!/bin/sh
+##
+ # configure
+ # Copyright (C) 2011 - 2013 Peter Belkner <pbelkner@snafu.de>
+ # 
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ # 
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ # 
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ #
+srcdir=`dirname "$0"|sed -e 's,/$,,g'`
+pfx=/usr/local
+tooldir='$(PWD)'
+reldir='release'
+enable_static='yes'
+enable_shared='yes'
+
+###############################################################################
+oss="linux mingw"
+
+for i in $oss; do
+  if test 1 -eq `uname|grep -i $i|wc -l`; then os=$i; fi
+done
+
+if [ 'x' = "x${os}" ]; then "Error: OS not supported."; exit 1; fi
+
+###############################################################################
+help() {
+  echo "Usage: $0 [OPTION]... [VAR=VALUE]..."
+  exit $1
+}
+
+extract() {
+  echo "$1"|sed -e "s/$2=//g"
+}
+
+extract_enable() {
+  case `echo "$1"|sed -e "s/--enable-$2//g"` in
+    '') echo "yes" ;;
+    =yes) echo "yes" ;;
+    =no) echo "no" ;;
+    *) help 1 ;;
+  esac
+}
+
+extract_disable() {
+  case `echo "$1"|sed -e "s/--disable-$2//g"` in
+    '') echo "no" ;;
+    =yes) echo "no" ;;
+    =no) echo "yes" ;;
+    *) help 1 ;;
+  esac
+}
+
+while test "$1" != ''; do
+  case $1 in
+    --help) help 0 ;;
+    --prefix=*) pfx=`extract "$1" '--prefix'` ;;
+    --bindir=*) bindir=`extract "$1" '--bindir'` ;;
+    --libdir=*) libdir=`extract "$1" '--libdir'` ;;
+    --includedir=*) includedir=`extract "$1" '--includedir'` ;;
+    --reldir=*) reldir=`extract "$1" '--reldir'` ;;
+    --host=*) host=`extract "$1" '--host'` ;;
+    --tooldir=*) tooldir=`extract "$1" '--tooldir'` ;;
+    --enable-static*) enable_static=`extract_enable "$1" 'static'` ;;
+    --disable-static*) enable_static=`extract_disable "$1" 'static'` ;;
+    --enable-shared*) enable_shared=`extract_enable "$1" 'shared'` ;;
+    --disable-shared*) enable_shared=`extract_disable "$1" 'shared'` ;;
+    --with-msvs=*) msvs=`extract "$1" '--with-msvs'` ;;
+    --with-mssdk=*) mssdk=`extract "$1" '--with-mssdk'` ;;
+    --with-wasdk=*) wasdk=`extract "$1" '--with-wasdk'` ;;
+    --with-winamp=*) winamp=`extract "$1" '--with-winamp'` ;;
+    CFLAGS=*) cflags=`extract "$1" 'CFLAGS'` ;;
+    CPPFLAGS=*) cppflags=`extract "$1" 'CPPFLAGS'` ;;
+    LDFLAGS=*) ldflags=`extract "$1" 'LDFLAGS'` ;;
+    LIBS=*) libs=`extract "$1" 'LIBS'` ;;
+    *) echo "Error: Unknow option: $1."; help 1 ;;
+  esac
+  shift
+done
+
+###############################################################################
+normpath() {
+  if test 'x' = "x$1" -o "." = "$1"; then
+    echo "$PWD"
+  else
+    echo "$1"|sed  -e "s,^\([^/]\),$PWD/\1,g"
+  fi
+}
+
+pfx=`normpath "$pfx"`
+srcdir=`normpath "$srcdir"`
+reldir=`normpath "$reldir"`
+
+###############################################################################
+pfxpath() {
+  if test 'x' = "x$1" -o "." = "$1"; then
+    echo "$pfx/$2"
+  else
+    normpath "$1"
+  fi 
+}
+
+bindir=`pfxpath "$bindir" bin`
+libdir=`pfxpath "$libdir" lib`
+includedir=`pfxpath "$includedir" include`
+
+###############################################################################
+rm -f config.mak
+touch config.mak
+
+echo "OS=$os" >> config.mak
+echo "PREFIX=$pfx" >> config.mak
+echo "SRCDIR=$srcdir" >> config.mak
+echo "BINDIR=$bindir" >> config.mak
+echo "LIBDIR=$libdir" >> config.mak
+echo "INCLUDEDIR=$includedir" >> config.mak
+echo "TOOLDIR=$tooldir" >> config.mak
+echo "RELDIR=$reldir" >> config.mak
+echo "MSVS=$msvs" >> config.mak
+if [ 'x' != "x$msvs" ]; then echo "MSVC=$msvs/VC" >> config.mak; fi
+echo "MSSDK=$mssdk" >> config.mak
+echo "WASDK=$wasdk" >> config.mak
+echo "WINAMP=$winamp" >> config.mak
+echo "HOST=$host" >> config.mak
+echo "ENABLE_STATIC=$enable_static" >> config.mak
+echo "ENABLE_SHARED=$enable_shared" >> config.mak
+if [ 'x' != "x$cflags" ]; then echo "CFLAGS+=$cflags" >> config.mak; fi
+if [ 'x' != "x$cppflags" ]; then echo "CPPFLAGS+=$cppflags" >> config.mak; fi
+if [ 'x' != "x$ldflags" ]; then echo "LDFLAGS+=$ldflags" >> config.mak; fi
+if [ 'x' != "x$libs" ]; then echo "LIBS+=$libs" >> config.mak; fi
+
+if test ! . -ef $srcdir; then
+  cp $srcdir/Makefile .
+fi

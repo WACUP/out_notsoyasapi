@@ -1,0 +1,828 @@
+<html>
+<head>
+<title>Yet Another (WA)SAPI Output Plugin for Winamp (YASAPI)</title>
+<meta name="keywords" content="EBU R128, loudness">
+<link rel="stylesheet" href="css/styles.css">
+<script type="text/javascript">
+if (0<=navigator.appVersion.indexOf("Win")) {
+  var pfx="win32"
+  var sep="\\"
+  var env=function(x) {
+    return "%"+x+"%"
+  }
+  var so=function(name,ver) {
+    return name+"-"+ver+".dll"
+  }
+}
+else {
+  var pfx="gtk3"
+  var sep="/"
+  var env=function(x) {
+    return "${"+x+"}"
+  }
+  var so=function(name,ver) {
+    return "lib"+name+".so."+ver
+  }
+}
+</script>
+</head>
+<body>
+<h2>Yet Another (WA)SAPI Output Plugin for Winamp (YASAPI)</h2>
+
+<div class="preamble">
+Copyright &copy; 2015-2016 by Peter Belkner
+(<a target="_blank" href="http://home.snafu.de/pbelkner/">http://home.snafu.de/pbelkner/</a>)
+
+<p>"Yet Another (WA)SAPI Output Plugin for Winamp YASAPI"
+(out_yasapi) is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+<p>"Yet Another (WA)SAPI Output Plugin for Winamp YASAPI"
+(out_yasapi) is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+<p>You should have received a copy of the GNU General Public License
+along with "Yet Another (WA)SAPI Output Plugin for Winamp YASAPI"
+(out_yasapi).  If not, see&nbsp;&nbsp;&lt;<a href="http://www.gnu.org/licenses/"
+    target="_blank">http://www.gnu.org/licenses/</a>&gt;.
+</div>
+
+<p><b>
+The "Yet Another (WA)SAPI Output Plugin for Winamp" (YASAPI) utilizes
+the "Windows Audio Session API" (WASAPI). WASAPI's <i>exclusive
+mode</i> for rendering audio is a native way on Windows to render audio
+undisturbed, similar to Steinberg's "Audio Stream Input/Output" (ASIO).
+The YASAPI output plugin may serve as a replacement for any other
+Winamp output plugin.
+</b>
+
+<p>PLEASE NOTE THAT THIS PROJECT IS AN EXPERIMENTAL RATHER THEN AN INDUSTRIAL
+STRENGTH EFFORT. THIS PROJECT IS <b>NOT</b> FOR YOU. IT IS FOR ME IN ORDER TO
+LEARN SOMETHING. IF THERE IS SOMETHING ALONG THE WAY I CAN DO FOR YOU THAT'S
+FINE.
+
+<p><table border="0" cellpadding="0" cellspacing="0">
+<tr>
+  <td style="text-align:right"><b>Home:</b></td>
+  <td>&nbsp;</td>
+  <td><a href="http://out-yasapi.sourceforge.net/" target="_blank">http://out-yasapi.sourceforge.net/</a></td>
+</tr>
+<tr>
+  <td style="text-align:right"><b>Project:</b></td>
+  <td>&nbsp;</td>
+  <td><a href="http://sourceforge.net/projects/out-yasapi/" target="_blank">http://sourceforge.net/projects/out-yasapi/</a></td>
+</tr>
+<tr>
+  <td style="text-align:right"><b>Download:</b></td>
+  <td>&nbsp;</td>
+  <td><a href="http://sourceforge.net/projects/out-yasapi/files/out-yasapi/" target="_blank">http://sourceforge.net/projects/out-yasapi/files/out-yasapi/</a></td>
+</tr>
+<tr>
+  <td style="text-align:right"><b>Winamp Forum:</b></td>
+  <td>&nbsp;</td>
+  <td><a href="http://forums.winamp.com/showthread.php?t=380396" target="_blank">http://forums.winamp.com/showthread.php?t=380396</a></td>
+</tr>
+<tr>
+  <td>&nbsp;</td>
+</tr>
+<tr>
+  <td style="text-align:right"><b>Input Plugin:</b></td>
+  <td>&nbsp;</td>
+  <td><a href="http://in-ffsox.sourceforge.net/" target="_blank">http://in-ffsox.sourceforge.net/</a></td>
+</tr>
+</table>
+
+<h3>Content</h3>
+<ol>
+  <li><a href="#hist">History</a>
+  <li><a href="#intro">Introduction</a>
+  <li><a href="#implement">Implementation</a>
+  <li><a href="#config">Configuration</a>
+  <li><a href="#debug">Debug</a>
+  <li><a href="#build">Compiling from Source</a>
+</ol>
+
+<a name="hist"><h3>1. History</h3>
+
+<p><div class="history"><table style="width:100%">
+<tr>
+  <td valign="top">2016-07-30</td>
+  <td valign="top">1.7.24</td>
+  <td valign="top"><ul>
+    <li>Updated my build machine from Vista to Windows 7
+      (good bye Vista users).
+    <li>Hence the new version is build using MSVC 11 / Windows SDK v7.1A
+      (instead of the respective MSVC 10 / Windows SDK v7.0A under Vista.)
+    <li>Dropped the SSE2 versions because by using MSVC 11 they make no
+      sense any longer.
+    <li>As usual, some code clean-up.
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2016-07-03</td>
+  <td valign="top">1.7.18</td>
+  <td valign="top"><ul>
+    <li>Some final code clean-up before moving on.
+    <li>Development ist stalled again.
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2016-06-30</td>
+  <td valign="top">1.7.17</td>
+  <td valign="top"><ul>
+    <li>Added the following personal statement to the <i>About</i>
+      dialog and to the projects home page at
+      <a target="_blank" href="http://out-yasapi.sourceforge.net/">http://out-yasapi.sourceforge.net/</a>:
+    <li>PLEASE NOTE THAT THIS PROJECT IS AN EXPERIMENTAL RATHER
+      THEN AN INDUSTRIAL STRENGTH EFFORT. THIS PROJECT IS <b>NOT</b> FOR
+      YOU. IT IS FOR ME IN ORDER TO LEARN SOMETHING. IF THERE IS SOMETHING
+      ALONG THE WAY I CAN DO FOR YOU THAT'S FINE.
+    </ul></td>
+</tr>
+<tr>
+  <td valign="top">2016-06-30</td>
+  <td valign="top">1.7.15</td>
+  <td valign="top">Fixed several bugs regarding the implementation of the
+    device specific option <i>Extend to 24 Bit</i>. This option is
+    apperently <i>not</i> equivalent to <i>Winamp -> Options -> Preferences
+    -> Playback -> Playback -> Allow 24bit</i> because the latter
+    reduces bit deps to 16 bit if un-checked otherwise to 24 bit. Bit depth is
+    never extended to 24 bit. YASAPI extends bit depth to 24 bit those
+    enabling playback on devices which does support 24 bit WASAPI playback
+    but not 16 bit WASAPI playback.</td>
+</tr>
+<tr>
+  <td valign="top">2016-06-27</td>
+  <td valign="top">1.7.10</td>
+  <td valign="top">Added a device specific option in order to define
+    whether YASAPI should promote 8/16 bit input to 24 bit. This is not
+    really necessary because the same effect can be achieved by
+    enabeling <i>Winamp -> Options -> Preferences -> Playback
+    -> Playback -> Allow 24bit</i> but is provided on user request</td>
+</tr>
+<tr>
+  <td valign="top">2016-06-23</td>
+  <td valign="top">1.7.4</td>
+  <td valign="top"><ul>
+  <li>Factored out a framework for simialr plug-ins.
+  <li>Connect to the device before continue playing after <i>flush</i>
+    when in <i>underflow</i>.
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2016-06-21</td>
+  <td valign="top">1.7.1</td>
+  <td valign="top">Improved migrating the plug-in from an un-plugged default
+    device to the new default device when playing.</td>
+</tr>
+<tr>
+  <td valign="top">2016-06-20</td>
+  <td valign="top">1.7.0</td>
+  <td valign="top">(Limited) support for un-plugging the default device
+    (as configured via <i>System control</i>) when playing.</td>
+</tr>
+<tr>
+  <td valign="top">2016-06-19</td>
+  <td valign="top">1.6.14</td>
+  <td valign="top"><ul>
+  <li>Disconnect on <i>pause</i> and <i>undeflow</i> when option
+    <i>Disconnect</i> is choosen.
+  <li>Removed timer for disconnecting gapless sessions because it is not
+    needed any longer.
+  <li>Fixed crashing of the configuration dialog in case the device
+    selected in the previous session has meanwhile become invalid.
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2016-06-14</td>
+  <td valign="top">1.6.11</td>
+  <td valign="top">Fixed combining <i>pause</i> with <i>flush</i> (skip).</td>
+</tr>
+<tr>
+  <td valign="top">2016-06-13</td>
+  <td valign="top">1.6.9</td>
+  <td valign="top"><ul>
+  <li>For gapless mode it is configurable after which time interval the
+    connection should be released when in idle state.
+  <li>Reworked the tracing facilities of the debug version.
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2016-06-12</td>
+  <td valign="top">1.6.8</td>
+  <td valign="top">For the debug version it may be configured that the
+    trace is written to a file in the <tt>AppData/Winamp/Plugin</tt>
+    directory rather then dispalying it in a console.</td>
+</tr>
+<tr>
+  <td valign="top">2016-06-12</td>
+  <td valign="top">1.6.7</td>
+  <td valign="top">In gapless mode, when a playlist ends the device is
+    not released. It is waiting for the next track to start. This situation
+    is un-distinguishable from an ordinary underflow situation and hence
+    playback ends in an undeflow state. This may cause trouble when in
+    such a situation the user decides to change the output plugin (via
+    configuration). This new version applys to exact this situation:
+    If in case the user changes the output plugin and this plugin
+    is found in an underflow state this plugin is closed (and hence the
+    device released).</td>
+</tr>
+<tr>
+  <td valign="top">2016-06-12</td>
+  <td valign="top">1.6.6</td>
+  <td valign="top">Fixes regrding gapless playback.</td>
+</tr>
+<tr>
+  <td valign="top">2016-06-12</td>
+  <td valign="top">1.6.5</td>
+  <td valign="top"><ul>
+  <li>Stopping player when Winamp closes and not already stopped
+    (needed for <i>gapless</i> mode).
+  <li>Guarding against locking zero sized device buffers.
+  <li>Reworked <i>About</i> dialog.
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2016-05-29</td>
+  <td valign="top">1.6.4</td>
+  <td valign="top">Added a common option in order to define whether 4, 6, or 8 channels should
+    be interpreted as qadrophnic (3.1), 5.1, or 7.1 (disabled) or sorround (3.1 sorround),
+    5.1 sorround, or 7.1 sorround (enabled), respectively.</td>
+</tr>
+<tr>
+  <td valign="top">2016-05-26</td>
+  <td valign="top">1.6.3</td>
+  <td valign="top"><ul>
+  <li>Fixed <tt>AUDCLNT_E_BUFFER_SIZE_ERROR</tt> appearing in
+    eclusive/pull mode.
+  <li>Fixed a potential forever-loop which may have appeared at
+    the end of a track.
+  <li>Fixed crashing as client of the
+  <a target="_blank" href="https://sourceforge.net/projects/winampmatrixmix/">WinampMatrixMixer output plugin</a>.
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2016-05-22</td>
+  <td valign="top">1.6.0</td>
+  <td valign="top"><ul>
+  <li>Gapless playback.
+  <li>A common option for switching on/off gapless playback (disabled by
+    default).
+  <li>A device option for choosing whether the time offset for gapless playback
+    is maintained as a 64-bit integer value (representing the playback
+    position) or as a 64-bit floating point value (representing the quotient
+    taken from the playback position and a frequency). For a deeper
+    understanding regarding position and frequency values you may refer to
+    the documentation of the
+    <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370889%28v=vs.85%29.aspx">IAudioClock::GetPosition()</a>
+    and
+    <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370887%28v=vs.85%29.aspx">IAudioClock::GetFrequency()</a>
+    methods. We feel that as long as a constant frequency value can be
+    assumed choosing the time offset as beeing  maintained as a 64-bit integer
+    value is preferable.
+  <li>A debug version for SSE2.
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2016-05-17</td>
+  <td valign="top">1.5.4</td>
+  <td valign="top">Solved the dead-lock caused by saving the
+    configuration.</td>
+</tr>
+<tr>
+  <td valign="top">2016-05-17</td>
+  <td valign="top">1.5.1-<br>1.5.3</td>
+  <td valign="top">Improved dealing with draining the ring buffer and
+    end of track (eot).</td>
+</tr>
+<tr>
+  <td valign="top">2016-05-16</td>
+  <td valign="top">1.5.0</td>
+  <td valign="top">
+  <ul>
+    <li>The <i>Default Device</i> is listed in the respective configuration dialog's
+      drop down box as an option to choose.
+    <li>In case the <i>Default Device</i> is choosen from the drop down box (and saved), 
+    <ul>
+      <li>the configuration is saved for the physical device which was configured at
+        the time (<i>configuration time</i>)  as <i>Default Device</i> from
+        Window's <i>System Control</i> when the configuration was loaded to the dialog,
+      <li>each time a new track starts, the physical device configured at this time
+        (<i>play time</i>) as <i>Default Device</i> from Window's <i>System Control</i>
+        is used to play the track (please note that this device may differ from the one
+        configured at <i>configuration time</i>).
+    </ul>
+  </ul>
+  Please note that this is a complete re-write. Everything was thrown into peaces,
+  something into larger building blocks and something into dust. The larger building
+  blocks, which greatly remained intakt, could be re-used. The dust had to be thrown
+  away and substituted by a new development. Please be careful in using this new
+  version, thoroughly test it and re-configure it, if needed.
+  </td>
+</tr>
+<tr>
+  <td valign="top">2016-04-09</td>
+  <td valign="top">1.0.7</td>
+  <td valign="top">In order to have YASAPI in a well defined state from the very first beginning,
+  <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370877%28v=vs.85%29.aspx">reset</a> the
+  <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370865%28v=vs.85%29.aspx">IAudioClient</a>
+  interface at start-up.</td>
+</tr>
+<tr>
+  <td valign="top">2016-01-13</td>
+  <td valign="top">1.0.6</td>
+  <td valign="top"><ul>
+    <li>Detect end of track by respective "isplaying" request.
+    <li>Fixed bug regarding synchronization of <i>Share Mode</i> and <i>Strategy</i> options.
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2016-01-09</td>
+  <td valign="top">1.0.0</td>
+  <td valign="top"><ul>
+    <li>Some minor code clean-up.
+    <li>Further development is stalled because according to the Winamp team they have developed a native WASAPI output plugin:
+      "Benski has coded a new out_wasapi plug-in"
+      (<a target="_blank" href="http://forums.winamp.com/showthread.php?p=3045974">http://forums.winamp.com/showthread.php?p=3045974</a>),
+      "it'll probably be included with 5.8 beta"
+      (<a target="_blank" href="http://forums.winamp.com/showthread.php?p=3045979">http://forums.winamp.com/showthread.php?p=3045979</a>).
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2016-01-03</td>
+  <td valign="top">0.16.0</td>
+  <td valign="top"><ul>
+    <li>Guarded against writing when paused.
+    <li>Stopping audio client when underflow.
+    <li>From the configuration dialog, dropped the device list page in favour of a combobox on top of the dialog.
+    <li>Slightly adapted default values.
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2015-12-21</td>
+  <td valign="top">0.15.0</td>
+  <td valign="top">Brought back, as an option, a call to
+    <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370876%28v=vs.85%29.aspx">IAudioClient::IsFormatSupported</a>
+    which is disabled by default.</td>
+</tr>
+<tr>
+  <td valign="top">2015-12-10</td>
+  <td valign="top">0.14.1</td>
+  <td valign="top">Increased default ring buffer size to 2.5.</td>
+</tr>
+<tr>
+  <td valign="top">2015-12-08</td>
+  <td valign="top">0.14.0</td>
+  <td valign="top"><ul>
+  <li>Introduced an (by default enabled) option "Write Block" that in case the plugin's "write" method delivers more data than actually could be written to the ring buffer it should block and wait until enough data are consumed from it rather then returning immediately.
+  <li>For automatic mode, removed restrictions for switching from exclusive to shared mode.
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2015-12-06</td>
+  <td valign="top">0.12.0</td>
+  <td valign="top">Fixed interplay with the
+    <a target="_blank" href="http://slickproductions.org/notsofatso.php">"NotSo Fatso" input plugin</a>.</td>
+</tr>
+<tr>
+  <td valign="top">2015-12-04</td>
+  <td valign="top">0.11.0</td>
+  <td valign="top"><ul>
+    <li>Reorganized the configuration dialog:
+  <ul>
+  <li>Focused again on the most important two (per device) parameters "Mode" (share/exclusive) and "Strategy" (push/pull).
+  <li>Duplicated those two parameters from the "Device Options" page to the dialog's top-region.
+  <li>Moved the former top-region parameters to a new "General" tab-control page.
+  <li>Added a "Store" button with similar functionality as the "OK" button except that it doesn't close the dialog.
+  </ul>
+  <li>Fixed several bugs.
+    </ul></td>
+</tr>
+<tr>
+  <td valign="top">2015-11-29</td>
+  <td valign="top">0.10.0</td>
+  <td valign="top"><ul>
+    <li>Reorganized configuration of device period.
+    <li>Added progess bars to the configuration dialog in order to visualize the load of the
+      ring and the shared buffers.
+    <li>Added an option for dis-/enabling the visualization.
+    <li>Added an (experimental) function for balancing the shared buffer.
+    <li>Added some more tracing to the debug version.
+    <li>Split the verbose debugging into verbose level 1 ond and level 2 (even more verbose).
+    </ul></td>
+</tr>
+<tr>
+  <td valign="top">2015-11-23</td>
+  <td valign="top">0.9.1</td>
+  <td valign="top"><ul>
+    <li>Added an option for configuring whether calculation of the buffer sizes should be based
+      on the default or on the minimum device period as proposed by WASAPI. Made default device
+      period the default. So long the calculation was silently based on the minimum device period.
+    <li>Added tooltips to the configuration dialog's controls.
+    </ul></td>
+</tr>
+<tr>
+  <td valign="top">2015-11-22</td>
+  <td valign="top">0.9.0</td>
+  <td valign="top"><ul>
+    <li>Complete re-write based on a new architecture.
+    The basic idea is to serialize all requests and dispatch them into just one worker thread.
+    In particular the serialization takes into account asynchronous requests resulting from the WASAPI device.
+    <li>Round up ("ceil") the size of the ring buffer to the next multiple of Winamp's packet size (576 samples).
+    <li>Special treatment of double buffering, i.e. pull in exclusive mode.
+    <li>Additional options to configure the debug version.
+    </ul>
+    <b>Note:</b>&nbsp;&nbsp;You should re-configure at least the buffer sizes.
+    As a rule of thumb all buffer sizes should be <i>1.0</i> except the ring buffer's size which
+    should be just a small amount greater then <i>1.0.</i></td>
+</tr>
+<tr>
+  <td valign="top">2015-11-02</td>
+  <td valign="top">0.8.3</td>
+  <td valign="top"><ul>
+    <li>Improved thread synchronization during start-up.
+    <li>Fixed a bug regarding recovery from error <tt>AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED</tt>
+      of the <tt>IAudioClient::Initialize()</tt> method.
+    </ul></td>
+</tr>
+<tr>
+  <td valign="top">2015-10-31</td>
+  <td valign="top">0.8.2</td>
+  <td valign="top"><ul>
+    <li>Implemented recovery from error <tt>AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED</tt> of the <tt>IAudioClient::Initialize()</tt>
+      method (cf. remarks section from
+      <a target="blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370875%28v=vs.85%29.aspx">MSDN documentation</a>).
+    <li>Added support for
+      <a target="blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd390971%28v=vs.85%29.aspx">KSAUDIO_SPEAKER_7POINT1</a>.
+    </ul></td>
+</tr>
+<tr>
+  <td valign="top">2015-10-30</td>
+  <td valign="top">0.8.1</td>
+  <td valign="top">New share mode "automatic" which is similar to exclusive except
+    that it falls back to shared in case exclusive fails.</td>
+</tr>
+<tr>
+  <td valign="top">2015-10-29</td>
+  <td valign="top">0.8.0</td>
+  <td valign="top"><ul>
+    <li>Improved synchronization with visualizations and video because of<ul>
+      <li>corrected calculation of max latency and
+      <li>corrected calculation of "written time".</ul>
+    <li>Dropped "written time" options.
+    <li>Dropped the call to 
+      <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370876%28v=vs.85%29.aspx">IAudioClient::IsFormatSupported()</a>.
+    <li>New device specific options "Auto Convert PCM" and "SRC Default Quality". These Options are only available in shared mode.
+      They correspond to the
+      <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370791%28v=vs.85%29.aspx">AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM</a>
+      and
+      <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370791%28v=vs.85%29.aspx">AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY</a>
+      flags, respectively, of the
+      <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370875%28v=vs.85%29.aspx">IAudioClient::Initialize()</a> method
+      (regarding the <tt>AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY</tt> flag cf. also
+      <a target="_blank" href="http://tri-mide22.rssing.com/browser.php?indx=12246968&item=896">here</a>).
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2015-10-26</td>
+  <td valign="top">0.7.1</td>
+  <td valign="top"><ul>
+    <li>Automatic re-sampling in shared mode seems to work now.
+    <li>Added an "Exit Winamp" option to the error message dialog box.
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2015-10-26</td>
+  <td valign="top">0.7.0</td>
+  <td valign="top"><ul>
+    <li>Support for multiple devices.
+    <li>Configuration options per device.
+    <li>Various fixes.
+  </ul>
+  <b>Note:</b> Prior configuration for the default device may be lost. Please re-configure.</td>
+</tr>
+<tr>
+  <td valign="top">2015-10-03</td>
+  <td valign="top">0.6.1</td>
+  <td valign="top">Corrected a silly bug in testing for share mode.</td>
+</tr>
+<tr>
+  <td valign="top">2015-10-03</td>
+  <td valign="top">0.6.0</td>
+  <td valign="top">Add <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370791%28v=vs.85%29.aspx">AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM</a> flag when in shared mode (doesn't have any effect on Vista).</td>
+</tr>
+<tr>
+  <td valign="top">2015-02-14</td>
+  <td valign="top">0.5.0</td>
+  <td valign="top"><ul>
+    <li>Utilization of the
+    <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370881%28v=vs.85%29.aspx">IAudioClock</a>
+    interface instead of the
+    <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms724408%28v=vs.85%29.aspx">GetTickCount()</a>
+    or the
+    <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd757629%28v=vs.85%29.aspx">timeGetTime()</a>
+    functions for reporting the elapsed time to Winamp.
+    <li>Option for controlling whether "written time" should be calculated.
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2015-01-30</td>
+  <td valign="top">0.4.0</td>
+  <td valign="top"><ul>
+    <li>Option for treating mono as stero (default switched on).
+    <li>New default options for buffer configuration.
+    <li>Some fixes.
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2015-01-25</td>
+  <td valign="top">0.3.0</td>
+  <td valign="top"><ul>
+    <li>Support for pull strategy.
+    <li>Support for volume control.
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2015-01-24</td>
+  <td valign="top">0.2.1</td>
+  <td valign="top"><ul>
+    <li>Component Object Model (COM) error messages are displayed
+      with the file and the line number where they occur.
+    <li>Compiled with shared <tt>"MSVCR110.DLL"</tt>
+    (instead of static as before).
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2015-01-24</td>
+  <td valign="top">0.2.0</td>
+  <td valign="top"><ul>
+    <li>Improved configuration for buffer sizes.
+    <li>Provided a SSE2 version.
+    <li>Compiled with the C compiler from "Visual Studio 10 Express"
+    (instead of "Visual Studio 9 Express" as before).
+  </ul></td>
+</tr>
+<tr>
+  <td valign="top">2015-01-23</td>
+  <td valign="top">0.1.0</td>
+  <td valign="top">Initial release.</td>
+</tr>
+</table></div>
+
+<a name="intro"><h3>2. Introduction</h3>
+
+<p>According to Microsoft:
+
+<blockquote cite="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370784%28v=vs.85%29.aspx">
+The Core Audio APIs were introduced in Windows Vista. This is a new set of user-mode audio components provides client applications with improved audio capabilities. These capabilities include the following:
+<ul>
+<li>Low-latency, glitch-resilient audio streaming.
+<li>Improved reliability (many audio functions have moved from kernel mode to user mode).
+<li>Improved security (processing of protected audio content takes place in a secure, lower-privilege process).
+<li>Assignment of particular system-wide roles (console, multimedia, and communications) to individual audio devices.
+<li>Software abstraction of the audio endpoint devices (for example, speakers, headphones, and microphones) that the user manipulates directly.
+</ul>
+<p><a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370784%28v=vs.85%29.aspx">https://msdn.microsoft.com/en-us/library/windows/desktop/dd370784%28v=vs.85%29.aspx</a>
+</blockquote>
+
+<p>Of special interest is that there is an <i>exclusive mode</i> for
+rendering audio, i.e. there is a mode where an application has 
+exclusive access to the audio device without being disturbed by
+third parties.
+
+<p>The aim of the YASAPI plugin is to make the WASAPI exclusive mode
+for audio rendering available to the users of Winamp.
+
+<p>The name of the plugin was choosen because there are already at
+least two WASAPI output plugins for Winamp:
+
+<ul>
+<li><a target="_blank" href="http://maiko.elementfx.com/">Maiko WASAPI output plugin</a>
+<li><a target="_blank" href="http://adionsoft.net/winampwasapi/">adionSoft Winamp WASAPI Output Plugin</a>
+</ul>
+
+<a name="implement"><h3>3. Implementation</h3>
+
+<p>There are two sides the YASAPI plugin has to take into account:
+<ul>
+<li>the WASAPI side, and
+<li>the Winamp side.
+</ul>
+
+<p>The implementation on the WASAPI side follows along the lines of an
+<a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd316756%28v=vs.85%29.aspx">example</a>
+provided by Microsoft. The startegy shown in this example is not only
+applicable for shared mode streams but also for exclusive mode ones,
+i.e.  not the <i>share mode</i> should be emphasized but what is known
+as the <i>push model</i>. There is also an
+<a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370844%28v=vs.85%29.aspx">example</a>
+demonstrating the <i>pull model</i> in conjunction with the
+<i>exclusive mode</i>. In that sence there are four strategies:
+
+<ul>
+<li>push exclusive,
+<li>push shared,
+<li>plull exclusive, and
+<li>plull shared.
+</ul>
+
+<p>The YASAPI plugin implements the first two strategies, i.e. the ones
+based on the push model.
+
+<p><a name="push">The push model, in principle, works as follows:
+
+<ol>
+<li>Query the size of the buffer shared with the audio device.
+<li>Fill in completety the buffer shared with the audio device.
+<li>Start playing.
+<li>Loop until the track is played:
+<ol>
+  <li>Sleep half of the time corresponding to the size of the buffer
+    shared with the audio device.
+  <li>Into the buffer shared with the audio device, fill in the gap which
+    was growing free by playing during sleep.
+</ol>
+<li>Sleep until the possibly remaining filled rest of the buffer shared
+  with the audio device was played.
+<li>Stop playing.
+</ol>
+</ol>
+
+<p>But the YASAPI plugin not only has to take into account the
+WASAPI side (the loop consisting of sleeping and writing to the
+audio device) but also the Winamp side because Winamp provides
+the audio samples which should be played in an completely
+unpredictable way.
+
+<p>The YASAPI plugin decouples the two sides by means of a
+<a target="_blank" href="http://en.wikipedia.org/wiki/Circular_buffer">ring or circular buffer</a>.
+That way,
+<ul>
+<li>Winamp can luckily write to the ring buffer whenever it likes
+without caring about WASAPI, and
+<li>WASAPI can luckily read from the ring buffer and write to the
+  audio device wehenever it likes without caring about Winamp.
+</ul>
+
+<p>According to step 2 of the push model sketched <a href="#push">above</a>,
+it shoud become clear that the ring buffer should be at least as
+large (or larger) as the buffer the plugin's WASAPI component shares
+with the audio device.
+
+<a name="config"><h3>4. Configuration</h3>
+
+<p>The YASAPI plugin comes with a configuration dialog which is described
+in the following. The dialog's top region presents the two
+most important parameters "Mode" (exclusive or share) and "Strategy" (push or pull)
+
+<p>Below those two parameters you find a tab-control consisting of four pages,
+<ul>
+<li>a page for setting general (i.e. non device dependent) parameters,
+<li>a page for choosing the device, and
+<li>two pages for setting per device parameters.
+</ul>
+
+<p>The tab-control's first page looks as follows:
+
+<center><img src="images/config-1.jpg"></center>
+
+<p>It let's you configure
+
+<ul>
+<li>whether mono should be treated as stereo (i.e. the one mono channel
+  should be duplicated),
+<li>whether Winamp's volume control should be enabled, and
+<li>whether the
+<a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370881%28v=vs.85%29.aspx">IAudioClock</a>
+interface (WASAPI) or the
+<a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd370881%28v=vs.85%29.aspx">GetTickCount</a>
+function (System) should be used for synchronizing with Winamp.
+</ul>
+
+<p>On the next page there are the following per device options:
+
+<center><img src="images/config-2.jpg"></center>
+
+<ul>
+<li>the share mode, either exlusive, shared or automatic (automatic
+is similar to exclusive, except in case exclusive fails it falls back
+to shared), in case shared or automatic mode is choosen
+<ul>
+  <li>whether the audio should be automatically re-sampled,
+  <li>whether a more accurate re-sampling algorithmen should be applied, and finally
+</ul>
+<li>the strategy, either push or pull.
+</ul>
+
+<p>On the final page you can configure the following per device buffer sizes:
+
+<center><img src="images/config-3.jpg"></center>
+
+<ul>
+<li>the duration of the buffer shared with the audio device (device period),
+<li>the size of the ring buffer which should be a (small) multiple
+  of the buffer  the plugin's WASAPI component shares with the audio device, and
+<li>the number of samples which should be available in the ring buffer before
+  playing starts.
+</ul>
+
+<p>From the above <a href="#push">sketch of the push model</a> it shold be clear
+that the following relation holds (which is enforced by the configuration dialog):
+<blockquote>
+minimum size of the buffer shared with the device (provided by WASAPI)
+&lt;= size of buffer shared with the device
+&lt;= number of samples in the ring buffer before start playing
+&lt;= size of ring buffer
+</blockquote>
+As a rule of thumb all buffer sizes should be <i>1.0</i> except the ring buffer's
+size which should be just a small amount greater then <i>1.0.</i>
+
+<p>Please note that no option takes effect before hitting the OK button.
+
+<a name="debug"><h3>5. Debug</h3>
+
+<p>In case something went wrong you may be interested in some more
+information. In order to utilize this there is a debug version
+of the plugin (distinguished by a lower case "d" at the and of
+the name, i.e. <tt>out_yasapi<i>d</i>.dll</tt>) available from the
+download site.
+
+<p>Do the following:
+<ol>
+<li>Close Winamp.
+<li>Copy <tt>"out_yasapi-debug.dll"</tt> to Winamp's <tt>"Plugin"</tt> folder.
+<li>Start Winamp.
+<li>A console window should pop up tracing the initialiazation
+  of the debug YASAPI plugin.
+<li>From Winamps's preferences dialog choose <tt>"out_yasapi-debug.dll"</tt>
+  as output plugin.
+<li>When playing tracks in Winamp, the debug YASAPI plugin traces
+  initialization and cleanup of each track.
+<li>When shutting down Winamp, the cleanup of the YASAPI debug
+  plugin is traced.
+<li>After closing Winamp, the console window remains visible for
+  another 5 s before vanishing.
+</ol>
+
+<center>
+<p><img src="images/debug.jpg">
+<p>The debug console.
+</center>
+
+<p>You can get rid of the debug console by choosing the respective
+"Console" option from the debug YASAPI plugin's configuration dialog:
+
+<p><center><img src="images/config-debug.jpg"></center>
+
+<p>The following debug options can be configured:
+<ul>
+<li>whether the debug console is switched <i>Off</i> or on and
+  displaying a trace in <i>Default</i> or <i>Verbose</i> mode, and
+<li>how long closing the debug console should be delayed from
+  closing Winamp.
+</ul>
+
+<a name="build"><h3>5. Compiling from Source</h3>
+<h4>5.1 Prerequisits</h4>
+<p>A big "thank you" goes out
+<ul>
+<li>to the good engeneers at Microsoft for managing after all these years
+  to ship an updated version of their command line <tt>C</tt> compiler
+  <tt>cl.exe</tt>, these days buried deep inside the "visual experience"
+  (as far as I understand <tt>cl.exe</tt> is not needed by the "visual
+  experience" hyped by the marketing staff at M$ anyway), and
+<li>to Alexey Pavlov et. al. for providing the great <i>MSys2</i> environment
+  supporting to build native Windows applications in an UNIX like style.
+</ul>
+<p>The following prerequisites are needed in order to build <i>YASAPI</i>
+  from the sources:
+<ul>
+  <li><i>Microsoft Visual C</i>
+  <li><i>Microsoft Windows SDK</i>
+  <li>You get both, <i>Microsoft Visual C</i>, and <i>Microsoft Windows SDK</i>,
+    in one batch by installing 
+    <a target="_blank" href="https://www.visualstudio.com/en-us/news/vs2013-community-vs.aspx">Visual Studio Community 2013</a>
+    (That's what I did: Please note that it is best to disable all options
+    before installation. That may be not true for <i>Visual Studio Community 2015</i>,
+    which seems to install by default all the "visual experience" bload, but not
+    the traditional <tt>C</tt> stuff, which you first have to opt for.)
+  <li>MSys2: For installation refer to
+  <a target="_blank" href="http://msys2.github.io/">http://msys2.github.io/</a>
+  and
+  <a target="_blank" href="https://sourceforge.net/p/msys2/wiki/MSYS2%20installation/">https://sourceforge.net/p/msys2/wiki/MSYS2%20installation/</a>)
+  <li>Inside <i>Msys2</i>:
+  <ul>
+  <li><tt>wget</tt> (command for installation:
+    <tt>pacman -S wget</tt>)
+  <li><tt>tar</tt> (command for installation:
+    <tt>pacman -S tar</tt>)
+  <li><tt>make</tt> (command for installing:
+    <tt>pacman -S make</tt>)
+  </ul>
+</ul>
+
+</body>
+</html>

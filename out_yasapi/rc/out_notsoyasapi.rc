@@ -1,0 +1,299 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.K.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CONFIG DIALOGEX 0, 0, 223, 302
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CONTROLPARENT
+CAPTION "Not So YASAPI Output Settings"
+FONT 8, "Ms Shell Dlg", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "Output Device",IDC_STATIC,5,3,212,64
+    RTEXT           "Device:",0,10,16,45,9
+    COMBOBOX        IDC_COMBOBOX_DEVICE,59,14,151,100,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    RTEXT           "Share Mode:",IDC_STATIC_LABEL_SHAREMODE,10,33,45,8
+    COMBOBOX        IDC_COMBOBOX_SHAREMODE,59,31,70,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    RTEXT           "Strategy:",IDC_STATIC_LABEL_SHAREMODE1,10,50,45,8
+    COMBOBOX        IDC_COMBOBOX_PULL,59,48,70,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    RTEXT           "Ring Buffer:",IDC_STATIC_RING,9,84,50,9
+    CONTROL         "",IDC_PROGRESSBAR_RING,"msctls_progress32",0x0,63,82,147,12
+    RTEXT           "Shared Buffer:",IDC_STATIC_SHARED,9,101,50,9
+    CONTROL         "",IDC_PROGRESSBAR_SHARED,"msctls_progress32",0x0,63,99,147,12
+    CONTROL         "",IDC_TABCONTROL,"SysTabControl32",WS_TABSTOP,5,123,212,156
+    PUSHBUTTON      "Default",IDC_BUTTON_DEFAULT,5,283,50,14
+    PUSHBUTTON      "Save",IDC_BUTTON_SAVE,59,283,50,14
+    DEFPUSHBUTTON   "OK",IDOK,113,283,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,167,283,50,14
+    GROUPBOX        "Buffer Usage",IDC_STATIC,5,70,212,48
+END
+
+IDD_PAGE_BUFFERS DIALOGEX 0, 0, 215, 140
+STYLE DS_SETFONT | DS_3DLOOK | DS_CONTROL | DS_CENTER | WS_CHILD
+FONT 8, "Ms Shell Dlg", 0, 0, 0x0
+BEGIN
+    RTEXT           "Device Period:",IDC_STATIC_LABEL_DEVICE_PERIOD,1,7,51,8
+    COMBOBOX        IDC_COMBOBOX_DEVICE_PERIOD,57,5,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    CONTROL         "",IDC_SLIDER_SHARE_SIZE,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,1,20,213,15
+    LTEXT           "2.00 X minimum / default",IDC_STATIC_SHARE_SIZE,6,38,100,9
+    CONTROL         "",IDC_SLIDER_RING_SIZE,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,1,54,213,15
+    LTEXT           "Ring buffer size: 2.00 X size of shared buffer",IDC_STATIC_RING_SIZE,5,72,130,9
+    CONTROL         "",IDC_SLIDER_RING_FILL,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,1,83,213,15
+    LTEXT           "Start Playing: 2.00 X size of shared buffer",IDC_STATIC_RING_FILL,5,102,130,9
+END
+
+IDD_PAGE_COMMON DIALOGEX 0, 0, 215, 140
+STYLE DS_SETFONT | DS_3DLOOK | DS_CONTROL | DS_CENTER | WS_CHILD
+FONT 8, "Ms Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "Enable volume control",IDC_CHECKBOX_VOLUME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,5,90,8
+    CONTROL         "Enable gapless playback",IDC_CHECKBOX_GAPLESS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,19,110,8
+    CONTROL         "Automatically disconnect when idle",IDC_CHECKBOX_DISCONNECT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,32,140,8
+    CONTROL         "Convert mono input to stereo",IDC_CHECKBOX_MONO2STEREO,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,45,130,8
+    CONTROL         "Enable surround support",IDC_CHECKBOX_SORROUND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,59,110,8
+    CONTROL         "Check format is supported on initialisation",IDC_CHECKBOX_FORMAT_SUPPORTED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,72,161,8
+    CONTROL         "Show buffer usage",IDC_CHECKBOX_VISUALIZATION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,85,100,8
+    RTEXT           "Clock:",IDC_STATIC_LABEL_CLOCK,13,100,21,9
+    COMBOBOX        IDC_COMBOBOX_CLOCK,42,98,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    RTEXT           "Measure Time:",IDC_STATIC_LABEL_TIME_TAG,13,116,48,9
+    CONTROL         "Position (integer)",IDC_RADIOBUTTON_TIME_POSITION,
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,71,116,68,8
+    CONTROL         "Position/Frequency (floating point)",IDC_RADIOBUTTON_TIME_TIME,
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,71,128,123,8
+    RTEXT           "Debug:",IDC_STATIC_LABEL_DEBUG,283,123,24,9,NOT WS_VISIBLE
+    COMBOBOX        IDC_COMBOBOX_DEBUG,315,122,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | NOT WS_VISIBLE | WS_TABSTOP
+    CONTROL         "File",IDC_CHECKBOX_FILE,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,381,123,27,8
+    RTEXT           "Closing Console:",IDC_STATIC_LABEL_SLEEP,415,123,53,9,NOT WS_VISIBLE
+    COMBOBOX        IDC_COMBOBOX_SLEEP,473,122,39,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | NOT WS_VISIBLE | WS_TABSTOP
+END
+
+IDD_PAGE_DEVICE DIALOGEX 0, 0, 215, 140
+STYLE DS_SETFONT | DS_3DLOOK | DS_CONTROL | DS_CENTER | WS_CHILD
+FONT 8, "Ms Shell Dlg", 0, 0, 0x0
+BEGIN
+    RTEXT           "Share Mode:",IDC_STATIC_LABEL_SHAREMODE,4,7,42,8
+    COMBOBOX        IDC_COMBOBOX_SHAREMODE,51,5,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    CONTROL         "Auto convert to system samplerate",IDC_CHECKBOX_AUTOCONVERT_PCM,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,23,140,8
+    CONTROL         "Use improved sample rate conversion",IDC_CHECKBOX_SRC_DEFAULT_QUALITY,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,36,150,8
+    RTEXT           "Strategy:",IDC_STATIC_LABEL_SHAREMODE1,3,52,32,8
+    COMBOBOX        IDC_COMBOBOX_PULL,40,50,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    CONTROL         "Convert 16-bit audio streams to 24-bit",IDC_CHECKBOX_FORMAT_FORCE24BIT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,68,150,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_CONFIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 217
+        TOPMARGIN, 3
+        BOTTOMMARGIN, 297
+    END
+
+    IDD_PAGE_BUFFERS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
+
+    IDD_PAGE_COMMON, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
+
+    IDD_PAGE_DEVICE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x0L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080904b0"
+        BEGIN
+            VALUE "CompanyName", "Darren Owen aka DrO"
+            VALUE "FileDescription", "Winamp Output Plug-in"
+            VALUE "FileVersion", "1, 0, 0, 0"
+            VALUE "InternalName", "out_notsoyasapi.dll"
+            VALUE "LegalCopyright", "Copyright © 2015-6 Peter Belkner, Not So YASAPI modifications by Darren Owen aka DrO © 2016"
+            VALUE "OriginalFilename", "out_notsoyasapi.dll"
+            VALUE "ProductName", "Not So YASAPI"
+            VALUE "ProductVersion", "1, 0, 0, 0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x809, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXT
+//
+
+IDR_ABOUT_TEXT          TEXT                    "about.bin"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    65535                   "{6C82B613-30DD-4d1e-89D2-23672CD87679}"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_PLUGIN_NAME         "Not So YASAPI v%s"
+    IDS_ABOUT_TEXT          "About message goes here"
+    IDS_ABOUT_TITLE         "Not So YASAPI Output"
+    IDS_COMMON_OPTIONS      "Common Options"
+    IDS_DEVICE_OPTIONS      "Device Options"
+    IDS_BUFFER_OPTIONS      "Buffer Options"
+    IDS_DEVICE_FOR_OUTPUT   "The device where the audio should be routed."
+    IDS_MONO_TO_STEREO      "If playing mono, duplicate the one mono channel, i.e. convert mono to stereo."
+    IDS_USE_WINAMP_VOLUME   "Use Winamp's volume control instead of the Windows volume control."
+    IDS_GAPLESS_PLAYBACK    "Whether playback shoud be in gapless mode."
+    IDS_DISCONNECT_WHEN_IDLE 
+                            "In gapless mode, should the output be automatically\ndisconnected when the device becomes idle."
+    IDS_SURROUND_MODE       "Should 4, 6, or 8 channels  be interpreted as qadrophnic\n(3.1), 5.1, or 7.1 (disabled) or sorround (3.1 sorround),\n5.1 sorround, or 7.1 sorround (enabled), respectively."
+    IDS_TEST_FORMAT         "Whether YASAPI should call IAudioClient::IsFormatSupported before IAudioClient::Initialize."
+    IDS_WASAPI              "WASAPI"
+    IDS_SYSTEM              "System"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CLOCK_MODE          "Should the Winamp visualization be synchronized\nby means of the IAudioClock interface (WASAPI)\nor the GetTickCount function (System)."
+    IDS_VISUALISE_BUFFERS   "Whether the configuration dialog should visualize the ring and the shared buffers."
+    IDS_TIME_POSITION       "Whether time should be measured by an 64-bit integer representing the position."
+    IDS_TIME_TIME           "Whether time should be measured by a floating point value representing the quotient of position and frequency."
+    IDS_SHARE               "Share"
+    IDS_EXCLUSIVE           "Exclusive"
+    IDS_AUTOMATIC           "Automatic"
+    IDS_SHAREMODE           "Depending on the device, whether WASAPI should operate in\nshared or in exclusive mode or whether it should automatically\nfall back from exclusive to shared mode as needed."
+    IDS_AUTO_CONVERT_PCM    "In share mode, should WASAPI auto-convert the\nsamplerate to the system setting if needed."
+    IDS_SRC_DEFAULT_QUALITY "In share mode, should WASAPI use an improved algorithm for\nsample rate conversion (SRC). Not supported by all systems."
+    IDS_PUSH                "Push"
+    IDS_PULL                "Pull"
+    IDS_PUSH_OR_PULL        "Depending on the abilities of the device,\nshould WASAPI operate in push or pull mode."
+    IDS_NO                  "No"
+    IDS_YES                 "Yes"
+    IDS_16BIT_AS_24BIT      "Should WASAPI play 16-bit audio streams as 24-bit."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DEFAULT             "Default"
+    IDS_MINIMUM             "Minimum"
+    IDS_DEVICE_PERIOD       "Should the buffer size calculation be based on the default\nor on the minimum device periode as proposed by WASAPI."
+    IDS_SHARE_SIZE          "A factor the plug-in should apply to\nthe device period proposed by WASAPI."
+    IDS_RING_SIZE           "The number of samples the plug-in should be able to buffer between\nhaving received them from Winamp and before sending to the device.\n\nMust be at least as much being able to cache before starting to play."
+    IDS_RING_FILL           "The number of samples the plug-in should have received\nfrom Winamp before starting to play. This must be at least\nthe size of the buffer the plug-in shares with the device."
+    IDS_SLIDER_MINIMUM_DEFAULT "%0.1f × minimum/default"
+    IDS_SLIDER_SHARED_BUFFER "Ring buffer size: %0.2f × size of shared buffer"
+    IDS_SLIDER_PREBUFFER    "Start Playing: %0.2f × size of shared buffer"
+END
+
+#endif    // English (U.K.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
