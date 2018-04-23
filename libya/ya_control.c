@@ -145,10 +145,9 @@ static void RadioButtonTypeGet(const Control *pControl, HWND hDlg,
     void *pData)
 {
   const ControlRadioButtonConfig *config=pControl->config;
-  UINT uChecked;
 
   while (config->idc) {
-    uChecked=IsDlgButtonChecked(
+    UINT uChecked=IsDlgButtonChecked(
       hDlg,             // _In_  HWND hDlg,
       config->idc       // _In_  int nIDButton
     );

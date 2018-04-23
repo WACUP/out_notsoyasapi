@@ -165,7 +165,7 @@ void AboutDialog(Player *pPlayer, HINSTANCE hInstance, HWND hWndParent)
 #else // } {
 #ifdef WACUP_BUILD
 #define WA_UTILS_SIMPLE
-#include "../../loader/loader/utils.h"
+#include <loader/loader/utils.h>
 #endif
 void AboutDialog(HWND hWndParent)
 {

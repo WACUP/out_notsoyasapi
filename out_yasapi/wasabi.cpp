@@ -5,8 +5,8 @@
 #include <Agave/Language/api_language.h>
 #include <wasabi/api/service/waServiceFactory.h>
 #ifdef WACUP_BUILD
-#include "../../loader/hook/get_api_service.h"
-#include "../../loader/hook/squash.h"
+#include <loader/hook/get_api_service.h>
+#include <loader/hook/squash.h>
 #endif
 #include <resource.h>
 

@@ -253,7 +253,7 @@ DWORD RingReadEx(Ring *pRing, LPSTR pData, SIZE_T dwSize, UINT uFlags,
     RingIOError *pError);
 DWORD RingRead(Ring *pRing, LPSTR pData, SIZE_T dwSize, RingIOError *pError);
 
-void RingCopyMemory(PVOID pClient, PVOID Destination, const VOID *Source,
+void RingCopyMemory(PVOID *Client, PVOID Destination, const VOID *Source,
     SIZE_T Length);
 #if defined (YA_DEBUG) // {
 void RingDump(Ring *pRing, SIZE_T dwSize);
@@ -405,7 +405,7 @@ int TimeMigrate(Time *pTime, TimeTag eTimeTag, Connection *pConnect);
 #else // } {
 int TimeMigrate(Time *pTime, Connection *pConnect);
 #endif // }
-int TimeGetMS(Time *pTime, Connection *pConnect, double *ms);
+int TimeGetMS(Time *pTime, Connection *pConnect, double *pms);
 
 ///////////////////////////////////////////////////////////////////////////////
 struct _PlayerDevice {

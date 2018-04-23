@@ -89,9 +89,9 @@ invalid:
 static void DisconnectAllDisconnect(Player *pPlayer, int bReset)
 {
   IAudioClient *pClient=pPlayer->connect.pClient;
-  HRESULT hr;
 
   if (pClient&&bReset&&!ConnectionIsInvalid(&pPlayer->connect)) {
+    HRESULT hr;
     TimeFlush(&pPlayer->time);
     hr=pClient->lpVtbl->Reset(pClient);
 
