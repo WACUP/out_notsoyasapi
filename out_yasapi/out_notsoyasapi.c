@@ -49,9 +49,9 @@ static wchar_t out_module[MAX_PATH];
 #define OUT_YASAPI_SUBCLASS
 #endif // }
 
-static int PlayerSendOpen(int srate, int numchan, int bps)
+static int PlayerSendOpen(int _srate, int _numchan, int _bps)
 {
-  return PLAYER_SEND(&player,PlayerOpen,&device,srate,numchan,bps);
+  return PLAYER_SEND(&player,PlayerOpen,&device,_srate,_numchan,_bps);
 }
 
 static int PlayerSendClose(void)
@@ -169,7 +169,7 @@ static void reset(void)
 }
 
 #if defined (YASAPI_GAPLESS) // {
-static int drain(int numchan, int srate, int bps)
+static int drain(int _numchan, int _srate, int _bps)
 {
   bReset=0;
 
@@ -180,7 +180,7 @@ static int drain(int numchan, int srate, int bps)
 
   PlayerSendClose();
 
-  return PlayerSendOpen(srate,numchan,bps);
+  return PlayerSendOpen(_srate,_numchan,_bps);
 }
 #endif // }
 

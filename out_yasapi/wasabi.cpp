@@ -21,7 +21,7 @@ HINSTANCE WASABI_API_LNG_HINST = 0, WASABI_API_ORIG_HINST = 0;
 
 static wchar_t pluginTitle[256] = {0};
 
-extern "C" void SetupWasabiServices(Out_Module *plugin)
+extern "C" void SetupWasabiServices(Out_Module *_plugin)
 {
 	// load all of the required wasabi services from the winamp client
 	if (WASABI_API_SVC == NULL)
@@ -38,10 +38,10 @@ extern "C" void SetupWasabiServices(Out_Module *plugin)
 		if (WASABI_API_LNG == NULL)
 		{
 			ServiceBuild(WASABI_API_SVC, WASABI_API_LNG, languageApiGUID);
-			WASABI_API_START_LANG(plugin->hDllInstance, OutNotSoYASAPILangGUID);
+			WASABI_API_START_LANG(_plugin->hDllInstance, OutNotSoYASAPILangGUID);
 
 			StringCchPrintf(pluginTitle, ARRAYSIZE(pluginTitle), WASABI_API_LNGSTRINGW(IDS_PLUGIN_NAME), TEXT(PLUGIN_VERSION));
-			plugin->description = (char*)pluginTitle;
+			_plugin->description = (char*)pluginTitle;
 		}
 	}
 }
