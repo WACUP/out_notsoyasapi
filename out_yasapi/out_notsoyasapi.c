@@ -69,11 +69,11 @@ static LRESULT CALLBACK PluginWinampProc(HWND hWnd, UINT uMsg, WPARAM wParam,
     switch (lParam) {
     case IPC_CB_OUTPUTCHANGED:
 	{
-      char *m=(char *)SendMessage(hWnd,WM_WA_IPC,0,IPC_GETOUTPUTPLUGIN);
+      wchar_t *m=(wchar_t *)SendMessage(hWnd,WM_WA_IPC,0,IPC_GETOUTPUTPLUGINW);
       DPRINTF(0,"  WM_WA_IPC/IPC_CB_OUTPUTCHANGED: \"%s\"\n",m);
 
       if (m && *m) {
-        MultiByteToWideChar(CP_ACP, 0, m, -1, out_module, ARRAYSIZE(out_module));
+        lstrcpyn(out_module, m, ARRAYSIZE(out_module));
 	  } else {
         out_module[0] = 0;
       }
@@ -93,7 +93,7 @@ static LRESULT CALLBACK PluginWinampProc(HWND hWnd, UINT uMsg, WPARAM wParam,
     break;
   }
 
-  return DefSubclassProc(
+  return DefSubclass(
     hWnd,         // _In_ HWND    hWnd,
     uMsg,         // _In_ UINT    Msg,
     wParam,       // _In_ WPARAM  wParam,
@@ -112,9 +112,14 @@ static int64_t GetAudioTime(void)
   return time;
 }
 
+extern __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode);
 void config(HWND hwnd)
 {
   DPRINTF(0,"%s\n",__func__);
+  // incase the user only goes to the
+  // config, this ensure we've setup
+  // correctly otherwise all crashes
+  winampGetOutModeChange(OUT_SET);
   ConfigDialog(&player/*,plugin.hDllInstance*/,hwnd);
 }
 
@@ -140,7 +145,7 @@ void quit()
   PlayerDestroy(&player);
 #if defined (OUT_YASAPI_SUBCLASS) // {
   DPUTS(0,"  unsubclassing winamp\n");
-  RemoveWindowSubclass(plugin.hMainWindow, PluginWinampProc, (UINT_PTR)PluginWinampProc);
+  UnSubclass(plugin.hMainWindow, PluginWinampProc);
 #endif // }
 #if defined (YASAPI_CO_INITIALIZE) // {
   DPUTS(0,"  destroying com\n");
@@ -503,7 +508,7 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 				#endif // }
 
 				#if defined (OUT_YASAPI_SUBCLASS) // {
-				  if (!SetWindowSubclass(plugin.hMainWindow, PluginWinampProc, (UINT_PTR)PluginWinampProc, 0)) {
+				  if (!Subclass(plugin.hMainWindow, PluginWinampProc)) {
 					DMESSAGE("  failed to subclass winamp");
 					goto subclass;
 				  }
@@ -521,7 +526,7 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 				//cleanup:
 				player:
 				#if defined (OUT_YASAPI_SUBCLASS) // {
-				  RemoveWindowSubclass(plugin.hMainWindow, PluginWinampProc, (UINT_PTR)PluginWinampProc);
+				  UnSubclass(plugin.hMainWindow, PluginWinampProc);
 				subclass:
 				#endif // }
 				#if defined (YASAPI_CO_INITIALIZE) // {

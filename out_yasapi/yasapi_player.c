@@ -191,7 +191,7 @@ void PlayerDestroy(Player *pPlayer)
 ///////////////////////////////////////////////////////////////////////////////
 int PlayerRun(Player *pPlayer, Request *pRequest)
 {
-  IMMDeviceEnumerator *pEnumerator;
+  IMMDeviceEnumerator *pEnumerator = 0;
   HRESULT hr;
 
   DPRINTF(0,"  > %s <\n",__func__);

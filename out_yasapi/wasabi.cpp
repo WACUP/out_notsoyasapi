@@ -69,7 +69,7 @@ extern "C" LPWSTR GetTextResource(UINT id)
 #ifdef WACUP_BUILD
 	unsigned char *data = (unsigned char *)WASABI_API_LOADRESFROMFILEW(L"GZ", MAKEINTRESOURCEW(id), &data_size),
 				  *output = NULL;
-	decompress_resource(data, data_size, &output, 0);
+	DecompressResource(data, data_size, &output, 0);
 
 	LPWSTR text = AutoWideDup((LPCSTR)output, CP_UTF8);
 

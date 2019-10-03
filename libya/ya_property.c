@@ -42,7 +42,7 @@ void PropertySaveInt(const wchar_t *group, const wchar_t *key, int n,
 {
   wchar_t buf[YA_PROPERTY_SIZE];
 
-  StringCchPrintf(buf,YA_PROPERTY_SIZE,L"%d",n);
+  _itow_s(n, buf, ARRAYSIZE(buf), 10);
 
   WritePrivateProfileStringW(
 	(group ? group : L"default"),    // _In_  LPCTSTR lpAppName,
@@ -73,7 +73,7 @@ static void IntTypeSave(const Property *pProperty, const PropertyIOConfig *c)
 #if 0
   wchar_t buf[YA_PROPERTY_SIZE];
 
-  StringCchPrintf(buf,YA_PROPERTY_SIZE,L"%d",PROPERTY_INT(pProperty,c->pData));
+  _itow_s(PROPERTY_INT(pProperty,c->pData), buf, ARRAYSIZE(buf), 10);
 
   WritePrivateProfileStringW(
     (c->group ? c->group : L"default"),         // _In_  LPCTSTR lpAppName,

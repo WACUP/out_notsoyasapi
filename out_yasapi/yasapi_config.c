@@ -341,7 +341,7 @@ struct _ConfigDevice {
 
 static ConfigDevice *ConfigDeviceNew(Config *pConfig, int nDevice)
 {
-  ConfigDevice *pConfigDevice;
+  ConfigDevice *pConfigDevice = 0;
   IMMDeviceEnumerator *pEnumerator=pConfig->pEnumerator;
   IMMDeviceCollection *pCollection=pConfig->pCollection;
   IMMDevice *pDevice;
@@ -1327,11 +1327,11 @@ int ConfigDialog(Player *pPlayer/*, HINSTANCE hInstance*/, HWND hWndParent)
 {
   int state=1;
   IMMDeviceEnumerator *pEnumerator=pPlayer->run.pEnumerator;
-  IMMDeviceCollection *pCollection;
+  IMMDeviceCollection *pCollection = 0;
   int nNumPages;
-  UINT nDevices;
+  UINT nDevices = 0;
   Config config = {0};
-  HRESULT hr;
+  HRESULT hr = -1;
 
   if ((nNumPages=(sizeof gaTemplates)/(sizeof *gaTemplates))!=NUM_PAGES) {
     MessageBoxA(
@@ -1352,12 +1352,37 @@ int ConfigDialog(Player *pPlayer/*, HINSTANCE hInstance*/, HWND hWndParent)
   config.options.common=pPlayer->options.common;
   config.pEnumerator=pPlayer->run.pEnumerator;
 
+  // create a device enumerator ///////////////////////////////////////////////
+  if (!pEnumerator) {
+	  hr=CoCreateInstance(
+		&CLSID_MMDeviceEnumerator,  // _In_   REFCLSID rclsid,
+		NULL,                       // _In_   LPUNKNOWN pUnkOuter,
+		CLSCTX_ALL,                 // _In_   DWORD dwClsContext,
+		&IID_IMMDeviceEnumerator,   // _In_   REFIID riid,
+		(void**)&pEnumerator        // _Out_  LPVOID *ppv
+	  );
+
+	  if (FAILED(hr)) {
+		DERROR(REGDB_E_CLASSNOTREG,hr,enumerator);
+		DERROR(CLASS_E_NOAGGREGATION,hr,enumerator);
+		DERROR(E_NOINTERFACE,hr,enumerator);
+		DERROR(E_POINTER,hr,enumerator);
+		DMESSAGE("creating device enumerator");
+		goto enumerator;
+	  }
+	  else {
+		config.pEnumerator=pPlayer->run.pEnumerator=pEnumerator;
+	  }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
+  if (pEnumerator) {
   hr=pEnumerator->lpVtbl->EnumAudioEndpoints(pEnumerator,
     eRender,              // [in]  EDataFlow           dataFlow,
     DEVICE_STATE_ACTIVE,  // [in]  DWORD               dwStateMask,
     &pCollection          // [out] IMMDeviceCollection **ppDevices
   );
+  }
 
   if (FAILED(hr)) {
     DERROR(E_POINTER,hr,collection);
@@ -1405,6 +1430,7 @@ int ConfigDialog(Player *pPlayer/*, HINSTANCE hInstance*/, HWND hWndParent)
 count:
   pCollection->lpVtbl->Release(pCollection);
 collection:
+enumerator:
 pages:
   return state;
 }
