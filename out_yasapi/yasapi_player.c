@@ -1532,7 +1532,7 @@ int PlayerWrite(Player *pPlayer, Request *pRequest)
 
 #if defined (YASAPI_FORCE24BIT) // {
   if (0!=(len%pSource->nBytesPerFrame)) {
-    DMESSAGE("source data not frame aligned");
+    //DMESSAGE("source data not frame aligned");
     goto align;
   }
 #endif // }

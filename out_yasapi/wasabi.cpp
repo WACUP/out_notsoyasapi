@@ -72,12 +72,7 @@ extern "C" LPWSTR GetTextResource(UINT id)
 	DecompressResource(data, data_size, &output, 0);
 
 	LPWSTR text = AutoWideDup((LPCSTR)output, CP_UTF8);
-
-	if (output)
-	{
-		free(output);
-	}
-
+	DecompressResourceFree(output);
 	return text;
 #else
 	return AutoWideDup((LPCSTR)WASABI_API_LOADRESFROMFILEW(L"TEXT", MAKEINTRESOURCE(id), &data_size), CP_UTF8);

@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="External Libraries">
+      <UniqueIdentifier>{7324698f-0734-4dec-8c47-9a4b622a3f12}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rc\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="yasapi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="yasapi_guid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="rc\about.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="rc\about.bin.gz">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="rc\text1.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="rc\out_notsoyasapi.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="out_notsoyasapi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wasabi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yasapi_about.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yasapi_config.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yasapi_connect.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yasapi_control_list.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yasapi_device.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yasapi_disconnect.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yasapi_guid.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yasapi_kill.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yasapi_notify.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yasapi_options_common.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yasapi_options_device.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yasapi_player.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yasapi_ring.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yasapi_strategy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yasapi_time.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="yasapi_util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

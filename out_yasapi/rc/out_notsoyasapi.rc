@@ -179,8 +179,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,1,3,0
- PRODUCTVERSION 1,1,3,0
+ FILEVERSION 1,1,5,0
+ PRODUCTVERSION 1,1,5,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -197,12 +197,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "WACUP (WinAmp Community Update Project)"
             VALUE "FileDescription", "Winamp Output Plug-in"
-            VALUE "FileVersion", "1, 1, 3, 0"
+            VALUE "FileVersion", "1, 1, 5, 0"
             VALUE "InternalName", "out_notsoyasapi.dll"
             VALUE "LegalCopyright", "Copyright © 2015-2016 Peter Belkner, Not So YASAPI modifications by Darren Owen aka DrO © 2016-2019"
             VALUE "OriginalFilename", "out_notsoyasapi.dll"
             VALUE "ProductName", "Not So YASAPI"
-            VALUE "ProductVersion", "1, 1, 3, 0"
+            VALUE "ProductVersion", "1, 1, 5, 0"
         END
     END
     BLOCK "VarFileInfo"
@@ -258,7 +258,7 @@ BEGIN
     IDS_BUFFER_OPTIONS      "Buffer Options"
     IDS_DEVICE_FOR_OUTPUT   "The device where the audio should be routed."
     IDS_MONO_TO_STEREO      "If playing mono, duplicate the one mono channel, i.e. convert mono to stereo."
-    IDS_USE_WINAMP_VOLUME   "Use Winamp's volume control instead of the Windows volume control."
+    IDS_USE_WINAMP_VOLUME   "Use WACUP's volume control instead of the Windows volume control."
     IDS_GAPLESS_PLAYBACK    "Whether playback shoud be in gapless mode."
     IDS_DISCONNECT_WHEN_IDLE 
                             "In gapless mode, should the output be automatically\ndisconnected when the device becomes idle."
@@ -270,7 +270,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_CLOCK_MODE          "Should the Winamp visualization be synchronized\nby means of the IAudioClock interface (WASAPI)\nor the GetTickCount function (System)."
+    IDS_CLOCK_MODE          "Should the WACUP visualisation be synchronised\nby means of the IAudioClock interface (WASAPI)\nor the GetTickCount function (System)."
     IDS_VISUALISE_BUFFERS   "Whether the configuration dialog should visualize the ring and the shared buffers."
     IDS_TIME_POSITION       "Whether time should be measured by an 64-bit integer representing the position."
     IDS_TIME_TIME           "Whether time should be measured by a floating point value representing the quotient of position and frequency."
@@ -294,8 +294,8 @@ BEGIN
     IDS_MINIMUM             "Minimum"
     IDS_DEVICE_PERIOD       "Should the buffer size calculation be based on the default\nor on the minimum device periode as proposed by WASAPI."
     IDS_SHARE_SIZE          "A factor the plug-in should apply to\nthe device period proposed by WASAPI."
-    IDS_RING_SIZE           "The number of samples the plug-in should be able to buffer between\nhaving received them from Winamp and before sending to the device.\n\nMust be at least as much being able to cache before starting to play."
-    IDS_RING_FILL           "The number of samples the plug-in should have received\nfrom Winamp before starting to play. This must be at least\nthe size of the buffer the plug-in shares with the device."
+    IDS_RING_SIZE           "The number of samples the plug-in should be able to buffer between\nhaving received them from WACUP and before sending to the device.\n\nMust be at least as much being able to cache before starting to play."
+    IDS_RING_FILL           "The number of samples the plug-in should have received\nfrom WACUP before starting to play. This must be at least\nthe size of the buffer the plug-in shares with the device."
     IDS_SLIDER_MINIMUM_DEFAULT "%0.1f × minimum/default"
     IDS_SLIDER_SHARED_BUFFER "Ring buffer size: %0.2f × size of shared buffer"
     IDS_SLIDER_PREBUFFER    "Start Playing: %0.2f × size of shared buffer"
