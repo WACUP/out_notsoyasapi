@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.K.) resources
+// English (United Kingdom) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -52,66 +50,63 @@ END
 // Dialog
 //
 
-IDD_CONFIG DIALOGEX 0, 0, 223, 302
-STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+IDD_CONFIG DIALOGEX 0, 0, 272, 325
+STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE
 EXSTYLE WS_EX_CONTROLPARENT
-CAPTION "Not So YASAPI Output Settings"
 FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
-    GROUPBOX        "Output Device",IDC_STATIC,5,3,212,64
-    RTEXT           "Device:",0,10,16,45,9
-    COMBOBOX        IDC_COMBOBOX_DEVICE,59,14,151,100,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
-    RTEXT           "Share Mode:",IDC_STATIC_LABEL_SHAREMODE,10,33,45,8
-    COMBOBOX        IDC_COMBOBOX_SHAREMODE,59,31,70,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
-    RTEXT           "Strategy:",IDC_STATIC_LABEL_SHAREMODE1,10,50,45,8
-    COMBOBOX        IDC_COMBOBOX_PULL,59,48,70,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
-    RTEXT           "Ring Buffer:",IDC_STATIC_RING,9,84,50,9
-    CONTROL         "",IDC_PROGRESSBAR_RING,"msctls_progress32",0x0,63,82,147,12
-    RTEXT           "Shared Buffer:",IDC_STATIC_SHARED,9,101,50,9
-    CONTROL         "",IDC_PROGRESSBAR_SHARED,"msctls_progress32",0x0,63,99,147,12
-    CONTROL         "",IDC_TABCONTROL,"SysTabControl32",WS_TABSTOP,5,123,212,156
-    PUSHBUTTON      "Default",IDC_BUTTON_DEFAULT,5,283,50,14
-    PUSHBUTTON      "Save",IDC_BUTTON_SAVE,59,283,50,14
-    DEFPUSHBUTTON   "OK",IDOK,113,283,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,167,283,50,14
-    GROUPBOX        "Buffer Usage",IDC_STATIC,5,70,212,48
+    GROUPBOX        "WASAPI Configuration",IDC_STATIC,0,0,272,316
+    GROUPBOX        "Output Device",IDC_STATIC,5,11,261,64
+    RTEXT           "Device:",0,10,24,45,9
+    COMBOBOX        IDC_COMBOBOX_DEVICE,59,22,201,100,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    RTEXT           "Share Mode:",IDC_STATIC_LABEL_SHAREMODE,10,41,45,8
+    COMBOBOX        IDC_COMBOBOX_SHAREMODE,59,39,100,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    RTEXT           "Strategy:",IDC_STATIC_LABEL_SHAREMODE1,10,58,45,8
+    COMBOBOX        IDC_COMBOBOX_PULL,59,56,100,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    GROUPBOX        "Buffer Usage",IDC_STATIC,5,78,261,48
+    RTEXT           "Ring Buffer:",IDC_STATIC_RING,9,92,50,9
+    CONTROL         "",IDC_PROGRESSBAR_RING,"msctls_progress32",0x0,63,90,197,12
+    RTEXT           "Shared Buffer:",IDC_STATIC_SHARED,9,109,50,9
+    CONTROL         "",IDC_PROGRESSBAR_SHARED,"msctls_progress32",0x0,63,107,197,12
+    CONTROL         "",IDC_TABCONTROL,"SysTabControl32",WS_TABSTOP,5,131,261,165
+    PUSHBUTTON      "Defaults",IDC_BUTTON_DEFAULT,216,129,50,13
 END
 
-IDD_PAGE_BUFFERS DIALOGEX 0, 0, 215, 140
-STYLE DS_SETFONT | DS_3DLOOK | DS_CONTROL | DS_CENTER | WS_CHILD
+IDD_PAGE_BUFFERS DIALOGEX 0, 0, 255, 140
+STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | DS_CONTROL | DS_CENTER | WS_CHILD
 FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
     RTEXT           "Device Period:",IDC_STATIC_LABEL_DEVICE_PERIOD,1,7,51,8
     COMBOBOX        IDC_COMBOBOX_DEVICE_PERIOD,57,5,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
-    CONTROL         "",IDC_SLIDER_SHARE_SIZE,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,1,20,213,15
-    LTEXT           "2.00 X minimum / default",IDC_STATIC_SHARE_SIZE,6,38,100,9
-    CONTROL         "",IDC_SLIDER_RING_SIZE,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,1,54,213,15
-    LTEXT           "Ring buffer size: 2.00 X size of shared buffer",IDC_STATIC_RING_SIZE,5,72,130,9
-    CONTROL         "",IDC_SLIDER_RING_FILL,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,1,83,213,15
-    LTEXT           "Start Playing: 2.00 X size of shared buffer",IDC_STATIC_RING_FILL,5,102,130,9
+    CONTROL         "",IDC_SLIDER_SHARE_SIZE,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,1,21,249,15
+    LTEXT           "2.00 X minimum / default",IDC_STATIC_SHARE_SIZE,6,39,203,9
+    CONTROL         "",IDC_SLIDER_RING_SIZE,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,1,54,249,15
+    LTEXT           "Ring buffer size: 2.00 X size of shared buffer",IDC_STATIC_RING_SIZE,5,72,203,9
+    CONTROL         "",IDC_SLIDER_RING_FILL,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,1,87,249,15
+    LTEXT           "Start Playing: 2.00 X size of shared buffer",IDC_STATIC_RING_FILL,5,106,203,8
 END
 
 IDD_PAGE_COMMON DIALOGEX 0, 0, 215, 140
-STYLE DS_SETFONT | DS_3DLOOK | DS_CONTROL | DS_CENTER | WS_CHILD
+STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | DS_CONTROL | DS_CENTER | WS_CHILD
 FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "Enable volume control",IDC_CHECKBOX_VOLUME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,5,90,8
-    CONTROL         "Enable gapless playback",IDC_CHECKBOX_GAPLESS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,19,110,8
+    CONTROL         "Enable volume control",IDC_CHECKBOX_VOLUME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,5,202,8
+    CONTROL         "Enable gapless playback",IDC_CHECKBOX_GAPLESS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,19,202,8
     CONTROL         "Automatically disconnect when idle",IDC_CHECKBOX_DISCONNECT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,32,140,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,32,194,8
     CONTROL         "Convert mono input to stereo",IDC_CHECKBOX_MONO2STEREO,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,45,130,8
-    CONTROL         "Enable surround support",IDC_CHECKBOX_SURROUND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,59,110,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,45,202,8
+    CONTROL         "Enable surround support",IDC_CHECKBOX_SURROUND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,59,202,8
     CONTROL         "Check format is supported on initialisation",IDC_CHECKBOX_FORMAT_SUPPORTED,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,72,161,8
-    CONTROL         "Show buffer usage",IDC_CHECKBOX_VISUALIZATION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,85,100,8
-    RTEXT           "Clock:",IDC_STATIC_LABEL_CLOCK,13,100,21,9
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,72,202,8
+    CONTROL         "Show buffer usage",IDC_CHECKBOX_VISUALIZATION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,85,202,8
+    RTEXT           "Clock:",IDC_STATIC_LABEL_CLOCK,13,100,21,8
     COMBOBOX        IDC_COMBOBOX_CLOCK,42,98,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
-    RTEXT           "Measure Time:",IDC_STATIC_LABEL_TIME_TAG,13,116,48,9
+    RTEXT           "Measure Time:",IDC_STATIC_LABEL_TIME_TAG,13,116,51,8
     CONTROL         "Position (integer)",IDC_RADIOBUTTON_TIME_POSITION,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,71,116,68,8
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,71,115,73,10
     CONTROL         "Position/Frequency (floating point)",IDC_RADIOBUTTON_TIME_TIME,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,71,128,123,8
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,71,127,131,10
     RTEXT           "Debug:",IDC_STATIC_LABEL_DEBUG,283,123,24,9,NOT WS_VISIBLE
     COMBOBOX        IDC_COMBOBOX_DEBUG,315,122,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | NOT WS_VISIBLE | WS_TABSTOP
     CONTROL         "File",IDC_CHECKBOX_FILE,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,381,123,27,8
@@ -120,19 +115,19 @@ BEGIN
 END
 
 IDD_PAGE_DEVICE DIALOGEX 0, 0, 215, 140
-STYLE DS_SETFONT | DS_3DLOOK | DS_CONTROL | DS_CENTER | WS_CHILD
+STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | DS_CONTROL | DS_CENTER | WS_CHILD
 FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
-    RTEXT           "Share Mode:",IDC_STATIC_LABEL_SHAREMODE,4,7,42,8
-    COMBOBOX        IDC_COMBOBOX_SHAREMODE,51,5,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    RTEXT           "Share Mode:",IDC_STATIC_LABEL_SHAREMODE,4,7,44,8
+    COMBOBOX        IDC_COMBOBOX_SHAREMODE,52,5,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
     CONTROL         "Auto convert to system samplerate",IDC_CHECKBOX_AUTOCONVERT_PCM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,23,140,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,22,201,10
     CONTROL         "Use improved sample rate conversion",IDC_CHECKBOX_SRC_DEFAULT_QUALITY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,36,150,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,35,201,10
     RTEXT           "Strategy:",IDC_STATIC_LABEL_SHAREMODE1,3,52,32,8
-    COMBOBOX        IDC_COMBOBOX_PULL,40,50,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    COMBOBOX        IDC_COMBOBOX_PULL,41,50,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
     CONTROL         "Convert 16-bit audio streams to 24-bit",IDC_CHECKBOX_FORMAT_FORCE24BIT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,68,150,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,67,201,10
 END
 
 
@@ -147,14 +142,15 @@ BEGIN
     IDD_CONFIG, DIALOG
     BEGIN
         LEFTMARGIN, 5
-        RIGHTMARGIN, 217
+        RIGHTMARGIN, 266
         TOPMARGIN, 3
-        BOTTOMMARGIN, 297
+        BOTTOMMARGIN, 320
     END
 
     IDD_PAGE_BUFFERS, DIALOG
     BEGIN
         LEFTMARGIN, 7
+        RIGHTMARGIN, 215
         TOPMARGIN, 7
     END
 
@@ -179,8 +175,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,1,5,0
- PRODUCTVERSION 1,1,5,0
+ FILEVERSION 1,2,0,0
+ PRODUCTVERSION 1,2,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -197,12 +193,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "WACUP (WinAmp Community Update Project)"
             VALUE "FileDescription", "Winamp Output Plug-in"
-            VALUE "FileVersion", "1, 1, 5, 0"
+            VALUE "FileVersion", "1.2.0.0"
             VALUE "InternalName", "out_notsoyasapi.dll"
-            VALUE "LegalCopyright", "Copyright © 2015-2016 Peter Belkner, Not So YASAPI modifications by Darren Owen aka DrO © 2016-2019"
+            VALUE "LegalCopyright", "Copyright © 2015-2016 Peter Belkner, Not So YASAPI modifications by Darren Owen aka DrO © 2016-2020"
             VALUE "OriginalFilename", "out_notsoyasapi.dll"
             VALUE "ProductName", "Not So YASAPI"
-            VALUE "ProductVersion", "1, 1, 5, 0"
+            VALUE "ProductVersion", "1.2.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -301,7 +297,7 @@ BEGIN
     IDS_SLIDER_PREBUFFER    "Start Playing: %0.2f × size of shared buffer"
 END
 
-#endif    // English (U.K.) resources
+#endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

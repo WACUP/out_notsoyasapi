@@ -178,7 +178,7 @@ void AboutDialog(HWND hWndParent)
 
 	StringCchPrintf(message, ARRAYSIZE(message), text, TEXT(PLUGIN_VERSION),
 					TEXT(YASAPI_VERSION), TEXT("Darren Owen aka DrO"),
-					TEXT("2016-2019"), TEXT(__DATE__));
+					TEXT("2016-2020"), TEXT(__DATE__));
 	MessageBoxW(hWndParent, message, (LPWSTR)GetLangString(IDS_ABOUT_TITLE), MB_OK);
 
 	if (text)

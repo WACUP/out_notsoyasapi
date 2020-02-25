@@ -24,6 +24,7 @@
 #include <winamp/out.h>
 #include <winamp/wa_cup.h>
 #include <strsafe.h>
+#include <resource.h>
 
 #ifdef __cpluplus
 extern "C" {
@@ -55,7 +56,7 @@ extern Out_Module plugin;
 ///////////////////////////////////////////////////////////////////////////////
 #if ! defined (YASAPI_VER) // {
   #define YASAPI_VER            1.7.25
-  #define PLUGIN_VERSION        "1.1.5"
+  #define PLUGIN_VERSION        "1.2"
 #endif // }
 
 #define YASAPI_VERSION          YA_STR(YASAPI_VER)
@@ -298,8 +299,8 @@ struct _OptionsCommon {
   int nAboutX;
   int nAboutY;
 #else // } {
-  int nPosX;
-  int nPosY;
+  /*int nPosX;
+  int nPosY;*/
 #endif // }
 };
 
@@ -691,7 +692,7 @@ enum {
   WM_CONFIG_UPDATE=WM_APP
 };
 
-int ConfigDialog(Player *pPlayer/*, HINSTANCE hInstance*/, HWND hWndParent);
+void ConfigDialog(Player *pPlayer, Config *pConfig, HWND hWndParent);
 #if defined (YASAPI_ABOUT) // {
 void AboutDialog(Player *pPlayer, HINSTANCE hInstance, HWND hWndParent);
 #else // } {

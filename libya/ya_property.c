@@ -40,7 +40,7 @@ void PropertiesSave(const Property *pProperty, const PropertyIOConfig *c)
 void PropertySaveInt(const wchar_t *group, const wchar_t *key, int n,
     const wchar_t *path)
 {
-  wchar_t buf[YA_PROPERTY_SIZE];
+  wchar_t buf[YA_PROPERTY_SIZE] = {0};
 
   _itow_s(n, buf, ARRAYSIZE(buf), 10);
 
@@ -95,8 +95,8 @@ const PropertyType gcIntType={
 ///////////////////////////////////////////////////////////////////////////////
 static void DoubleTypeLoad(const Property *pProperty, PropertyIOConfig *c)
 {
-  wchar_t set[YA_PROPERTY_SIZE];
-  wchar_t get[YA_PROPERTY_SIZE];
+  wchar_t set[YA_PROPERTY_SIZE] = {0};
+  wchar_t get[YA_PROPERTY_SIZE] = {0};
 
   StringCchPrintf(set,YA_PROPERTY_SIZE,L"%f",PROPERTY_DOUBLE(pProperty,c->pDefault));
 
@@ -119,7 +119,7 @@ static void DoubleTypeLoad(const Property *pProperty, PropertyIOConfig *c)
 static void DoubleTypeSave(const Property *pProperty,
     const PropertyIOConfig *c)
 {
-  wchar_t buf[YA_PROPERTY_SIZE];
+  wchar_t buf[YA_PROPERTY_SIZE] = {0};
 
   StringCchPrintf(buf,YA_PROPERTY_SIZE,L"%f",PROPERTY_DOUBLE(pProperty,c->pData));
 

@@ -17,7 +17,8 @@ static const GUID OutNotSoYASAPILangGUID =
 
 api_service* WASABI_API_SVC = NULL;
 api_language* WASABI_API_LNG = NULL;
-HINSTANCE WASABI_API_LNG_HINST = 0, WASABI_API_ORIG_HINST = 0;
+extern "C" HINSTANCE WASABI_API_LNG_HINST = 0;
+HINSTANCE WASABI_API_ORIG_HINST = 0;
 
 static wchar_t pluginTitle[256] = {0};
 

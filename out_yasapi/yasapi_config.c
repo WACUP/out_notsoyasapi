@@ -22,6 +22,8 @@
 #include <FunctionDiscoveryKeys_devpkey.h>
 #endif // }
 #include <resource.h>
+#define WA_UTILS_SIMPLE
+#include <loader/loader/utils.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 typedef enum _Pages Pages;
@@ -342,11 +344,9 @@ struct _ConfigDevice {
 static ConfigDevice *ConfigDeviceNew(Config *pConfig, int nDevice)
 {
   ConfigDevice *pConfigDevice = 0;
-  IMMDeviceEnumerator *pEnumerator=pConfig->pEnumerator;
-  IMMDeviceCollection *pCollection=pConfig->pCollection;
-  IMMDevice *pDevice;
-  LPWSTR pstrId;
-  IPropertyStore *pProperties;
+  IMMDevice *pDevice = 0;
+  LPWSTR pstrId = 0;
+  IPropertyStore *pProperties = 0;
   HRESULT hr;
 
   if (NULL==(pConfigDevice=malloc(sizeof *pConfigDevice)))
@@ -356,6 +356,7 @@ static ConfigDevice *ConfigDeviceNew(Config *pConfig, int nDevice)
 
   if (0==nDevice) {
     /////////////////////////////////////////////////////////////////////////
+	IMMDeviceEnumerator *pEnumerator = pConfig->pEnumerator;
     hr=pEnumerator->lpVtbl->GetDefaultAudioEndpoint(pEnumerator,
       eRender,        // [in]  EDataFlow dataFlow,
       eMultimedia,    // [in]  ERole     role,
@@ -377,6 +378,7 @@ static ConfigDevice *ConfigDeviceNew(Config *pConfig, int nDevice)
   }
   else {
     /////////////////////////////////////////////////////////////////////////
+	IMMDeviceCollection *pCollection = pConfig->pCollection;
     hr=pCollection->lpVtbl->Item(pCollection,
       nDevice-1,      // [in]  UINT      nDevice,
       &pDevice        // [out] IMMDevice **ppDevice
@@ -1006,7 +1008,7 @@ static int ConfigInitTabControl(HWND hDlg, Config *pConfig, int idc)
 
 	SendMessage(plugin.hMainWindow,WM_WA_IPC,(WPARAM)pConfig->aPages[nPageCreate].hDlg,IPC_USE_UXTHEME_FUNC);
   }
-
+  BringWindowToTop(hWndTab);
   SendMessage(hWndTab,TCM_SETCURSEL,pConfig->options.common.nPage,0);
   ConfigOnSelChangeTabCtrl(hDlg,pConfig,hWndTab);
   code=0;
@@ -1015,13 +1017,12 @@ item:
   return code;
 }
 
-static INT_PTR ConfigOnInit(HWND hDlg, WPARAM wParam, Config *pConfig)
+static INT_PTR ConfigOnInit(HWND hDlg, Config *pConfig)
 {
+#if defined (YASAPI_ABOUT)
   Options *pOptions=&pConfig->pPlayer->options;
+#endif
   HWND hWndTip;
-
-  pConfig->hDlg=hDlg;
-  SetWindowLongPtr(hDlg,GWLP_USERDATA,(LONG_PTR)pConfig);
 
 #if defined (YASAPI_ABOUT) // {
   if (0<=pOptions->common.nConfigX&&0<=pOptions->common.nConfigY) {
@@ -1031,21 +1032,6 @@ static INT_PTR ConfigOnInit(HWND hDlg, WPARAM wParam, Config *pConfig)
       pOptions->common.nConfigX,
                 // _In_     int  X,
       pOptions->common.nConfigY,
-                // _In_     int  Y,
-      0,        // _In_     int  cx,
-      0,        // _In_     int  cy,
-      SWP_NOOWNERZORDER|SWP_NOSIZE
-                //_In_     UINT uFlags
-    );
-  }
-#else // } {
-  if (0<=pOptions->common.nPosX&&0<=pOptions->common.nPosY) {
-    SetWindowPos(
-      hDlg,     // _In_     HWND hWnd,
-      NULL,     // _In_opt_ HWND hWndInsertAfter,
-      pOptions->common.nPosX,
-                // _In_     int  X,
-      pOptions->common.nPosY,
                 // _In_     int  Y,
       0,        // _In_     int  cx,
       0,        // _In_     int  cy,
@@ -1088,18 +1074,18 @@ void ConfigGet(Config *pConfig)
   Player *pPlayer=pConfig->pPlayer;
   int cPage;
   Page *pPage;
-  RECT rc;
+  //RECT rc;
 
   for (cPage=0,pPage=pConfig->aPages;cPage<NUM_PAGES;++cPage,++pPage)
     pPage->vmt->Get(pPage,pConfig);
 
-  GetWindowRect(pConfig->hDlg,&rc);
+  //GetWindowRect(pConfig->hDlg,&rc);
 #if defined (YASAPI_ABOUT) // {
   pConfig->options.common.nConfigX=rc.left;
   pConfig->options.common.nConfigY=rc.top;
 #else // } {
-  pConfig->options.common.nPosX=rc.left;
-  pConfig->options.common.nPosY=rc.top;
+  /*pConfig->options.common.nPosX=rc.left;
+  pConfig->options.common.nPosY=rc.top;*/
 #endif // }
 
   pPlayer->options.common=pConfig->options.common;
@@ -1108,13 +1094,18 @@ void ConfigGet(Config *pConfig)
 
 void ConfigReset(Config *pConfig)
 {
+	if (pConfig != NULL)
+	{
   int cPage;
   Page *pPage;
 
   ControlsSet(gcaCoreDeviceControls,pConfig->hDlg,OptionsDeviceDefault());
 
   for (cPage=0,pPage=pConfig->aPages;cPage<NUM_PAGES;++cPage,++pPage)
+		{
     pPage->vmt->Reset(pPage,pConfig);
+}
+	}
 }
 
 static int PlayerWriteConfig(Player *pPlayer, Request *pRequest)
@@ -1143,6 +1134,8 @@ static int PlayerWriteConfigSpecific(Player *pPlayer, Request *pRequest)
 
 void ConfigSave(Config *pConfig)
 {
+	if (pConfig != NULL)
+	{
   Player *pPlayer=pConfig->pPlayer;
   HWND hComboBox=GetDlgItem(pConfig->hDlg,IDC_COMBOBOX_DEVICE);
   DWORD cDevice=SendMessageW(hComboBox,CB_GETCURSEL,0,0);
@@ -1155,9 +1148,12 @@ void ConfigSave(Config *pConfig)
     PLAYER_SEND(pPlayer,PlayerWriteConfig,pConfigDevice);
   }
 }
+}
 
 void ConfigSaveSpecific(Config *pConfig)
 {
+	if (pConfig)
+	{
   Player *pPlayer=pConfig->pPlayer;
   /*HWND hComboBox=GetDlgItem(pConfig->hDlg,IDC_COMBOBOX_DEVICE);
   DWORD cDevice=SendMessageW(hComboBox,CB_GETCURSEL,0,0);
@@ -1170,9 +1166,12 @@ void ConfigSaveSpecific(Config *pConfig)
     PLAYER_SEND(pPlayer,PlayerWriteConfigSpecific);
   //}
 }
+}
 
 static void ConfigEndDialog(HWND hDlg, Config *pConfig, INT_PTR nResult)
 {
+	if (pConfig != NULL)
+	{
   HWND hComboBox=GetDlgItem(hDlg,IDC_COMBOBOX_DEVICE);
   int nDevices=1+pConfig->nDevices;
 
@@ -1187,7 +1186,7 @@ static void ConfigEndDialog(HWND hDlg, Config *pConfig, INT_PTR nResult)
       SendMessageW(hComboBox,CB_SETITEMDATA,nDevices,(LPARAM)NULL);
     }
   }
-
+	}
   EndDialog(hDlg,nResult);
 }
 
@@ -1238,29 +1237,47 @@ device:
   ;
 }
 
-static INT_PTR CALLBACK ConfigProc(HWND hDlg, UINT uMsg, WPARAM wParam,
-    LPARAM lParam)
+INT_PTR CALLBACK ConfigProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   Config *pConfig=(Config *)GetWindowLongPtr(hDlg,GWLP_USERDATA);
 
   switch (uMsg) {
   case WM_INITDIALOG:
-    pConfig=(Config *)lParam;
-    ConfigOnInit(hDlg,wParam,pConfig);
+  {
+	  DPRINTF(0, "%s\n", __func__);
+
+	  // incase the user only goes to the
+	  // config, this ensure we've setup
+	  // correctly otherwise all crashes
+	  winampGetOutModeChange(OUT_SET);
+
+	  extern Player player;
+	  ConfigDialog(&player, pConfig, hDlg);
     return TRUE;
-  case WM_COMMAND:
-    switch (LOWORD(wParam)) {
-    case IDOK:
+  }
+  case WM_DESTROY:
+  {
+	  // with the change to the config being
+	  // a native prefs page it is necessary
+	  // to release the pCollection here as
+	  // the old method was a blocking dialog
+	  if (pConfig != NULL)
+	  {
       ConfigSave(pConfig);
       ConfigEndDialog(hDlg,pConfig,TRUE);
-      return TRUE;
-    case IDCANCEL:
-      ConfigSaveSpecific(pConfig);
-      ConfigEndDialog(hDlg,pConfig,FALSE);
-      return TRUE;
-    case IDC_BUTTON_SAVE:
-      ConfigSave(pConfig);
-      return TRUE;
+
+		  if (pConfig->pCollection != NULL)
+		  {
+			  pConfig->pCollection->lpVtbl->Release(pConfig->pCollection);
+			  pConfig->pCollection = NULL;
+		  }
+
+		  free(pConfig);
+	  }
+	  break;
+  }
+  case WM_COMMAND:
+    switch (LOWORD(wParam)) {
     case IDC_BUTTON_DEFAULT:
       ConfigReset(pConfig);
       return TRUE;
@@ -1318,22 +1335,20 @@ static INT_PTR CALLBACK ConfigProc(HWND hDlg, UINT uMsg, WPARAM wParam,
   default:
     break;
   }
-
+  DialogLayout(hDlg, uMsg, lParam, MODE_GENERIC);
   return FALSE;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-int ConfigDialog(Player *pPlayer/*, HINSTANCE hInstance*/, HWND hWndParent)
+void ConfigDialog(Player *pPlayer, Config *pConfig, HWND hWndParent)
 {
-  int state=1;
   IMMDeviceEnumerator *pEnumerator=pPlayer->run.pEnumerator;
   IMMDeviceCollection *pCollection = 0;
-  int nNumPages;
+  int nNumPages = (sizeof gaTemplates) / (sizeof *gaTemplates);
   UINT nDevices = 0;
-  Config config = {0};
   HRESULT hr = -1;
 
-  if ((nNumPages=(sizeof gaTemplates)/(sizeof *gaTemplates))!=NUM_PAGES) {
+  if (nNumPages!=NUM_PAGES) {
     MessageBoxA(
       NULL,                     // _In_opt_ HWND    hWnd,
       "Inconsistent number of pages.",
@@ -1347,10 +1362,11 @@ int ConfigDialog(Player *pPlayer/*, HINSTANCE hInstance*/, HWND hWndParent)
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  config.pPlayer=pPlayer;
+  pConfig = calloc(1, sizeof(Config));
+  pConfig->pPlayer=pPlayer;
   //config.hModule=hInstance;
-  config.options.common=pPlayer->options.common;
-  config.pEnumerator=pPlayer->run.pEnumerator;
+  pConfig->options.common=pPlayer->options.common;
+  pConfig->pEnumerator=pPlayer->run.pEnumerator;
 
   // create a device enumerator ///////////////////////////////////////////////
   if (!pEnumerator) {
@@ -1371,7 +1387,7 @@ int ConfigDialog(Player *pPlayer/*, HINSTANCE hInstance*/, HWND hWndParent)
 		goto enumerator;
 	  }
 	  else {
-		config.pEnumerator=pPlayer->run.pEnumerator=pEnumerator;
+		  pConfig->pEnumerator=pPlayer->run.pEnumerator=pEnumerator;
 	  }
   }
 
@@ -1394,7 +1410,7 @@ int ConfigDialog(Player *pPlayer/*, HINSTANCE hInstance*/, HWND hWndParent)
   }
 
   DPUTS(0,"  got the device collection\n");
-  config.pCollection=pCollection;
+  pConfig->pCollection=pCollection;
 
   /////////////////////////////////////////////////////////////////////////////
   hr=pCollection->lpVtbl->GetCount(pCollection,
@@ -1414,23 +1430,17 @@ int ConfigDialog(Player *pPlayer/*, HINSTANCE hInstance*/, HWND hWndParent)
   }
 
   DPRINTF(0,"  got the device count: %d\n",nDevices);
-  config.nDevices=nDevices;
+  pConfig->nDevices=nDevices;
+
+  pConfig->hDlg = hWndParent;
+  SetWindowLongPtr(hWndParent, GWLP_USERDATA, (LONG_PTR)pConfig);
+  ConfigOnInit(hWndParent, pConfig);
 
   /////////////////////////////////////////////////////////////////////////////
-  WADialogBoxParam(
-    IDD_CONFIG,       // _In_      LPCTSTR lpTemplateName,
-    hWndParent,       // _In_opt_  HWND hWndParent,
-    ConfigProc,       // _In_opt_  DLGPROC lpDialogFunc,
-    (LPARAM)&config   // _In_      LPARAM dwInitParam
-  );
-
-  /////////////////////////////////////////////////////////////////////////////
-  state=0;
 //cleanup:
 count:
-  pCollection->lpVtbl->Release(pCollection);
 collection:
 enumerator:
 pages:
-  return state;
+  return;
 }

@@ -29,21 +29,23 @@
 int getwrittentime();
 int getoutputtime();
 
-int srate, numchan, bps, active;
-volatile int64_t writtentime, w_offset;
-int64_t start_t;
+int srate=0, numchan=0, bps=0, active=0;
+volatile int64_t writtentime=0, w_offset=0;
+int64_t start_t=0;
 static int last_pause=0;
 static int ref_true=1;
 static int loaded=0;
 
 static wchar_t *path;
 static PlayerDevice device;
-static Player player;
+Player player;
 static int bAudioClock;
 #if defined (YASAPI_GAPLESS) // {
 static int bReset;
 #endif // }
 static wchar_t out_module[MAX_PATH];
+
+static prefsDlgRecW* output_prefs;
 
 #if defined (YASAPI_GAPLESS) // {
 #define OUT_YASAPI_SUBCLASS
@@ -116,11 +118,10 @@ extern __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode);
 void config(HWND hwnd)
 {
   DPRINTF(0,"%s\n",__func__);
-  // incase the user only goes to the
-  // config, this ensure we've setup
-  // correctly otherwise all crashes
-  winampGetOutModeChange(OUT_SET);
-  ConfigDialog(&player/*,plugin.hDllInstance*/,hwnd);
+  if (output_prefs != NULL)
+  {
+    PostMessage(plugin.hMainWindow, WM_WA_IPC, (WPARAM)output_prefs, IPC_OPENPREFSTOPAGE);
+  }
 }
 
 void about(HWND hwnd)
@@ -540,4 +541,26 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 			break;
 		}
 	}
+}
+
+HINSTANCE WASABI_API_LNG_HINST = NULL;
+INT_PTR CALLBACK ConfigProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+__declspec(dllexport) BOOL __cdecl winampGetOutPrefs(prefsDlgRecW* prefs)
+{
+	// this is called when the preferences window is being created
+	// and is used for the delayed registering of a native prefs
+	// page to be placed as a child of the 'Output' node (why not)
+	if (prefs)
+	{
+		// TODO localise
+		prefs->hInst = plugin.hDllInstance/*WASABI_API_LNG_HINST*/;
+		prefs->dlgID = IDD_CONFIG;
+		prefs->name = _wcsdup((LPWSTR)GetLangString(IDS_WASAPI));
+		prefs->proc = (void *)ConfigProc;
+		prefs->where = 9;
+		output_prefs = prefs;
+		return TRUE;
+	}
+	return FALSE;
 }

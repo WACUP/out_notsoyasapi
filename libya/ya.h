@@ -242,7 +242,7 @@ typedef struct _ControlSliderCascadeList ControlSliderCascadeList;
 typedef struct _ControlSliderCascadeConfig ControlSliderCascadeConfig;
 typedef struct _ControlType ControlType;
 typedef struct _Control Control;
-
+typedef struct _Config Config;
 typedef struct _IPlayer IPlayer;
 typedef struct _Player Player;
 typedef struct _PlayerStub PlayerStub;

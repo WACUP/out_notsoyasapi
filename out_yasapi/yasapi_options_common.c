@@ -45,8 +45,8 @@ static const Property gcaCommonProperties[]={
   { YA_PROPERTY_ABOUTX,&gcIntType,offsetof(OptionsCommon,nAboutX),0 },
   { YA_PROPERTY_ABOUTY,&gcIntType,offsetof(OptionsCommon,nAboutY),0 },
 #else // } {
-  { YA_PROPERTY_CONFIGX,&gcIntType,offsetof(OptionsCommon,nPosX),0 },
-  { YA_PROPERTY_CONFIGY,&gcIntType,offsetof(OptionsCommon,nPosY),0 },
+  /*{ YA_PROPERTY_CONFIGX,&gcIntType,offsetof(OptionsCommon,nPosX),0 },
+  { YA_PROPERTY_CONFIGY,&gcIntType,offsetof(OptionsCommon,nPosY),0 },*/
 #endif // }
   { NULL,NULL,0,0 }
 };
@@ -59,8 +59,8 @@ static const Property gcaConfigProperties[]={
   { YA_PROPERTY_ABOUTX,&gcIntType,offsetof(OptionsCommon,nAboutX),0 },
   { YA_PROPERTY_ABOUTY,&gcIntType,offsetof(OptionsCommon,nAboutY),0 },
 #else // } {
-  { YA_PROPERTY_CONFIGX,&gcIntType,offsetof(OptionsCommon,nPosX),0 },
-  { YA_PROPERTY_CONFIGY,&gcIntType,offsetof(OptionsCommon,nPosY),0 },
+  /*{ YA_PROPERTY_CONFIGX,&gcIntType,offsetof(OptionsCommon,nPosX),0 },
+  { YA_PROPERTY_CONFIGY,&gcIntType,offsetof(OptionsCommon,nPosY),0 },*/
 #endif // }
   { NULL,NULL,0,0 }
 };
@@ -127,8 +127,8 @@ const OptionsCommon *OptionsCommonDefault(void)
     options.nAboutX=-1;
     options.nAboutY=-1;
 #else // } {
-    options.nPosX=-1;
-    options.nPosY=-1;
+    /*options.nPosX=-1;
+    options.nPosY=-1;*/
 #endif // }
 
     initialized=1;

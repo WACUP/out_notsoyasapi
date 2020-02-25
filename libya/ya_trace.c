@@ -378,6 +378,8 @@ void TraceControlsInit(HWND hDlg)
   ControlsSet(gcaTraceControls,hDlg,&trace);
 #else // } {
   const PlayerStub *pStub=PlayerStubGet();
+  if (pStub != NULL)
+  {
   const int *pIdc=pStub->lpVtbl->pTraceIdcs;
   const int *pMaxIdcs=pIdc+pStub->lpVtbl->nTraceIdcs;
 
@@ -401,6 +403,7 @@ void TraceControlsInit(HWND hDlg)
 
     EnableWindow(GetDlgItem(hDlg,*pIdc),FALSE);
     ++pIdc;
+	  }
   }
 #endif // }
 }
