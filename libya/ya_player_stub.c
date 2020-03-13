@@ -110,6 +110,8 @@ vtbl:
 
 void PlayerStubDestroy(PlayerStub *pStub)
 {
+  if (pStub != NULL)
+  {
   DPUTS(0,"  sending ping request\n");
 #if defined (YA_PLAYER_RUN) // {
   PlayerStubSend(pStub,1,0,pStub->lpVtbl->StopProc);
@@ -126,6 +128,7 @@ void PlayerStubDestroy(PlayerStub *pStub)
   QueueDestroy(&pStub->queue);
   pStub->pPlayer=NULL;
   pStub->lpVtbl=NULL;
+  }
 }
 
 const PlayerStub *PlayerStubGet(void)
