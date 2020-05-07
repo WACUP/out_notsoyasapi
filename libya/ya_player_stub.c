@@ -208,6 +208,11 @@ coinit:
     AvRevertMmThreadCharacteristics(hTask);
 #endif // }
 
+  if (pStub->hThread)
+  {
+	  CloseHandle(pStub->hThread);
+	  pStub->hThread = 0;
+  }
   return 0;
 }
 
