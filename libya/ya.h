@@ -100,21 +100,21 @@ extern "C" {
 
 ///////////////////////////////////////////////////////////////////////////////
 #define DUNKNOWN(y) \
-  messagea(1,0,&y,"UNKNOWN %x: \"%s\" (%d).\n",y,basenamea(__FILE__),__LINE__)
+  messagea(1,0,&y,"UNKNOWN %x: \"%s\" (%d).\n",y,__FILE__,__LINE__)
 #define DERROR(x,y,z) \
-  messagea(0,x,&y,#x ": \"%s\" (%d).\n",basenamea(__FILE__),__LINE__);\
+  messagea(0,x,&y,#x ": \"%s\" (%d).\n",__FILE__,__LINE__);\
   goto z
 #define DERRORC(x,y) \
-  messagea(0,x,&y,#x ": \"%s\" (%d).\n",basenamea(__FILE__),__LINE__)
+  messagea(0,x,&y,#x ": \"%s\" (%d).\n",__FILE__,__LINE__)
 /*#define DERRORV(x,y,format,...) \
-  messagea(0,x,&y,#x ": \"%s\" (%d).\n",basenamea(__FILE__),__LINE__, \
+  messagea(0,x,&y,#x ": \"%s\" (%d).\n",__FILE__,__LINE__, \
       __VA_ARGS__)*/
 #define DMESSAGE(m) messagea(1,0,NULL,"Error " m ": " \
-    "\"%s\" (%d).\n",basenamea(__FILE__),__LINE__)
+    "\"%s\" (%d).\n",__FILE__,__LINE__)
 #define DMESSAGEV(m,...) messagea(1,0,NULL,"Error " m \
-    ": \"%s\" (%d).\n",__VA_ARGS__,basenamea(__FILE__),__LINE__)
+    ": \"%s\" (%d).\n",__VA_ARGS__,__FILE__,__LINE__)
 #define DWMESSAGEV(m,...) messagew(1,0,NULL,L"Error " m \
-    L": \"%s\" (%d).\n",__VA_ARGS__,basenamew(__WFILE__),__LINE__)
+    L": \"%s\" (%d).\n",__VA_ARGS__,__WFILE__,__LINE__)
 
 #if defined (YA_DEBUG) // {
   #define DON(level) \
@@ -128,11 +128,11 @@ extern "C" {
   #define DWPRINTF(level,ws,...) \
       twprintf(&trace,level,ws,__VA_ARGS__)
   #define DWARNING(m) tprintf(&trace,0,"Warning " m \
-      ": \"%s\" (%d).\n",basenamea(__FILE__),__LINE__)
+      ": \"%s\" (%d).\n",__FILE__,__LINE__)
   #define DWARNINGV(m,...) tprintf(&trace,0,"Warning " m \
-      ": \"%s\" (%d).\n",__VA_ARGS__,basenamea(__FILE__),__LINE__)
+      ": \"%s\" (%d).\n",__VA_ARGS__,__FILE__,__LINE__)
   #define DWWARNINGV(m,...) twprintf(&trace,0,L"Warning " m \
-      L": \"%s\" (%d).\n",__VA_ARGS__,basenamew(__WFILE__),__LINE__)
+      L": \"%s\" (%d).\n",__VA_ARGS__,__WFILE__,__LINE__)
 #else // } {
   #define DON(level) 0
   #define DPUTS(level,cs)
@@ -156,7 +156,6 @@ extern "C" {
 #define YA_INT_MAX(n)           (~(~0ull<<((n)-1)))
 
 ///////////////////////////////////////////////////////////////////////////////
-const char *basenamea(const char *s);
 const wchar_t *basenamew(const wchar_t *s);
 wchar_t *yapath(wchar_t *file, HWND hWnd);
 void yafree(void *p);

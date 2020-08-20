@@ -56,7 +56,7 @@ extern Out_Module plugin;
 ///////////////////////////////////////////////////////////////////////////////
 #if ! defined (YASAPI_VER) // {
   #define YASAPI_VER            1.7.25
-  #define PLUGIN_VERSION        "1.2.2"
+  #define PLUGIN_VERSION        "1.2.3"
 #endif // }
 
 #define YASAPI_VERSION          YA_STR(YASAPI_VER)

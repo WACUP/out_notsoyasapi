@@ -83,6 +83,7 @@
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4244;4201;4100;4995;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <UseFullPaths>false</UseFullPaths>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

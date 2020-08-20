@@ -359,9 +359,9 @@ LRESULT TraceEnableDebug(HWND hDlg)
   ControlsGet(gcaTraceControls,hDlg,&trace);
   nDebug=trace.nDebug;
   bFile=trace.bFile;
-  EnableWindow(GetDlgItem(hDlg,idc_file),nDebug);
-  EnableWindow(GetDlgItem(hDlg,idc_label_sleep),!bFile&&nDebug);
-  EnableWindow(GetDlgItem(hDlg,idc_sleep),!bFile&&nDebug);
+  EnableControl(hDlg,idc_file,nDebug);
+  EnableControl(hDlg,idc_label_sleep,!bFile&&nDebug);
+  EnableControl(hDlg,idc_sleep,!bFile&&nDebug);
 
   return nDebug;
 }
@@ -380,29 +380,29 @@ void TraceControlsInit(HWND hDlg)
   const PlayerStub *pStub=PlayerStubGet();
   if (pStub != NULL)
   {
-  const int *pIdc=pStub->lpVtbl->pTraceIdcs;
-  const int *pMaxIdcs=pIdc+pStub->lpVtbl->nTraceIdcs;
+	  const int *pIdc = pStub->lpVtbl->pTraceIdcs;
+	  const int *pMaxIdcs = pIdc + pStub->lpVtbl->nTraceIdcs;
 
-  while (pIdc<pMaxIdcs) {
-    switch (-(1+pIdc-pStub->lpVtbl->pTraceIdcs)) {
-    case IDC_IS_DEBUG:
-      SendMessageW(GetDlgItem(hDlg,*pIdc),CB_ADDSTRING,0,(LPARAM)L"Off");
-      SendMessageW(GetDlgItem(hDlg,*pIdc),CB_SETCURSEL,0,0);
-      break;
-    case IDC_IS_FILE:
-      break;
-    case IDC_IS_SLEEP:
-      SendMessageW(GetDlgItem(hDlg,*pIdc),CB_ADDSTRING,0,(LPARAM)L"0 sec");
-      SendMessageW(GetDlgItem(hDlg,*pIdc),CB_SETCURSEL,0,0);
-      break;
-    case IDC_IS_LABEL_DEBUG:
-      break;
-    case IDC_IS_LABEL_SLEEP:
-      break;
-    }
+	  while (pIdc < pMaxIdcs) {
+		  switch (-(1 + pIdc - pStub->lpVtbl->pTraceIdcs)) {
+		  case IDC_IS_DEBUG:
+			  SendDlgItemMessage(hDlg, *pIdc, CB_ADDSTRING, 0, (LPARAM)L"Off");
+			  SendDlgItemMessage(hDlg, *pIdc, CB_SETCURSEL, 0, 0);
+			  break;
+		  case IDC_IS_FILE:
+			  break;
+		  case IDC_IS_SLEEP:
+			  SendDlgItemMessage(hDlg, *pIdc, CB_ADDSTRING, 0, (LPARAM)L"0 sec");
+			  SendDlgItemMessage(hDlg, *pIdc, CB_SETCURSEL, 0, 0);
+			  break;
+		  case IDC_IS_LABEL_DEBUG:
+			  break;
+		  case IDC_IS_LABEL_SLEEP:
+			  break;
+		  }
 
-    EnableWindow(GetDlgItem(hDlg,*pIdc),FALSE);
-    ++pIdc;
+		  EnableWindow(GetDlgItem(hDlg, *pIdc), FALSE);
+		  ++pIdc;
 	  }
   }
 #endif // }

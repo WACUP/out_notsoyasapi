@@ -98,6 +98,7 @@ PlayerStub *PlayerStubCreate(const IPlayer *lpVtbl, Player *pPlayer)
   return pStub;
 run:
   CloseHandle(pStub->hThread);
+  pStub->hThread=NULL;
 thread:
   StoreDestroy(&pStub->store);
 store:
@@ -112,22 +113,23 @@ void PlayerStubDestroy(PlayerStub *pStub)
 {
   if (pStub != NULL)
   {
-  DPUTS(0,"  sending ping request\n");
+    DPUTS(0,"  sending ping request\n");
 #if defined (YA_PLAYER_RUN) // {
-  PlayerStubSend(pStub,1,0,pStub->lpVtbl->StopProc);
+    PlayerStubSend(pStub,1,0,pStub->lpVtbl->StopProc);
 #else // } {
-  PLAYER_STUB_SEND(pStub,1,pStub->lpVtbl->GetStamp(pStub->pPlayer),PlayerPing);
+    PLAYER_STUB_SEND(pStub,1,pStub->lpVtbl->GetStamp(pStub->pPlayer),PlayerPing);
 #endif // }
-  DPUTS(0,"  waiting for thread to die\n");
-  WaitForSingleObject(pStub->hThread,INFINITE);
-  DPUTS(0,"  destroying thread\n");
-  CloseHandle(pStub->hThread);
-  DPUTS(0,"  destroying store\n");
-  StoreDestroy(&pStub->store);
-  DPUTS(0,"  destroying queue\n");
-  QueueDestroy(&pStub->queue);
-  pStub->pPlayer=NULL;
-  pStub->lpVtbl=NULL;
+    DPUTS(0,"  waiting for thread to die\n");
+    WaitForSingleObject(pStub->hThread,INFINITE);
+    DPUTS(0,"  destroying thread\n");
+    CloseHandle(pStub->hThread);
+	pStub->hThread=NULL;
+    DPUTS(0,"  destroying store\n");
+    StoreDestroy(&pStub->store);
+    DPUTS(0,"  destroying queue\n");
+    QueueDestroy(&pStub->queue);
+    pStub->pPlayer=NULL;
+    pStub->lpVtbl=NULL;
   }
 }
 
@@ -211,7 +213,7 @@ coinit:
   if (pStub->hThread)
   {
 	  CloseHandle(pStub->hThread);
-	  pStub->hThread = 0;
+	  pStub->hThread=NULL;
   }
   return 0;
 }

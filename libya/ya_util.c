@@ -19,16 +19,6 @@
  */
 #include <ya.h>
 
-const char *basenamea(const char *s)
-{
-  const char *p=s+strlen(s);
-
-  while (s<p&&'/'!=p[-1]&&'\\'!=p[-1]&&':'!=p[-1])
-    --p;
-
-  return p;
-}
-
 const wchar_t *basenamew(const wchar_t *s)
 {
   const wchar_t *p=s+wcslen(s);

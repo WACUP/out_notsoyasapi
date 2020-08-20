@@ -1531,7 +1531,7 @@ int PlayerWrite(Player *pPlayer, Request *pRequest)
   DPRINTF(DEBUG,"  > %s (%d) <\n",__func__,pPlayer->state);
 
 #if defined (YASAPI_FORCE24BIT) // {
-  if (0!=(len%pSource->nBytesPerFrame)) {
+  if (len && pSource->nBytesPerFrame && 0!=(len%pSource->nBytesPerFrame)) {
     //DMESSAGE("source data not frame aligned");
     goto align;
   }
@@ -1807,7 +1807,7 @@ int PlayerRead(Player *pPlayer, Request *pRequest)
 
   if (pPlayer->state<PLAYER_STATE_CONNECTED) {
     DPRINTF(0,"Warning: unexpected state: %d (%s, \"%s\", %d)\n",
-        pPlayer->state,__func__,basenamea(__FILE__),__LINE__);
+        pPlayer->state,__func__,__FILE__,__LINE__);
     goto state;
   }
   else if (ConnectionIsInvalid(&pPlayer->connect)) {

@@ -26,8 +26,8 @@
 #define PlayerHasChanged(pPlayer,module) \
   wcscmp((pPlayer)->base.pszFileName,module)
 
-int getwrittentime();
-int getoutputtime();
+int getwrittentime(void);
+int getoutputtime(void);
 
 int srate=0, numchan=0, bps=0, active=0;
 volatile int64_t writtentime=0, w_offset=0;
@@ -117,7 +117,7 @@ static int64_t GetAudioTime(void)
 extern __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode);
 void config(HWND hwnd)
 {
-  DPRINTF(0,"%s\n",__func__);
+  DPRINTF(0, "%s\n", __func__);
   if (output_prefs != NULL)
   {
     PostMessage(plugin.hMainWindow, WM_WA_IPC, (WPARAM)output_prefs, IPC_OPENPREFSTOPAGE);
@@ -134,12 +134,12 @@ void about(HWND hwnd)
 #endif // }
 }
 
-void init()
+void init(void)
 {
   SetupWasabiServices(&plugin);
 }
 
-void quit()
+void quit(void)
 {
   DPRINTF(0,"%s (%s)\n",__func__,player.base.pszFileName);
 
@@ -252,7 +252,7 @@ int open(int samplerate, int numchannels, int bitspersamp, int bufferlenms,
 #endif // }
 }
 
-void close()
+void close(void)
 {
 #if defined (YASAPI_GAPLESS) // {
   int bGapless=player.options.common.bGapless;
@@ -293,7 +293,7 @@ int write(char *buf, int len)
 #endif // }
 }
 
-int canwrite()
+int canwrite(void)
 {
   int bPause=ref_true==last_pause;
   int bytes;
@@ -305,7 +305,7 @@ int canwrite()
   return bytes;
 }
 
-int isplaying()
+int isplaying(void)
 {
 #if defined (YASAPI_GAPLESS) // {
   int bGapless=player.options.common.bGapless;
@@ -391,7 +391,7 @@ void flush(int t)
   writtentime=0;
 }
   
-int getoutputtime()
+int getoutputtime(void)
 {
 #if 0 // {
   if (last_pause)
@@ -406,7 +406,7 @@ int getoutputtime()
 #endif // }
 }
 
-int getwrittentime()
+int getwrittentime(void)
 {
   int t=srate*numchan;
   int ms=writtentime;
@@ -449,7 +449,7 @@ Out_Module plugin =
 	getwrittentime	// returns time written in MS (used for synching up vis stuff)
 };
 
-__declspec(dllexport) Out_Module * winampGetOutModule()
+__declspec(dllexport) Out_Module * winampGetOutModule(void)
 {
 	return &plugin;
 }
@@ -559,6 +559,7 @@ __declspec(dllexport) BOOL __cdecl winampGetOutPrefs(prefsDlgRecW* prefs)
 		prefs->name = _wcsdup((LPWSTR)GetLangString(IDS_WASAPI));
 		prefs->proc = (void *)ConfigProc;
 		prefs->where = 9;
+		prefs->_id = 52;
 		output_prefs = prefs;
 		return TRUE;
 	}

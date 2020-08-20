@@ -53,7 +53,7 @@ END
 IDD_CONFIG DIALOGEX 0, 0, 272, 325
 STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE
 EXSTYLE WS_EX_CONTROLPARENT
-FONT 8, "Ms Shell Dlg", 0, 0, 0x0
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     GROUPBOX        "WASAPI Configuration",IDC_STATIC,0,0,272,316
     GROUPBOX        "Output Device",IDC_STATIC,5,11,261,64
@@ -74,7 +74,7 @@ END
 
 IDD_PAGE_BUFFERS DIALOGEX 0, 0, 255, 140
 STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | DS_CONTROL | DS_CENTER | WS_CHILD
-FONT 8, "Ms Shell Dlg", 0, 0, 0x0
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     RTEXT           "Device Period:",IDC_STATIC_LABEL_DEVICE_PERIOD,1,7,51,8
     COMBOBOX        IDC_COMBOBOX_DEVICE_PERIOD,57,5,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
@@ -88,7 +88,7 @@ END
 
 IDD_PAGE_COMMON DIALOGEX 0, 0, 215, 140
 STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | DS_CONTROL | DS_CENTER | WS_CHILD
-FONT 8, "Ms Shell Dlg", 0, 0, 0x0
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "Enable volume control",IDC_CHECKBOX_VOLUME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,5,202,8
     CONTROL         "Enable gapless playback",IDC_CHECKBOX_GAPLESS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,19,202,8
@@ -116,7 +116,7 @@ END
 
 IDD_PAGE_DEVICE DIALOGEX 0, 0, 215, 140
 STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | DS_CONTROL | DS_CENTER | WS_CHILD
-FONT 8, "Ms Shell Dlg", 0, 0, 0x0
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     RTEXT           "Share Mode:",IDC_STATIC_LABEL_SHAREMODE,4,7,44,8
     COMBOBOX        IDC_COMBOBOX_SHAREMODE,52,5,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
@@ -137,7 +137,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_CONFIG, DIALOG
     BEGIN
@@ -175,8 +175,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,2,2,0
- PRODUCTVERSION 1,2,2,0
+ FILEVERSION 1,2,3,0
+ PRODUCTVERSION 1,2,3,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -193,12 +193,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "WACUP (WinAmp Community Update Project)"
             VALUE "FileDescription", "Winamp Output Plug-in"
-            VALUE "FileVersion", "1.2.2.0"
+            VALUE "FileVersion", "1.2.3.0"
             VALUE "InternalName", "out_notsoyasapi.dll"
             VALUE "LegalCopyright", "Copyright © 2015-2016 Peter Belkner, Not So YASAPI modifications by Darren Owen aka DrO © 2016-2020"
             VALUE "OriginalFilename", "out_notsoyasapi.dll"
             VALUE "ProductName", "Not So YASAPI"
-            VALUE "ProductVersion", "1.2.2.0"
+            VALUE "ProductVersion", "1.2.3.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -216,8 +216,10 @@ END
 #if defined(APSTUDIO_INVOKED) || defined(STANDALONE)
 #if defined(APSTUDIO_INVOKED)
 IDR_ABOUT_TEXT$(STANDALONE) TEXT                    "about.bin"
+
 #else
 IDR_ABOUT_TEXT          TEXT                    "about.bin"
+
 #endif
 #endif
 
@@ -229,8 +231,10 @@ IDR_ABOUT_TEXT          TEXT                    "about.bin"
 #if defined(APSTUDIO_INVOKED) || defined(WACUP_BUILD)
 #if defined(APSTUDIO_INVOKED)
 IDR_ABOUT_GZ$(WACUP_BUILD) GZ                      "about.bin.gz"
+
 #else
 IDR_ABOUT_GZ            GZ                      "about.bin.gz"
+
 #endif
 #endif
 
@@ -239,12 +243,12 @@ IDR_ABOUT_GZ            GZ                      "about.bin.gz"
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     65535                   "{6C82B613-30DD-4d1e-89D2-23672CD87679}"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_PLUGIN_NAME         "Not So YASAPI v%s"
     IDS_ABOUT_TEXT          "About message goes here"
@@ -264,7 +268,7 @@ BEGIN
     IDS_SYSTEM              "System"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_CLOCK_MODE          "Should the WACUP visualisation be synchronised\nby means of the IAudioClock interface (WASAPI)\nor the GetTickCount function (System)."
     IDS_VISUALISE_BUFFERS   "Whether the configuration dialog should visualize the ring and the shared buffers."
@@ -284,7 +288,7 @@ BEGIN
     IDS_16BIT_AS_24BIT      "Should WASAPI play 16-bit audio streams as 24-bit."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_DEFAULT             "Default"
     IDS_MINIMUM             "Minimum"

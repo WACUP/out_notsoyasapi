@@ -103,25 +103,22 @@ struct _Config {
 ///////////////////////////////////////////////////////////////////////////////
 static void SetShareMode(HWND hDlg, int eShareMode)
 {
-  SendMessageW(GetDlgItem(hDlg,IDC_COMBOBOX_SHAREMODE),CB_SETCURSEL,
-      eShareMode,0);
+	SendDlgItemMessage(hDlg,IDC_COMBOBOX_SHAREMODE,CB_SETCURSEL,eShareMode,0);
 }
 
 static void SetPull(HWND hDlg, int bPull)
 {
-  SendMessageW(GetDlgItem(hDlg,IDC_COMBOBOX_PULL),CB_SETCURSEL,bPull,0);
+	SendDlgItemMessage(hDlg,IDC_COMBOBOX_PULL,CB_SETCURSEL,bPull,0);
 }
 
 static int GetShareMode(HWND hDlg)
 {
-  return SendMessageW(GetDlgItem(hDlg,IDC_COMBOBOX_SHAREMODE),
-      CB_GETCURSEL,0,0);
+  return SendDlgItemMessage(hDlg,IDC_COMBOBOX_SHAREMODE,CB_GETCURSEL,0,0);
 }
 
 static int GetPull(HWND hDlg)
 {
-  return SendMessageW(GetDlgItem(hDlg,IDC_COMBOBOX_PULL),
-      CB_GETCURSEL,0,0);
+  return SendDlgItemMessage(hDlg,IDC_COMBOBOX_PULL,CB_GETCURSEL,0,0);
 }
 
 static int GetAutoConvertPCM(HWND hDlg)
@@ -149,22 +146,21 @@ static void SyncDevicePeriod(HWND hDlg, int eShareMode, int bPull)
   BOOL bShare=YASAPI_SHAREMODE_SHARE==eShareMode;
   BOOL bDevicePeriod=!(bShare&&bPull);
 
-  EnableWindow(GetDlgItem(hDlg,IDC_STATIC_LABEL_DEVICE_PERIOD),bDevicePeriod);
-  EnableWindow(GetDlgItem(hDlg,IDC_COMBOBOX_DEVICE_PERIOD),bDevicePeriod);
-  EnableWindow(GetDlgItem(hDlg,IDC_SLIDER_SHARE_SIZE),bDevicePeriod);
-  EnableWindow(GetDlgItem(hDlg,IDC_STATIC_SHARE_SIZE),bDevicePeriod);
+  EnableControl(hDlg,IDC_STATIC_LABEL_DEVICE_PERIOD,bDevicePeriod);
+  EnableControl(hDlg,IDC_COMBOBOX_DEVICE_PERIOD,bDevicePeriod);
+  EnableControl(hDlg,IDC_SLIDER_SHARE_SIZE,bDevicePeriod);
+  EnableControl(hDlg,IDC_STATIC_SHARE_SIZE,bDevicePeriod);
 }
 
 static void SyncSRC(HWND hDlg, int eShareMode, int bAutoConvertPCM)
 {
   if (YASAPI_SHAREMODE_EXCLUSIVE==eShareMode) {
-    EnableWindow(GetDlgItem(hDlg,IDC_CHECKBOX_AUTOCONVERT_PCM),FALSE);
-    EnableWindow(GetDlgItem(hDlg,IDC_CHECKBOX_SRC_DEFAULT_QUALITY),FALSE);
+    EnableControl(hDlg,IDC_CHECKBOX_AUTOCONVERT_PCM,FALSE);
+	EnableControl(hDlg,IDC_CHECKBOX_SRC_DEFAULT_QUALITY,FALSE);
   }
   else {
-    EnableWindow(GetDlgItem(hDlg,IDC_CHECKBOX_AUTOCONVERT_PCM),TRUE);
-    EnableWindow(GetDlgItem(hDlg,IDC_CHECKBOX_SRC_DEFAULT_QUALITY),
-        bAutoConvertPCM);
+    EnableControl(hDlg,IDC_CHECKBOX_AUTOCONVERT_PCM,TRUE);
+	EnableControl(hDlg,IDC_CHECKBOX_SRC_DEFAULT_QUALITY,bAutoConvertPCM);
   }
 }
 
@@ -175,10 +171,8 @@ static void SyncGapless(Config *pConfig)
   HWND hDlg=pConfig->aPages[PAGE_GAPLESS_OFFSET].hDlg;
   int bGapless=GetGapless(pConfig->aPages[PAGE_GAPLESS].hDlg);
 
-  EnableWindow(GetDlgItem(hDlg,IDC_RADIOBUTTON_GAPLESS_OFFSET_POSITION),
-      bGapless);
-  EnableWindow(GetDlgItem(hDlg,IDC_RADIOBUTTON_GAPLESS_OFFSET_TIME),
-      bGapless);
+  EnableControl(hDlg,IDC_RADIOBUTTON_GAPLESS_OFFSET_POSITION,bGapless);
+  EnableControl(hDlg,IDC_RADIOBUTTON_GAPLESS_OFFSET_TIME,bGapless);
 }
 #endif // }
 #endif // }
@@ -188,14 +182,14 @@ static void SyncBalance(HWND hDlg, int bPull, int bBalance)
 {
 
   if (bPull) {
-    EnableWindow(GetDlgItem(hDlg,IDC_CHECKBOX_BALANCE),FALSE);
-    EnableWindow(GetDlgItem(hDlg,IDC_SLIDER_BALANCE_START),FALSE);
-    EnableWindow(GetDlgItem(hDlg,IDC_STATIC_BALANCE_START),FALSE);
+    EnableControl(hDlg,IDC_CHECKBOX_BALANCE,FALSE);
+	EnableControl(hDlg,IDC_SLIDER_BALANCE_START,FALSE);
+	EnableControl(hDlg,IDC_STATIC_BALANCE_START,FALSE);
   }
   else {
-    EnableWindow(GetDlgItem(hDlg,IDC_CHECKBOX_BALANCE),TRUE);
-    EnableWindow(GetDlgItem(hDlg,IDC_SLIDER_BALANCE_START),bBalance);
-    EnableWindow(GetDlgItem(hDlg,IDC_STATIC_BALANCE_START),bBalance);
+    EnableControl(hDlg,IDC_CHECKBOX_BALANCE,TRUE);
+	EnableControl(hDlg,IDC_SLIDER_BALANCE_START,bBalance);
+	EnableControl(hDlg,IDC_STATIC_BALANCE_START,bBalance);
   }
 }
 #endif // }
@@ -379,10 +373,10 @@ static ConfigDevice *ConfigDeviceNew(Config *pConfig, int nDevice)
   else {
     /////////////////////////////////////////////////////////////////////////
 	IMMDeviceCollection *pCollection = pConfig->pCollection;
-    hr=pCollection->lpVtbl->Item(pCollection,
-      nDevice-1,      // [in]  UINT      nDevice,
-      &pDevice        // [out] IMMDevice **ppDevice
-    );
+	hr = pCollection->lpVtbl->Item(pCollection,
+		nDevice - 1,      // [in]  UINT      nDevice,
+		&pDevice        // [out] IMMDevice **ppDevice
+	);
 
     if (FAILED(hr)) {
       DERROR(E_POINTER,hr,device);
@@ -497,9 +491,9 @@ static void ConfigSyncVisualization(HWND hDlg, Config *pConfig)
     ConfigUpdateProgress(hWndShared,0);
   }
 
-  EnableWindow(GetDlgItem(pConfig->hDlg,IDC_STATIC_RING),bVisualization);
+  EnableControl(pConfig->hDlg,IDC_STATIC_RING,bVisualization);
   EnableWindow(hWndRing,bVisualization);
-  EnableWindow(GetDlgItem(pConfig->hDlg,IDC_STATIC_SHARED),bVisualization);
+  EnableControl(pConfig->hDlg,IDC_STATIC_SHARED,bVisualization);
   EnableWindow(hWndShared,bVisualization);
 
   pConfig->options.common.bVisualization=bVisualization;
@@ -512,9 +506,9 @@ static LRESULT ConfigEnableDebug(HWND hDlg, LRESULT nDebug)
 {
   int bFile=IsDlgButtonChecked(hDlg,IDC_CHECKBOX_FILE);
 
-  EnableWindow(GetDlgItem(hDlg,IDC_CHECKBOX_FILE),nDebug);
-  EnableWindow(GetDlgItem(hDlg,IDC_STATIC_LABEL_SLEEP),!bFile&&nDebug);
-  EnableWindow(GetDlgItem(hDlg,IDC_COMBOBOX_SLEEP),!bFile&&nDebug);
+  EnableControl(hDlg,IDC_CHECKBOX_FILE,nDebug);
+  EnableControl(hDlg,IDC_STATIC_LABEL_SLEEP,!bFile&&nDebug);
+  EnableControl(hDlg,IDC_COMBOBOX_SLEEP,!bFile&&nDebug);
 
   return nDebug;
 }
@@ -543,12 +537,12 @@ static void CommonSyncCheckUndeflow(HWND hDlg)
   int bDisconnect=IsDlgButtonChecked(hDlg,IDC_CHECKBOX_DISCONNECT);
 
   if (!bGapless) {
-    EnableWindow(GetDlgItem(hDlg,IDC_CHECKBOX_DISCONNECT),FALSE);
-    EnableWindow(GetDlgItem(hDlg,IDC_COMBOBOX_CHECK_UNDERFLOW),FALSE);
+    EnableControl(hDlg,IDC_CHECKBOX_DISCONNECT,FALSE);
+	EnableControl(hDlg,IDC_COMBOBOX_CHECK_UNDERFLOW,FALSE);
   }
   else {
-    EnableWindow(GetDlgItem(hDlg,IDC_CHECKBOX_DISCONNECT),TRUE);
-    EnableWindow(GetDlgItem(hDlg,IDC_COMBOBOX_CHECK_UNDERFLOW),bDisconnect);
+    EnableControl(hDlg,IDC_CHECKBOX_DISCONNECT,TRUE);
+	EnableControl(hDlg,IDC_COMBOBOX_CHECK_UNDERFLOW,bDisconnect);
   }
 }
 #endif // }
@@ -575,34 +569,34 @@ static INT_PTR CALLBACK CommonProc(HWND hDlg, UINT uMsg, WPARAM wParam,
 #endif // }
     ControlsInit(gcaCommonControls,hDlg/*,pConfig->hModule*/);
 #if ! defined (YASAPI_GAPLESS) // {
-    EnableWindow(GetDlgItem(hDlg,IDC_STATIC_LABEL_GAPLESS),FALSE);
-    EnableWindow(GetDlgItem(hDlg,IDC_CHECKBOX_GAPLESS),FALSE);
-    EnableWindow(GetDlgItem(hDlg,IDC_CHECKBOX_DISCONNECT),FALSE);
+	EnableControl(hDlg,IDC_STATIC_LABEL_GAPLESS,FALSE);
+	EnableControl(hDlg,IDC_CHECKBOX_GAPLESS,FALSE);
+	EnableControl(hDlg,IDC_CHECKBOX_DISCONNECT,FALSE);
 #if defined (YASAPI_CHECK_UNDERFLOW) // {
-    EnableWindow(GetDlgItem(hDlg,IDC_COMBOBOX_CHECK_UNDERFLOW),FALSE);
+	EnableControl(hDlg,IDC_COMBOBOX_CHECK_UNDERFLOW,FALSE);
 #else // } {
 #endif // }
 #endif // }
 #if ! defined (YASAPI_SURROUND) // {
-    EnableWindow(GetDlgItem(hDlg,IDC_STATIC_LABEL_SURROUND),FALSE);
-    EnableWindow(GetDlgItem(hDlg,IDC_CHECKBOX_SURROUND),FALSE);
+	EnableControl(hDlg,IDC_STATIC_LABEL_SURROUND,FALSE);
+	EnableControl(hDlg,IDC_CHECKBOX_SURROUND,FALSE);
 #endif // }
 #if 0 // {
 #if ! defined (YA_DEBUG) // {
-    EnableWindow(GetDlgItem(hDlg,IDC_STATIC_LABEL_DEBUG),FALSE);
-    SendMessageW(GetDlgItem(hDlg,IDC_COMBOBOX_DEBUG),
+	EnableControl(hDlg,IDC_STATIC_LABEL_DEBUG,FALSE);
+	SendDlgItemMessage(hDlg,IDC_COMBOBOX_DEBUG,
         CB_ADDSTRING,0,(LPARAM)L"Off");
-    SendMessageW(GetDlgItem(hDlg,IDC_COMBOBOX_DEBUG),
+	SendDlgItemMessage(hDlg,IDC_COMBOBOX_DEBUG,
         CB_SETCURSEL,0,0);
-    EnableWindow(GetDlgItem(hDlg,IDC_COMBOBOX_DEBUG),FALSE);
+	EnableControl(hDlg,IDC_COMBOBOX_DEBUG,FALSE);
 
-    EnableWindow(GetDlgItem(hDlg,IDC_STATIC_LABEL_SLEEP),FALSE);
-    EnableWindow(GetDlgItem(hDlg,IDC_CHECKBOX_FILE),FALSE);
-    SendMessageW(GetDlgItem(hDlg,IDC_COMBOBOX_SLEEP),
+	EnableControl(hDlg,IDC_STATIC_LABEL_SLEEP,FALSE);
+	EnableControl(hDlg,IDC_CHECKBOX_FILE,FALSE);
+	SendDlgItemMessage(hDlg,IDC_COMBOBOX_SLEEP,
         CB_ADDSTRING,0,(LPARAM)L"0 sec");
-    SendMessageW(GetDlgItem(hDlg,IDC_COMBOBOX_SLEEP),
+	SendDlgItemMessage(hDlg,IDC_COMBOBOX_SLEEP,
         CB_SETCURSEL,0,0);
-    EnableWindow(GetDlgItem(hDlg,IDC_COMBOBOX_SLEEP),FALSE);
+	EnableControl(hDlg,IDC_COMBOBOX_SLEEP,FALSE);
 #endif // }
 #endif // }
     return TRUE;
@@ -711,19 +705,19 @@ static INT_PTR CALLBACK DeviceProc(HWND hDlg, UINT uMsg, WPARAM wParam,
     ControlsInit(gcaDeviceControls,hDlg/*,pConfig->hModule*/);
 
 #if ! defined (YASAPI_FORCE24BIT) // {
-    ShowWindow(GetDlgItem(hDlg,IDC_STATIC_LABEL_FORCE24BIT),FALSE);
-    ShowWindow(GetDlgItem(hDlg,IDC_CHECKBOX_FORMAT_FORCE24BIT),FALSE);
+	ShowControl(hDlg,IDC_STATIC_LABEL_FORCE24BIT,FALSE);
+	ShowControl(hDlg,IDC_CHECKBOX_FORMAT_FORCE24BIT,FALSE);
 #endif // }
 #if ! defined (YASAPI_GAPLESS) // {
-    ShowWindow(GetDlgItem(hDlg,IDC_STATIC_LABEL_GAPLESS_OFFSET),FALSE);
-    ShowWindow(GetDlgItem(hDlg,IDC_RADIOBUTTON_GAPLESS_OFFSET_POSITION),FALSE);
-    ShowWindow(GetDlgItem(hDlg,IDC_RADIOBUTTON_GAPLESS_OFFSET_TIME),FALSE);
+	ShowControl(hDlg,IDC_STATIC_LABEL_GAPLESS_OFFSET,FALSE);
+	ShowControl(hDlg,IDC_RADIOBUTTON_GAPLESS_OFFSET_POSITION,FALSE);
+	ShowControl(hDlg,IDC_RADIOBUTTON_GAPLESS_OFFSET_TIME,FALSE);
 #endif // }
 #if ! defined (YASAPI_BALANCE) // {
 #if 0 // {
-    ShowWindow(GetDlgItem(hDlg,IDC_CHECKBOX_BALANCE),FALSE);
-    ShowWindow(GetDlgItem(hDlg,IDC_SLIDER_BALANCE_START),FALSE);
-    ShowWindow(GetDlgItem(hDlg,IDC_STATIC_BALANCE_START),FALSE);
+	ShowControl(hDlg,IDC_CHECKBOX_BALANCE,FALSE);
+	ShowControl(hDlg,IDC_SLIDER_BALANCE_START,FALSE);
+	ShowControl(hDlg,IDC_STATIC_BALANCE_START,FALSE);
 #endif // }
 #endif // }
     return TRUE;
@@ -1096,15 +1090,15 @@ void ConfigReset(Config *pConfig)
 {
 	if (pConfig != NULL)
 	{
-  int cPage;
-  Page *pPage;
+		int cPage;
+		Page *pPage;
 
-  ControlsSet(gcaCoreDeviceControls,pConfig->hDlg,OptionsDeviceDefault());
+		ControlsSet(gcaCoreDeviceControls, pConfig->hDlg, OptionsDeviceDefault());
 
-  for (cPage=0,pPage=pConfig->aPages;cPage<NUM_PAGES;++cPage,++pPage)
+		for (cPage = 0, pPage = pConfig->aPages; cPage < NUM_PAGES; ++cPage, ++pPage)
 		{
-    pPage->vmt->Reset(pPage,pConfig);
-}
+			pPage->vmt->Reset(pPage, pConfig);
+		}
 	}
 }
 
@@ -1136,58 +1130,58 @@ void ConfigSave(Config *pConfig)
 {
 	if (pConfig != NULL)
 	{
-  Player *pPlayer=pConfig->pPlayer;
-  HWND hComboBox=GetDlgItem(pConfig->hDlg,IDC_COMBOBOX_DEVICE);
-  DWORD cDevice=SendMessageW(hComboBox,CB_GETCURSEL,0,0);
-  ConfigDevice *pConfigDevice=(ConfigDevice *)SendMessageW(hComboBox,
-      CB_GETITEMDATA,cDevice,0);
+		Player *pPlayer = pConfig->pPlayer;
+		HWND hComboBox = GetDlgItem(pConfig->hDlg, IDC_COMBOBOX_DEVICE);
+		DWORD cDevice = SendMessageW(hComboBox, CB_GETCURSEL, 0, 0);
+		ConfigDevice *pConfigDevice = (ConfigDevice *)SendMessageW(hComboBox,
+			CB_GETITEMDATA, cDevice, 0);
 
-  if (pConfigDevice) {
-    // should be called before the lock in order to not dead-lock this window.
-    ConfigGet(pConfig);
-    PLAYER_SEND(pPlayer,PlayerWriteConfig,pConfigDevice);
-  }
-}
+		if (pConfigDevice) {
+			// should be called before the lock in order to not dead-lock this window.
+			ConfigGet(pConfig);
+			PLAYER_SEND(pPlayer, PlayerWriteConfig, pConfigDevice);
+		}
+	}
 }
 
 void ConfigSaveSpecific(Config *pConfig)
 {
 	if (pConfig)
 	{
-  Player *pPlayer=pConfig->pPlayer;
-  /*HWND hComboBox=GetDlgItem(pConfig->hDlg,IDC_COMBOBOX_DEVICE);
-  DWORD cDevice=SendMessageW(hComboBox,CB_GETCURSEL,0,0);
-  ConfigDevice *pConfigDevice=(ConfigDevice *)SendMessageW(hComboBox,
-      CB_GETITEMDATA,cDevice,0);*/
+		Player *pPlayer = pConfig->pPlayer;
+		/*HWND hComboBox=GetDlgItem(pConfig->hDlg,IDC_COMBOBOX_DEVICE);
+		DWORD cDevice=SendMessageW(hComboBox,CB_GETCURSEL,0,0);
+		ConfigDevice *pConfigDevice=(ConfigDevice *)SendMessageW(hComboBox,
+			CB_GETITEMDATA,cDevice,0);*/
 
-  //if (pConfigDevice) {
-    // should be called before the lock in order to not dead-lock this window.
-    ConfigGet(pConfig);
-    PLAYER_SEND(pPlayer,PlayerWriteConfigSpecific);
-  //}
-}
+			//if (pConfigDevice) {
+			  // should be called before the lock in order to not dead-lock this window.
+		ConfigGet(pConfig);
+		PLAYER_SEND(pPlayer, PlayerWriteConfigSpecific);
+		//}
+	}
 }
 
 static void ConfigEndDialog(HWND hDlg, Config *pConfig, INT_PTR nResult)
 {
 	if (pConfig != NULL)
 	{
-  HWND hComboBox=GetDlgItem(hDlg,IDC_COMBOBOX_DEVICE);
-  int nDevices=1+pConfig->nDevices;
+		HWND hComboBox = GetDlgItem(hDlg, IDC_COMBOBOX_DEVICE);
+		int nDevices = 1 + pConfig->nDevices;
 
-  pConfig->pPlayer->hDlgConfig=NULL;
+		pConfig->pPlayer->hDlgConfig = NULL;
 
-  while (0<nDevices) {
-    ConfigDevice *pConfigDevice
-        =(ConfigDevice *)SendMessageW(hComboBox,CB_GETITEMDATA,--nDevices,0);
+		while (0 < nDevices) {
+			ConfigDevice *pConfigDevice
+				= (ConfigDevice *)SendMessageW(hComboBox, CB_GETITEMDATA, --nDevices, 0);
 
-    if (pConfigDevice) {
-      ConfigDeviceDelete(pConfigDevice);
-      SendMessageW(hComboBox,CB_SETITEMDATA,nDevices,(LPARAM)NULL);
-    }
-  }
+			if (pConfigDevice) {
+				ConfigDeviceDelete(pConfigDevice);
+				SendMessageW(hComboBox, CB_SETITEMDATA, nDevices, (LPARAM)NULL);
+			}
+		}
 	}
-  EndDialog(hDlg,nResult);
+	EndDialog(hDlg,nResult);
 }
 
 static void ConfigOnSelChangeComboBox(HWND hDlg,Config *pConfig,
@@ -1253,7 +1247,7 @@ INT_PTR CALLBACK ConfigProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	  extern Player player;
 	  ConfigDialog(&player, pConfig, hDlg);
-    return TRUE;
+	  return TRUE;
   }
   case WM_DESTROY:
   {
@@ -1263,8 +1257,8 @@ INT_PTR CALLBACK ConfigProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	  // the old method was a blocking dialog
 	  if (pConfig != NULL)
 	  {
-      ConfigSave(pConfig);
-      ConfigEndDialog(hDlg,pConfig,TRUE);
+		  ConfigSave(pConfig);
+		  ConfigEndDialog(hDlg, pConfig, TRUE);
 
 		  if (pConfig->pCollection != NULL)
 		  {
@@ -1393,11 +1387,11 @@ void ConfigDialog(Player *pPlayer, Config *pConfig, HWND hWndParent)
 
   /////////////////////////////////////////////////////////////////////////////
   if (pEnumerator) {
-  hr=pEnumerator->lpVtbl->EnumAudioEndpoints(pEnumerator,
-    eRender,              // [in]  EDataFlow           dataFlow,
-    DEVICE_STATE_ACTIVE,  // [in]  DWORD               dwStateMask,
-    &pCollection          // [out] IMMDeviceCollection **ppDevices
-  );
+	  hr=pEnumerator->lpVtbl->EnumAudioEndpoints(pEnumerator,
+		eRender,              // [in]  EDataFlow           dataFlow,
+		DEVICE_STATE_ACTIVE,  // [in]  DWORD               dwStateMask,
+		&pCollection          // [out] IMMDeviceCollection **ppDevices
+	  );
   }
 
   if (FAILED(hr)) {
