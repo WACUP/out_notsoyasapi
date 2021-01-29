@@ -862,7 +862,7 @@ ring:
   return -1;
 }
 #endif // }
-
+#if 0 // {
 int PlayerGetMaxLatency(Player *pPlayer)
 {
   Connection *pConnect=&pPlayer->connect;
@@ -870,7 +870,7 @@ int PlayerGetMaxLatency(Player *pPlayer)
 
   return YASAPI_FRAMES_MS(pConnect->uFramesMin,pwfx);
 }
-
+#endif // }
 int PlayerOpen(Player *pPlayer, Request *pRequest)
 {
 #if 0 // {
@@ -966,7 +966,7 @@ int PlayerOpen(Player *pPlayer, Request *pRequest)
     goto time;
   }
 
-  return PlayerGetMaxLatency(pPlayer);
+  return 0/*/PlayerGetMaxLatency(pPlayer)/**/;
 time:
   RingDestroy(&pPlayer->open.ring);
 ring:
@@ -1065,7 +1065,7 @@ int PlayerMigrate(Player *pPlayer, Request *pRequest)
 
   PlayerTryStart(pPlayer,0);
 
-  return PlayerGetMaxLatency(pPlayer);
+  return 0/*/PlayerGetMaxLatency(pPlayer)/**/;
 time:
   RingDestroy(&pPlayer->open.ring);
 ring:
@@ -1141,7 +1141,7 @@ int PlayerReset(Player *pPlayer, Request *pRequest)
   }
 #endif // }
 
-  return PlayerGetMaxLatency(pPlayer);
+  return 0/*/PlayerGetMaxLatency(pPlayer)/**/;
 //add:
 //padding:
 reset:

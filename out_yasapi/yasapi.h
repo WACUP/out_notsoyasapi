@@ -56,7 +56,7 @@ extern Out_Module plugin;
 ///////////////////////////////////////////////////////////////////////////////
 #if ! defined (YASAPI_VER) // {
   #define YASAPI_VER            1.7.25
-  #define PLUGIN_VERSION        "1.2.3"
+  #define PLUGIN_VERSION        "1.2.5"
 #endif // }
 
 #define YASAPI_VERSION          YA_STR(YASAPI_VER)
@@ -99,8 +99,11 @@ extern Out_Module plugin;
     (AUDCLNT_SHAREMODE_SHARED==(eShareMode)?"SHARED":"EXCLUSIVE")
 
 ///////////////////////////////////////////////////////////////////////////////
+#if 0 // {
 #define YASAPI_FRAMES_MS(nFrames,pwfx) \
   MulDiv(1000,nFrames,(pwfx)->nSamplesPerSec)
+#endif // }
+
 #define YASAPI_FRAMES_TIMER(nFrames,pwfx) \
   (10000.0*1000*(nFrames)/(pwfx)->nSamplesPerSec)
 
@@ -606,7 +609,9 @@ int PlayerCreateConnect(Player *pPlayer, int bNegociate, int bReset);
 int PlayerCreateWFXX(Player *pPlayer, Request *pRequest);
 int PlayerCreateRing(Player *pPlayer);
 int PlayerReallocRing(Player *pPlayer);
+#if 0 // {
 int PlayerGetMaxLatency(Player *pPlayer);
+#endif // }
 int PlayerOpen(Player *pPlayer, Request *pRequest);
 #if defined (YASAPI_NOTIFY) // {
 int PlayerMigrate(Player *pPlayer, Request *pRequest);

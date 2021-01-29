@@ -21,7 +21,9 @@
 #define __YASAPI_GUID_H__
 #include <windows.h>
 #include <commctrl.h>
+#pragma component(browser, off, references)
 #include <shlobj.h>
+#pragma component(browser, on, references)
 #include <audioclient.h>
 #include <mmdeviceapi.h>
 #include <mftransform.h>

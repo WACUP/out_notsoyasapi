@@ -21,15 +21,17 @@
 
 #define GetTime(time) \
   (bAudioClock?time:GetTickCount())
+#if defined (OUT_YASAPI_SUBCLASS) // {
 #define PlayerIsUnderfow(pPlayer) \
   (PLAYER_STATE_UNDERFLOW==(pPlayer)->state)
+#endif // }
 #define PlayerHasChanged(pPlayer,module) \
   wcscmp((pPlayer)->base.pszFileName,module)
 
 int getwrittentime(void);
 int getoutputtime(void);
 
-int srate=0, numchan=0, bps=0, active=0;
+int srate=0, numchan=0, bps=0;
 volatile int64_t writtentime=0, w_offset=0;
 int64_t start_t=0;
 static int last_pause=0;
@@ -48,7 +50,7 @@ static wchar_t out_module[MAX_PATH];
 static prefsDlgRecW* output_prefs;
 
 #if defined (YASAPI_GAPLESS) // {
-#define OUT_YASAPI_SUBCLASS
+//#define OUT_YASAPI_SUBCLASS
 #endif // }
 
 static int PlayerSendOpen(int _srate, int _numchan, int _bps)
@@ -209,7 +211,6 @@ int open(int samplerate, int numchannels, int bitspersamp, int bufferlenms,
   reset();
   lstrcpyn(out_module, player.base.pszFileName, ARRAYSIZE(out_module));
 
-  active=1;
   numchan = numchannels;
   srate = samplerate;
   bps = bitspersamp;
@@ -383,7 +384,7 @@ void setpan(int pan)
 void flush(int t)
 {
   int64_t time=0;
-  
+
   DPRINTF(0,"%s\n",__func__);
   PLAYER_SEND(&player,PlayerFlush,&time);
   w_offset=t;
@@ -466,6 +467,9 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 	{
 		case OUT_UNSET:
 		{
+#if ! defined (OUT_YASAPI_SUBCLASS) // {
+			out_module[0] = 0;
+#endif // }
 			// we've been unloaded so we can 
 			// reset everything just in-case
 			break;
@@ -522,6 +526,9 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 					goto player;
 				  }
 
+				#if ! defined (OUT_YASAPI_SUBCLASS) // {
+				  lstrcpyn(out_module, player.base.pszFileName, ARRAYSIZE(out_module));
+				#endif // }
 				  loaded = TRUE;
 				  return;
 				//cleanup:
@@ -529,6 +536,8 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 				#if defined (OUT_YASAPI_SUBCLASS) // {
 				  UnSubclass(plugin.hMainWindow, PluginWinampProc);
 				subclass:
+				#else
+				  out_module[0] = 0;
 				#endif // }
 				#if defined (YASAPI_CO_INITIALIZE) // {
 				  CoUninitialize();

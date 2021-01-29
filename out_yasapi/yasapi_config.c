@@ -1000,7 +1000,7 @@ static int ConfigInitTabControl(HWND hDlg, Config *pConfig, int idc)
       goto param;
     }
 
-	SendMessage(plugin.hMainWindow,WM_WA_IPC,(WPARAM)pConfig->aPages[nPageCreate].hDlg,IPC_USE_UXTHEME_FUNC);
+	UXThemeFunc((WPARAM)pConfig->aPages[nPageCreate].hDlg);
   }
   BringWindowToTop(hWndTab);
   SendMessage(hWndTab,TCM_SETCURSEL,pConfig->options.common.nPage,0);
