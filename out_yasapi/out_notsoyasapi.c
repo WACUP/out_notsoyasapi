@@ -122,7 +122,7 @@ void config(HWND hwnd)
   DPRINTF(0, "%s\n", __func__);
   if (output_prefs != NULL)
   {
-    PostMessage(plugin.hMainWindow, WM_WA_IPC, (WPARAM)output_prefs, IPC_OPENPREFSTOPAGE);
+	  OpenPrefsPage((WPARAM)output_prefs);
   }
 }
 

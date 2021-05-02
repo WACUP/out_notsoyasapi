@@ -965,8 +965,10 @@ int PlayerOpen(Player *pPlayer, Request *pRequest)
     DMESSAGE("re-setting time offset");
     goto time;
   }
-
-  return 0/*/PlayerGetMaxLatency(pPlayer)/**/;
+  // in_mp3 doesn't like this returning zero when
+  // attempting to play streams so we'll return 1
+  // which also will keep the main vis working ok
+  return 1/*/PlayerGetMaxLatency(pPlayer)/**/;
 time:
   RingDestroy(&pPlayer->open.ring);
 ring:
@@ -1932,6 +1934,9 @@ int PlayerSend(Player *pPlayer, const char *id, PlayerProc *pPlayerProc, ...)
 int PlayerSend(Player *pPlayer, PlayerProc *pPlayerProc, ...)
 #endif // }
 {
+  if (!pPlayer->base.pStub)
+    return -1;
+
   va_list ap;
   int state;
 
