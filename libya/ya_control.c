@@ -59,9 +59,9 @@ void ControlAddToolTip(HWND hDlg, HWND hWnd, int idc, UINT idText/*PWSTR pszText
     ti.uFlags=TTF_IDISHWND|TTF_SUBCLASS;
     ti.uId=(UINT_PTR)GetDlgItem(hDlg,idc);
     ti.lpszText=(wchar_t*)GetLangString(idText)/*pszText*/;
-    SendMessageW(hWnd,TTM_ADDTOOLW,0,(LPARAM)&ti);
-	SendMessageW(hWnd,TTM_SETMAXTIPWIDTH,0,(LPARAM)450);
-	SendMessageW(hWnd,TTM_SETWINDOWTHEME,0,(LPARAM)L"");
+    SendMessage(hWnd,TTM_ADDTOOLW,0,(LPARAM)&ti);
+	SendMessage(hWnd,TTM_SETMAXTIPWIDTH,0,(LPARAM)450);
+	SendMessage(hWnd,TTM_SETWINDOWTHEME,0,(LPARAM)L"");
   }
 }
 
@@ -184,7 +184,7 @@ static void SliderTypeInit(const Control *pControl, HWND hDlg, HWND hWnd)
   ControlAddToolTip(hDlg,hWnd,idcSlider,config->help);
 
   if (0<lMaxRange) {
-    SendMessageW(
+    SendMessage(
       GetDlgItem(hDlg,idcSlider), // _In_  HWND hWnd,
       TBM_SETRANGE,               // _In_  UINT Msg,
       FALSE,                      // _In_  WPARAM wParam (redraw flag),
@@ -217,13 +217,13 @@ static void SliderTypeSet(const Control *pControl, HWND hDlg,
   const ControlSliderConfig *config=pControl->config;
   double x=VALUE_DOUBLE(pData,config->offset);
   HWND hWndCtl=GetDlgItem(hDlg,config->idcSlider);
-  LRESULT lMin=SendMessageW(hWndCtl,TBM_GETRANGEMIN,0,0);
-  LRESULT lMax=SendMessageW(hWndCtl,TBM_GETRANGEMAX,0,0);
+  LRESULT lMin=SendMessage(hWndCtl,TBM_GETRANGEMIN,0,0);
+  LRESULT lMax=SendMessage(hWndCtl,TBM_GETRANGEMAX,0,0);
   LPARAM lPos=(double)lMin
       +(x-config->min)/(config->max-config->min)*(lMax-lMin)
       +0.5;
 
-  SendMessageW(hWndCtl,TBM_SETPOS,TRUE,lPos);
+  SendMessage(hWndCtl,TBM_SETPOS,TRUE,lPos);
   SliderTypeSetStatic(pControl,hDlg,x);
 }
 
@@ -233,9 +233,9 @@ static double SliderTypeGetSlider(const Control *pControl, HWND hDlg)
   double min=config->min;
   double max=config->max;
   HWND hWndCtl=GetDlgItem(hDlg,config->idcSlider);
-  LRESULT lMin=SendMessageW(hWndCtl,TBM_GETRANGEMIN,0,0);
-  LRESULT lMax=SendMessageW(hWndCtl,TBM_GETRANGEMAX,0,0);
-  LRESULT lPos=SendMessageW(hWndCtl,TBM_GETPOS,0,0);
+  LRESULT lMin=SendMessage(hWndCtl,TBM_GETRANGEMIN,0,0);
+  LRESULT lMax=SendMessage(hWndCtl,TBM_GETRANGEMAX,0,0);
+  LRESULT lPos=SendMessage(hWndCtl,TBM_GETPOS,0,0);
 
   return min+(max-min)*(lPos-lMin)/(lMax-lMin);
 }
@@ -272,7 +272,7 @@ static void ComboBoxTypeInit(const Control *pControl, HWND hDlg, HWND hWnd)
   ControlAddToolTip(hDlg,hWnd,config->idc,config->help);
 
   while (list->label) {
-    SendMessageW(hWndCtl,CB_ADDSTRING,0,(LPARAM)GetLangString(list->label));
+    SendMessage(hWndCtl,CB_ADDSTRING,0,(LPARAM)GetLangString(list->label));
     ++list;
   }
 }
@@ -288,7 +288,7 @@ static void ComboBoxTypeSet(const Control *pControl, HWND hDlg,
 
   while (list->label) {
     if (val==list->val) {
-      SendMessageW(hWndCtl,CB_SETCURSEL,wParam,0);
+      SendMessage(hWndCtl,CB_SETCURSEL,wParam,0);
       break;
     }
 
@@ -303,7 +303,7 @@ static void ComboBoxTypeGet(const Control *pControl, HWND hDlg,
   const ControlComboBoxConfig *config=pControl->config;
   const ControlComboBoxList *list=config->list;
   HWND hWndCtl=GetDlgItem(hDlg,config->idc);
-  LRESULT lCurSel=SendMessageW(hWndCtl,CB_GETCURSEL,0,0);
+  LRESULT lCurSel=SendMessage(hWndCtl,CB_GETCURSEL,0,0);
 
   VALUE_INT(pData,config->offset)=list[lCurSel].val;
 }
@@ -339,7 +339,7 @@ static LONG SliderCascadeGetHumbleWidth(HWND hWnd)
 #if 0 // {
   RECT rc;
 
-  SendMessageW(hWnd,TBM_GETTHUMBRECT,0,(LPARAM)&rc);
+  SendMessage(hWnd,TBM_GETTHUMBRECT,0,(LPARAM)&rc);
 
   return rc.right-rc.left;
 #else // } {
@@ -359,9 +359,9 @@ static LONG SliderCascadeGetSliderWidth(HWND hWnd)
 static void SliderCascadeSetSliderWidth(HWND hDlg, int idc, int idcParent)
 {
   HWND hWndParent=GetDlgItem(hDlg,idcParent);
-  LRESULT lRangeMinParent=SendMessageW(hWndParent,TBM_GETRANGEMIN,0,0);
-  LRESULT lRangeMaxParent=SendMessageW(hWndParent,TBM_GETRANGEMAX,0,0);
-  LRESULT lPosParent=SendMessageW(hWndParent,TBM_GETPOS,0,0);
+  LRESULT lRangeMinParent=SendMessage(hWndParent,TBM_GETRANGEMIN,0,0);
+  LRESULT lRangeMaxParent=SendMessage(hWndParent,TBM_GETRANGEMAX,0,0);
+  LRESULT lPosParent=SendMessage(hWndParent,TBM_GETPOS,0,0);
   HWND hWnd=GetDlgItem(hDlg,idc);
   LONG lWidth;
   RECT rc;
@@ -389,9 +389,9 @@ static double SliderCascadeGetSlider(HWND hDlg, int idc, LONG *plWidthParent,
     double min, double max)
 {
   HWND hWnd=GetDlgItem(hDlg,idc);
-  LRESULT lRangeMin=SendMessageW(hWnd,TBM_GETRANGEMIN,0,0);
-  LRESULT lRangeMax=SendMessageW(hWnd,TBM_GETRANGEMAX,0,0);
-  LRESULT lPos=SendMessageW(hWnd,TBM_GETPOS,0,0);
+  LRESULT lRangeMin=SendMessage(hWnd,TBM_GETRANGEMIN,0,0);
+  LRESULT lRangeMax=SendMessage(hWnd,TBM_GETRANGEMAX,0,0);
+  LRESULT lPos=SendMessage(hWnd,TBM_GETPOS,0,0);
   LONG lWidth=SliderCascadeGetSliderWidth(hWnd);
   double x=(max-min)*(lPos-lRangeMin)/(lRangeMax-lRangeMin);
 
@@ -409,8 +409,8 @@ void SliderCascadeSetSlider(HWND hDlg, int idc, LONG *plWidthRoot,
     double min, double max, double x)
 {
   HWND hWnd=GetDlgItem(hDlg,idc);
-  LRESULT lRangeMin=SendMessageW(hWnd,TBM_GETRANGEMIN,0,0);
-  LRESULT lRangeMax=SendMessageW(hWnd,TBM_GETRANGEMAX,0,0);
+  LRESULT lRangeMin=SendMessage(hWnd,TBM_GETRANGEMIN,0,0);
+  LRESULT lRangeMax=SendMessage(hWnd,TBM_GETRANGEMAX,0,0);
   LONG lWidth=SliderCascadeGetSliderWidth(hWnd);
   LPARAM lPos;
 
@@ -423,7 +423,7 @@ void SliderCascadeSetSlider(HWND hDlg, int idc, LONG *plWidthRoot,
     lPos=lRangeMin+(q*(x-min)/(max-min)*(lRangeMax-lRangeMin)+0.5);
   }
 
-  SendMessageW(hWnd,TBM_SETPOS,TRUE,lPos);
+  SendMessage(hWnd,TBM_SETPOS,TRUE,lPos);
 }
 
 ////////////////
@@ -437,7 +437,7 @@ static void SliderCascadeTypeInit(const Control *pControl, HWND hDlg,
 
   while (0<(idcSlider=list->idcSlider)) {
     if (0l<lMaxRange) {
-      SendMessageW(
+      SendMessage(
         GetDlgItem(hDlg,idcSlider), // _In_  HWND hWnd,
         TBM_SETRANGE,               // _In_  UINT Msg,
         FALSE,                      // _In_  WPARAM wParam (redraw flag),

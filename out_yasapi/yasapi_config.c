@@ -471,11 +471,11 @@ static void ConfigDeviceDelete(ConfigDevice *pConfigDevice)
 // set progress bar.
 static void ConfigUpdateProgress(HWND hWnd, WORD wParam)
 {
-  LRESULT lMin=SendMessageW(hWnd,PBM_GETRANGE,TRUE,0);
-  LRESULT lMax=SendMessageW(hWnd,PBM_GETRANGE,FALSE,0);
+  LRESULT lMin=SendMessage(hWnd,PBM_GETRANGE,TRUE,0);
+  LRESULT lMax=SendMessage(hWnd,PBM_GETRANGE,FALSE,0);
   WORD wPos=lMin+MulDiv(lMax-lMin,wParam,USHRT_MAX);
 
-  SendMessageW(hWnd,PBM_SETPOS,wPos,0);
+  SendMessage(hWnd,PBM_SETPOS,wPos,0);
 }
 
 static void ConfigSyncVisualization(HWND hDlg, Config *pConfig)
@@ -870,7 +870,7 @@ static int ResizeComboBoxDropDown(HWND hParent, HWND hComboBox, const wchar_t *s
 
 	if (size.cx > width)
 	{
-		SendMessageW(hComboBox, CB_SETDROPPEDWIDTH, size.cx, 0);
+		SendMessage(hComboBox, CB_SETDROPPEDWIDTH, size.cx, 0);
 	}
 
 	SelectObject(hdc, oldfont);
@@ -909,7 +909,7 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
     else
       pwszLabel=pConfigDevice->vName.pwszVal;
 
-    SendMessageW(hComboBox,CB_ADDSTRING,0,(LPARAM)pwszLabel);
+    SendMessage(hComboBox,CB_ADDSTRING,0,(LPARAM)pwszLabel);
 #ifndef WACUP_BUILD
 	comboWidth = ResizeComboBoxDropDown(hDlg,hComboBox,pwszLabel,comboWidth);
 #else
@@ -919,7 +919,7 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
     if (!cDevice)
       free(pwszLabel);
 
-    SendMessageW(hComboBox,CB_SETITEMDATA,cDevice,(LPARAM)pConfigDevice);
+    SendMessage(hComboBox,CB_SETITEMDATA,cDevice,(LPARAM)pConfigDevice);
 
     if (0==cDevice&&0==pOptions->common.szId[0])
       nDevice=cDevice+1;
@@ -927,7 +927,7 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
       nDevice=cDevice+1;
   }
 
-  SendMessageW(hComboBox,CB_SETCURSEL,nDevice?nDevice-1:0,0);
+  SendMessage(hComboBox,CB_SETCURSEL,nDevice?nDevice-1:0,0);
 //cleanup:
 label:
 config:
@@ -1132,8 +1132,8 @@ void ConfigSave(Config *pConfig)
 	{
 		Player *pPlayer = pConfig->pPlayer;
 		HWND hComboBox = GetDlgItem(pConfig->hDlg, IDC_COMBOBOX_DEVICE);
-		DWORD cDevice = SendMessageW(hComboBox, CB_GETCURSEL, 0, 0);
-		ConfigDevice *pConfigDevice = (ConfigDevice *)SendMessageW(hComboBox,
+		DWORD cDevice = SendMessage(hComboBox, CB_GETCURSEL, 0, 0);
+		ConfigDevice *pConfigDevice = (ConfigDevice *)SendMessage(hComboBox,
 			CB_GETITEMDATA, cDevice, 0);
 
 		if (pConfigDevice) {
@@ -1150,8 +1150,8 @@ void ConfigSaveSpecific(Config *pConfig)
 	{
 		Player *pPlayer = pConfig->pPlayer;
 		/*HWND hComboBox=GetDlgItem(pConfig->hDlg,IDC_COMBOBOX_DEVICE);
-		DWORD cDevice=SendMessageW(hComboBox,CB_GETCURSEL,0,0);
-		ConfigDevice *pConfigDevice=(ConfigDevice *)SendMessageW(hComboBox,
+		DWORD cDevice=SendMessage(hComboBox,CB_GETCURSEL,0,0);
+		ConfigDevice *pConfigDevice=(ConfigDevice *)SendMessage(hComboBox,
 			CB_GETITEMDATA,cDevice,0);*/
 
 			//if (pConfigDevice) {
@@ -1173,11 +1173,11 @@ static void ConfigEndDialog(HWND hDlg, Config *pConfig, INT_PTR nResult)
 
 		while (0 < nDevices) {
 			ConfigDevice *pConfigDevice
-				= (ConfigDevice *)SendMessageW(hComboBox, CB_GETITEMDATA, --nDevices, 0);
+				= (ConfigDevice *)SendMessage(hComboBox, CB_GETITEMDATA, --nDevices, 0);
 
 			if (pConfigDevice) {
 				ConfigDeviceDelete(pConfigDevice);
-				SendMessageW(hComboBox, CB_SETITEMDATA, nDevices, (LPARAM)NULL);
+				SendMessage(hComboBox, CB_SETITEMDATA, nDevices, (LPARAM)NULL);
 			}
 		}
 	}
@@ -1188,10 +1188,10 @@ static void ConfigOnSelChangeComboBox(HWND hDlg,Config *pConfig,
     HWND hComboBox)
 {
   Player *pPlayer=pConfig->pPlayer;
-  DWORD cDevice=SendMessageW(hComboBox,CB_GETCURSEL,0,0);
-  ConfigDevice *pConfigDevice=(ConfigDevice *)SendMessageW(hComboBox,
+  DWORD cDevice=SendMessage(hComboBox,CB_GETCURSEL,0,0);
+  ConfigDevice *pConfigDevice=(ConfigDevice *)SendMessage(hComboBox,
       CB_GETITEMDATA,cDevice,0);
-  DWORD nLen=SendMessageW(hComboBox,CB_GETLBTEXTLEN,cDevice,0);
+  DWORD nLen=SendMessage(hComboBox,CB_GETLBTEXTLEN,cDevice,0);
   wchar_t *pwszLabel;
 
   if (!pConfigDevice) {
@@ -1202,7 +1202,7 @@ static void ConfigOnSelChangeComboBox(HWND hDlg,Config *pConfig,
   if (NULL==(pwszLabel=malloc((nLen+1)*(sizeof *pwszLabel))))
     goto label;
 
-  SendMessageW(hComboBox,CB_GETLBTEXT,cDevice,(LPARAM)pwszLabel);
+  SendMessage(hComboBox,CB_GETLBTEXT,cDevice,(LPARAM)pwszLabel);
   pwszLabel[nLen]=0;
 
   OptionsDeviceLoad(&pConfig->options.device,L"    ",pConfigDevice->pstrId,

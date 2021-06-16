@@ -949,6 +949,7 @@ int PlayerOpen(Player *pPlayer, Request *pRequest)
 
   // Connect //////////////////////////////////////////////////////////////////
   // PLAYER_STATE_CONNECTED
+  // TODO improve the error reporting for this
   if (PlayerCreateConnect(pPlayer,1,1)<0) {
     DMESSAGE("connecting ");
     goto connect;
@@ -1117,6 +1118,8 @@ int PlayerReset(Player *pPlayer, Request *pRequest)
 #endif // }
 
   if (pDisconnect->Reconnect(pPlayer)<0) {
+    // TODO consider this doing a timed
+    //      messagebox instead of this!
     DMESSAGE("connecting");
     goto connect;
   }
@@ -1436,6 +1439,8 @@ int PlayerTryStart(Player *pPlayer, int bUnderflow)
 #endif // }
 
     if (pDisconnect->Reconnect(pPlayer)<0) {
+      // TODO consider this doing a timed
+      //      messagebox instead of this!
       DMESSAGE("connecting");
       goto connect;
     }

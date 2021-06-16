@@ -109,14 +109,14 @@ extern "C" {
 /*#define DERRORV(x,y,format,...) \
   messagea(0,x,&y,#x ": \"%s\" (%d).\n",__FILE__,__LINE__, \
       __VA_ARGS__)*/
-#define DMESSAGE(m) messagea(1,0,NULL,"Error " m ": " \
-    "\"%s\" (%d).\n",__FILE__,__LINE__)
-#define DMESSAGEV(m,...) messagea(1,0,NULL,"Error " m \
-    ": \"%s\" (%d).\n",__VA_ARGS__,__FILE__,__LINE__)
-#define DWMESSAGEV(m,...) messagew(1,0,NULL,L"Error " m \
-    L": \"%s\" (%d).\n",__VA_ARGS__,__WFILE__,__LINE__)
 
 #if defined (YA_DEBUG) // {
+  #define DMESSAGE(m) messagea(1,0,NULL,"Error " m ": " \
+    "\"%s\" (%d).\n",__FILE__,__LINE__)
+  #define DMESSAGEV(m,...) messagea(1,0,NULL,"Error " m \
+    ": \"%s\" (%d).\n",__VA_ARGS__,__FILE__,__LINE__)
+  #define DWMESSAGEV(m,...) messagew(1,0,NULL,L"Error " m \
+    L": \"%s\" (%d).\n",__VA_ARGS__,__WFILE__,__LINE__)
   #define DON(level) \
       ((level)<trace.nDebug)
   #define DPUTS(level,cs) \
@@ -134,6 +134,9 @@ extern "C" {
   #define DWWARNINGV(m,...) twprintf(&trace,0,L"Warning " m \
       L": \"%s\" (%d).\n",__VA_ARGS__,__WFILE__,__LINE__)
 #else // } {
+  #define DMESSAGE(m,...)
+  #define DMESSAGEV(m,...)
+  #define DWMESSAGEV(m,...)
   #define DON(level) 0
   #define DPUTS(level,cs)
   #define DPRINTF(level,cs,...)
