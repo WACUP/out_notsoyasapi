@@ -1128,20 +1128,21 @@ static int PlayerWriteConfigSpecific(Player *pPlayer, Request *pRequest)
 
 void ConfigSave(Config *pConfig)
 {
-	if (pConfig != NULL)
-	{
+	if (pConfig != NULL) {
 		Player *pPlayer = pConfig->pPlayer;
 		HWND hComboBox = GetDlgItem(pConfig->hDlg, IDC_COMBOBOX_DEVICE);
 		DWORD cDevice = SendMessage(hComboBox, CB_GETCURSEL, 0, 0);
+		if (cDevice != CB_ERR) {
 		ConfigDevice *pConfigDevice = (ConfigDevice *)SendMessage(hComboBox,
 			CB_GETITEMDATA, cDevice, 0);
 
-		if (pConfigDevice) {
+			if (pConfigDevice && (pConfigDevice != CB_ERR)) {
 			// should be called before the lock in order to not dead-lock this window.
 			ConfigGet(pConfig);
 			PLAYER_SEND(pPlayer, PlayerWriteConfig, pConfigDevice);
 		}
 	}
+}
 }
 
 void ConfigSaveSpecific(Config *pConfig)
@@ -1189,8 +1190,14 @@ static void ConfigOnSelChangeComboBox(HWND hDlg,Config *pConfig,
 {
   Player *pPlayer=pConfig->pPlayer;
   DWORD cDevice=SendMessage(hComboBox,CB_GETCURSEL,0,0);
+  if (cDevice == CB_ERR)
+    goto label;
+
   ConfigDevice *pConfigDevice=(ConfigDevice *)SendMessage(hComboBox,
       CB_GETITEMDATA,cDevice,0);
+  if (pConfigDevice == CB_ERR)
+    goto label;
+
   DWORD nLen=SendMessage(hComboBox,CB_GETLBTEXTLEN,cDevice,0);
   wchar_t *pwszLabel;
 
