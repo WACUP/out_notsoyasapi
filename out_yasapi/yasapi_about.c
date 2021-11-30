@@ -68,7 +68,6 @@ static INT_PTR CALLBACK AboutProc(HWND hDlg, UINT uMsg, WPARAM wParam,
     );
 #else // } {
 //fprintf(stderr,"%s: %p\n",__func__,GetDlgItem(hDlg,IDC_STATIC_COPY));
-#if 1 // {
 #if 0 // {
     SetWindowTextW(
       GetDlgItem(hDlg,IDC_STATIC_COPY),   // _In_     HWND    hWnd,
@@ -87,7 +86,6 @@ static INT_PTR CALLBACK AboutProc(HWND hDlg, UINT uMsg, WPARAM wParam,
       L" <a href=\"http://out-yasapi.sourceforge.net/\">http://out-yasapi.sourceforge.net/</a>."
                                           // _In_opt_ LPCTSTR lpString
     );
-#endif // }
 #endif // }
 
     SetWindowTextW(

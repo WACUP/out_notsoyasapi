@@ -70,21 +70,9 @@ static void IntTypeLoad(const Property *pProperty, PropertyIOConfig *c)
 
 static void IntTypeSave(const Property *pProperty, const PropertyIOConfig *c)
 {
-#if 0
-  wchar_t buf[YA_PROPERTY_SIZE];
-
-  _itow_s(PROPERTY_INT(pProperty,c->pData), buf, ARRAYSIZE(buf), 10);
-
-  WritePrivateProfileStringW(
-    (c->group ? c->group : L"default"),         // _In_  LPCTSTR lpAppName,
-    pProperty->key,   // _In_  LPCTSTR lpKeyName,
-    buf,              // _In_  LPCTSTR lpString,
-    c->path           // _In_  LPCTSTR lpFileName
-  );
-#else 
-  PropertySaveInt(c->group,pProperty->key,PROPERTY_INT(pProperty,c->pData),
+  PropertySaveInt(c->group,pProperty->key,
+                  PROPERTY_INT(pProperty,c->pData),
       c->path);
-#endif
 }
 
 const PropertyType gcIntType={
@@ -98,6 +86,7 @@ static void DoubleTypeLoad(const Property *pProperty, PropertyIOConfig *c)
   wchar_t set[YA_PROPERTY_SIZE] = {0};
   wchar_t get[YA_PROPERTY_SIZE] = {0};
 
+  // cppcheck-suppress invalidPointerCast
   StringCchPrintf(set,YA_PROPERTY_SIZE,L"%f",PROPERTY_DOUBLE(pProperty,c->pDefault));
 
   GetPrivateProfileStringW(
@@ -109,7 +98,9 @@ static void DoubleTypeLoad(const Property *pProperty, PropertyIOConfig *c)
     c->path           // _In_   LPCTSTR lpFileName
   );
 
+  // cppcheck-suppress invalidPointerCast
   PROPERTY_DOUBLE(pProperty,c->pData)=_wtof(get);
+  // cppcheck-suppress invalidPointerCast
   DWPRINTF(0,L"%soption \"%s\": %f (%f)\n",
       c->pfx,pProperty->key,
       PROPERTY_DOUBLE(pProperty,c->pData),
@@ -121,6 +112,7 @@ static void DoubleTypeSave(const Property *pProperty,
 {
   wchar_t buf[YA_PROPERTY_SIZE] = {0};
 
+  // cppcheck-suppress invalidPointerCast
   StringCchPrintf(buf,YA_PROPERTY_SIZE,L"%f",PROPERTY_DOUBLE(pProperty,c->pData));
 
   WritePrivateProfileStringW(

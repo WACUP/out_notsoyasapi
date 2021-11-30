@@ -86,6 +86,7 @@ PlayerStub *PlayerStubCreate(const IPlayer *lpVtbl, Player *pPlayer)
     goto run;
   }
 #else // } {
+  // cppcheck-suppress syntaxError
   if (PLAYER_STUB_SEND(pStub,0,lpVtbl->GetStamp(pPlayer),PlayerPing)<0) {
     DMESSAGE("running");
     goto run;
@@ -155,9 +156,7 @@ DWORD WINAPI PlayerStubThread(LPVOID lpParameter)
 #if ! defined (YA_EVENT_STACK) // {
   HANDLE hEvent;
 #endif // }
-  Request *pRequest;
   int state;
-#if defined (YA_THREAD_CO_INITIALIZE) // {
   HRESULT hr;
 
   hr=CoInitializeEx(
@@ -166,14 +165,14 @@ DWORD WINAPI PlayerStubThread(LPVOID lpParameter)
   );
 
   if (FAILED(hr)) {
-    DERROR(S_FALSE,hr);
+    /*DERROR(S_FALSE,hr);
     DERROR(RPC_E_CHANGED_MODE,hr);
-    DMESSAGE("initializing com failed");
+    DMESSAGE("initializing com failed");*/
     goto coinit;
   }
-#endif // }
 
   while (!exit) {
+    Request *pRequest;
 #if defined (YA_EVENT_STACK) // {
     pRequest=QueueLockRead(pQueue);
 #else // } {
@@ -200,10 +199,8 @@ DWORD WINAPI PlayerStubThread(LPVOID lpParameter)
     QueueUnlockRead(pQueue,pRequest->pResult);
   }
 
-#if defined (YA_THREAD_CO_INITIALIZE) // {
   CoUninitialize();
 coinit:
-#endif // }
 
 #if defined (YA_THREAD_AVRT) // {
   if (hTask)
@@ -227,6 +224,7 @@ int PlayerStubSendV(PlayerStub *pStub, int exit, int stamp,
     PlayerProc *pPlayerProc, va_list ap)
 #endif // }
 {
+  if (pStub) {
   Store *pStore=&pStub->store;
   Queue *pQueue=&pStub->queue;
   int state;
@@ -242,6 +240,8 @@ int PlayerStubSendV(PlayerStub *pStub, int exit, int stamp,
   StorePut(pStore,pResult);
 
   return state;
+  }
+  return 0;
 }
 
 #if defined (YA_DEBUG) // {

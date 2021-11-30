@@ -107,6 +107,7 @@ static void DisconnectAllDisconnect(Player *pPlayer, int bReset)
       DPRINTF(0,"  audio client reset\n");
   }
 
+// cppcheck-suppress unusedLabel
 destroy:
   PlayerDestroyConnect(pPlayer);
 }

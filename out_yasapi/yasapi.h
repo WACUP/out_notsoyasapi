@@ -56,7 +56,7 @@ extern Out_Module plugin;
 ///////////////////////////////////////////////////////////////////////////////
 #if ! defined (YASAPI_VER) // {
   #define YASAPI_VER            1.7.25
-  #define PLUGIN_VERSION        "1.2.8"
+  #define PLUGIN_VERSION        "1.3"
 #endif // }
 
 #define YASAPI_VERSION          YA_STR(YASAPI_VER)
@@ -73,14 +73,17 @@ extern Out_Module plugin;
 
 #if defined (YA_DEBUG) && defined (YA_SSE2) // {
   #define PI_VER                PI_VER2 " (Debug/SSE2)"
+  // cppcheck-suppress preprocessorErrorDirective
   #define YASAPI_ID             YASAPI_PREFIX ## -debug-sse2
   #define YASAPI_WA_ID          (YASAPI_ID_BASE+YASAPI_ID_OFFS+3)
 #elif defined (YA_DEBUG) // {
   #define PI_VER                PI_VER2 " (Debug)"
+  // cppcheck-suppress preprocessorErrorDirective
   #define YASAPI_ID             YASAPI_PREFIX ## -debug
   #define YASAPI_WA_ID          (YASAPI_ID_BASE+YASAPI_ID_OFFS+0)
 #elif defined (YA_SSE2) // } {
   #define PI_VER                PI_VER2 //" (SSE2)"
+  // cppcheck-suppress preprocessorErrorDirective
   #define YASAPI_ID             YASAPI_PREFIX ## -sse2
   #define YASAPI_WA_ID          (YASAPI_ID_BASE+YASAPI_ID_OFFS+1)
 #else // } {
@@ -92,7 +95,7 @@ extern Out_Module plugin;
 #define YASAPI_NAME             YA_STR(YASAPI_ID)
 #define YASAPI_MODULE           YASAPI_NAME ".dll"
 #define YASAPI_PROPERTY_FILE_NAME \
-                                L"Plugins\\" YA_WSTR(YASAPI_ID) L".ini"
+                                YA_WSTR(YASAPI_ID) L".ini"
 #define PI_LABEL                "Not So YASAPI Output " PI_VER
 
 #define YASAPI_SHAREMODE_LABEL(eShareMode) \
@@ -418,14 +421,14 @@ struct _PlayerDevice {
   wchar_t szId[YASAPI_ID_SIZE];
 };
 
-int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pstrId,
+int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,
     IMMDeviceEnumerator *pEnumerator);
 int PlayerDeviceDestroy(PlayerDevice *pPlayerDevice);
 int PlayerDeviceGet(PlayerDevice *pPlayerDevice,
     IMMDeviceEnumerator *pEnumerator);
 
-int PlayerDeviceCreateV(Player *pPlayer, Request *pRequst);
-int PlayerDeviceDestroyV(Player *pPlayer, Request *pRequst);
+int PlayerDeviceCreateV(Player *pPlayer, Request *pRequest);
+int PlayerDeviceDestroyV(Player *pPlayer, Request *pRequest);
 
 ///////////////////////////////////////////////////////////////////////////////
 struct _PlayConfig {

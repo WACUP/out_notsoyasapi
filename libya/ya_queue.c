@@ -89,8 +89,10 @@ int QueueCreate(Queue *pQueue)
   //CloseHandle(pQueue->hMutex);
 mutex:
   CloseHandle(pQueue->hWritten);
+  pQueue->hWritten=NULL;
 written:
   CloseHandle(pQueue->hAvailable);
+  pQueue->hAvailable = NULL;
 available:
   return -1;
 }
@@ -99,10 +101,13 @@ void QueueDestroy(Queue *pQueue)
 {
   DPUTS(0,"  destroying queue mutex\n");
   CloseHandle(pQueue->hMutex);
+  pQueue->hMutex=NULL;
   DPUTS(0,"  destroying queue written semaphore\n");
   CloseHandle(pQueue->hWritten);
+  pQueue->hWritten=NULL;
   DPUTS(0,"  destroying queue available semaphore\n");
   CloseHandle(pQueue->hAvailable);
+  pQueue->hAvailable=NULL;
 }
 
 #if defined (YA_EVENT_STACK) // {
@@ -134,8 +139,8 @@ void QueueLockMutex(Queue *pQueue)
 {
   WaitForSingleObjectEx(
     pQueue->hMutex,   // _In_ HANDLE hHandle,
-    INFINITE,         // _In_ DWORD  dwMilliseconds,
-    FALSE             // _In_ BOOL   bAlertable
+    1000/*/INFINITE/**/,  // _In_ DWORD  dwMilliseconds,
+    TRUE/*/FALSE/**/      // _In_ BOOL   bAlertable
   );
 }
 
@@ -149,11 +154,9 @@ void QueueUnlockMutex(Queue *pQueue)
 Request *QueueLock(Queue *pQueue, const QueueStrategy *pStrategy)
 {
   BOOL bAlertable=pStrategy->IsAlertable(pQueue);
-  HANDLE aHandles[1+QUEUE_EVENT_SIZE];
+  HANDLE aHandles[1+QUEUE_EVENT_SIZE]={0};
   //HANDLE *pHandles=aHandles;
-  DWORD dwCode;
-  Request *pRequest;
-  QueueEvent *pQueueEvent;
+  DWORD dwCode=0;
 
   aHandles[0]=pStrategy->GetSemaphoreDown(pQueue);
 
@@ -164,7 +167,7 @@ retry:
     1+pQueue->nEvents,    // _In_       DWORD  nCount,
     aHandles,             // _In_ const HANDLE *lpHandles,
     FALSE,                // _In_       BOOL   bWaitAll,
-    INFINITE,             // _In_       DWORD  dwMilliseconds,
+    1000/*/INFINITE/**/,  // _In_       DWORD  dwMilliseconds,
     bAlertable            // _In_       BOOL   bAlertable
   );
 
@@ -178,6 +181,7 @@ retry:
   case WAIT_OBJECT_0+2:
   case WAIT_OBJECT_0+3:
   case WAIT_OBJECT_0+4:
+    QueueEvent *pQueueEvent;
     pQueueEvent=pQueue->aQueueEvents+(dwCode-1)-WAIT_OBJECT_0;
     pQueueEvent->pOnEvent(pQueueEvent->data);
     // event: we need to loop.
@@ -191,6 +195,7 @@ retry:
   pStrategy->Dec(pQueue);
 #endif // }
 
+  Request* pRequest;
   pRequest=*pStrategy->GetRequest(pQueue);
   return pRequest;
 }
@@ -271,6 +276,7 @@ Request *QueueLockWrite(Queue *pQueue, Result *pResult, int exit, int stamp,
     PlayerProc *pPlayerProc, va_list ap)
 #endif // }
 {
+  if (pQueue) {
   Request *pRequest;
 
 #if defined (YA_EVENT_STACK) // {
@@ -278,6 +284,7 @@ Request *QueueLockWrite(Queue *pQueue, Result *pResult, int exit, int stamp,
 #else // } {
   pRequest=QueueLock(pQueue,&cqsWrite,NULL,NULL,NULL);
 #endif // }
+    if (pRequest) {
   pRequest->pResult=pResult;
   pRequest->exit=exit;
   pRequest->stamp=stamp;
@@ -289,6 +296,9 @@ Request *QueueLockWrite(Queue *pQueue, Result *pResult, int exit, int stamp,
 
   return pRequest;
 }
+  }
+  return NULL;
+}
 
 void QueueUnlockWrite(Queue *pQueue, Result *pResult)
 {
@@ -297,8 +307,8 @@ void QueueUnlockWrite(Queue *pQueue, Result *pResult)
   if (pResult) {
     WaitForSingleObjectEx(
       pResult->hEvent,      // _In_ HANDLE hHandle,
-      INFINITE,             // _In_ DWORD  dwMilliseconds,
-      FALSE                 // _In_ BOOL   bAlertable
+      1000/*/INFINITE/**/,  // _In_ DWORD  dwMilliseconds,
+      TRUE/*/FALSE/**/      // _In_ BOOL   bAlertable
     );
   }
 }

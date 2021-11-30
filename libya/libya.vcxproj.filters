@@ -17,9 +17,6 @@
     <ClCompile Include="ya_debug.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ya_dump.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ya_player.c">
       <Filter>Source Files</Filter>
     </ClCompile>

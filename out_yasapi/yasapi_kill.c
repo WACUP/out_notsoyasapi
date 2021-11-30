@@ -99,9 +99,11 @@ static void PlayerDestroyBase(Player *pPlayer)
 
   DPUTS(0,"  destroying timer for read\n");
   CloseHandle(pPlayer->base.timer.hRead);
+  pPlayer->base.timer.hRead=NULL;
 
   DPUTS(0,"  destroying event\n");
   CloseHandle(pPlayer->base.hEvent);
+  pPlayer->base.hEvent=NULL;
 }
 
 void PlayerKill(Player *pPlayer, int bReset, const PlayerState state)

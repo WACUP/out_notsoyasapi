@@ -60,6 +60,7 @@ static int PlayerSendOpen(int _srate, int _numchan, int _bps)
 
 static int PlayerSendClose(void)
 {
+  // cppcheck-suppress syntaxError
    return PLAYER_SEND(&player,PlayerClose);
 }
 
@@ -314,7 +315,7 @@ int isplaying(void)
   int bPlaying;
 
   DPRINTF(0,"%s (%s)\n",__func__,player.base.pszFileName);
-  DPRINTF(0,"  %s\n",module);
+  //DPRINTF(0,"  %s\n",module);
 
 #if defined (YASAPI_GAPLESS) // {
   if (!bGapless||PlayerHasChanged(&player,out_module))
@@ -484,7 +485,7 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 				  HRESULT hr;
 				#endif // }
 
-				  if (NULL==(path=yapath(YASAPI_PROPERTY_FILE_NAME,plugin.hMainWindow)))
+				  if (NULL==(path=yapath(YASAPI_PROPERTY_FILE_NAME)))
 					goto path;
 
 				#if defined (YA_DEBUG) // {

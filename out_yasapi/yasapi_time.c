@@ -40,7 +40,6 @@ void TimeSegmentAdd(TimeSegment *pOffset, TimeSegment *pCurrent,
     pOffset->xSeconds+=pCurrent->xSeconds;
 }
 
-#if 1 // {
 void TimeSegmentSub(TimeSegment *pOffset, TimeSegment *pCurrent,
     UINT64 u64Frequency)
 {
@@ -49,7 +48,6 @@ void TimeSegmentSub(TimeSegment *pOffset, TimeSegment *pCurrent,
   else
     pOffset->xSeconds-=pCurrent->xSeconds;
 }
-#endif // }
 
 int TimeSegmentGet(TimeSegment *pSegment, UINT64 u64Frequency,
     Connection *pConnect)
@@ -231,8 +229,11 @@ int TimeMigrate(Time *pTime, Connection *pConnect)
 #if defined (YASAPI_CONVERT_TIME) // {
   if (pTime->u64Frequency) {
     if (TIME_TIME==eTimeTag) {
+      // cppcheck-suppress overlappingWriteUnion
       pGapless->xSeconds=(double)pGapless->u64Position/pTime->u64Frequency;
+      // cppcheck-suppress overlappingWriteUnion
       pPause->xSeconds=(double)pPause->u64Position/pTime->u64Frequency;
+      // cppcheck-suppress overlappingWriteUnion
       pCurrent->xSeconds=(double)pCurrent->u64Position/pTime->u64Frequency;
       pTime->u64Frequency=0ull;
     }
@@ -244,17 +245,22 @@ int TimeMigrate(Time *pTime, Connection *pConnect)
         goto frequency;
       }
 
+      // cppcheck-suppress overlappingWriteUnion
       pGapless->u64Position=pGapless->xSeconds*pTime->u64Frequency+0.5;
+      // cppcheck-suppress overlappingWriteUnion
       pPause->u64Position=pPause->xSeconds*pTime->u64Frequency+0.5;
+      // cppcheck-suppress overlappingWriteUnion
       pCurrent->u64Position=pCurrent->xSeconds*pTime->u64Frequency+0.5;
     }
   }
 #endif // }
 
-#if 1 // {
   if (pTime->u64Frequency) {
+    // cppcheck-suppress overlappingWriteUnion
     pGapless->xSeconds=(double)pGapless->u64Position/pTime->u64Frequency;
+	// cppcheck-suppress overlappingWriteUnion
     pPause->xSeconds=(double)pPause->u64Position/pTime->u64Frequency;
+	// cppcheck-suppress overlappingWriteUnion
     pCurrent->xSeconds=(double)pCurrent->u64Position/pTime->u64Frequency;
   
     if (ConnectionGetFrequency(pConnect,&pTime->u64Frequency)<0) {
@@ -262,26 +268,17 @@ int TimeMigrate(Time *pTime, Connection *pConnect)
       goto frequency;
     }
 
+    // cppcheck-suppress overlappingWriteUnion
     pGapless->u64Position=pGapless->xSeconds*pTime->u64Frequency+0.5;
+    // cppcheck-suppress overlappingWriteUnion
     pPause->u64Position=pPause->xSeconds*pTime->u64Frequency+0.5;
+    // cppcheck-suppress overlappingWriteUnion
     pCurrent->u64Position=pCurrent->xSeconds*pTime->u64Frequency+0.5;
   }
 
   //difference=*pCurrent;
   //TimeSegmentSub(&difference,pPause,pTime->u64Frequency);
   TimeSegmentAdd(pPause,pCurrent,pTime->u64Frequency);
-  //*pPause=*pCurrent;
-#else // } {
-  if (pTime->u64Frequency) {
-    if (ConnectionGetFrequency(pConnect,&pTime->u64Frequency)<0) {
-      DMESSAGE("getting frequency");
-      goto frequency;
-    }
-  }
-
-  TimeSegmentReset(pGapless,pTime->u64Frequency);
-  TimeSegmentReset(pPause,pTime->u64Frequency);
-#endif // }
   TimeSegmentReset(pCurrent,pTime->u64Frequency);
 
   return 0;

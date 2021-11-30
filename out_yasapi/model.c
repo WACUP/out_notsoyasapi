@@ -687,8 +687,6 @@ end:
 int main()
 {
   Model model;
-  Result *pResult;
-  Request *pRequest;
 
   // create the model.
   if (ModelCreate(&model)<0) {

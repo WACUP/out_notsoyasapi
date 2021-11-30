@@ -193,8 +193,10 @@ void TraceDestroy(Trace *pTrace, int nSleep, int bMutex)
 
   pTrace->tag=TRACE_CLOSE;
 
-  if (bMutex&&pTrace->hMutex)
+  if (bMutex&&pTrace->hMutex) {
     CloseHandle(pTrace->hMutex);
+    pTrace->hMutex=NULL;
+  }
 }
 
 int TraceSwitch(Trace *pTrace)
@@ -313,16 +315,16 @@ int twprintf(Trace *pTrace, int nLevel, const wchar_t *format, ...)
 Trace *TraceDefault()
 {
   static int bInitialized;
-  static Trace trace;
+  static Trace _trace;
 
   if (!bInitialized) {
-    trace.nDebug=0;
-    trace.bFile=0;
-    trace.nSleep=5000;
+    _trace.nDebug=0;
+    _trace.bFile=0;
+    _trace.nSleep=5000;
     bInitialized=1;
   }
 
-  return &trace;
+  return &_trace;
 }
 
 LRESULT TraceEnableDebug(HWND hDlg)
@@ -378,7 +380,7 @@ void TraceControlsInit(HWND hDlg)
   ControlsSet(gcaTraceControls,hDlg,&trace);
 #else // } {
   const PlayerStub *pStub=PlayerStubGet();
-  if (pStub != NULL)
+  if ((pStub != NULL) && (pStub->lpVtbl != NULL))
   {
 	  const int *pIdc = pStub->lpVtbl->pTraceIdcs;
 	  const int *pMaxIdcs = pIdc + pStub->lpVtbl->nTraceIdcs;

@@ -84,6 +84,7 @@ int StoreCreate(Store *pStore)
 //  CloseHandle(pStore->hAvailable);
 available:
   CloseHandle(pStore->hMutex);
+  pStore->hMutex=NULL;
 mutex:
   while (0<i) {
     --i;
@@ -99,8 +100,10 @@ void StoreDestroy(Store *pStore)
 
   DPUTS(0,"  destroying store available semaphore\n");
   CloseHandle(pStore->hAvailable);
+  pStore->hAvailable=NULL;
   DPUTS(0,"  destroying store mutex\n");
   CloseHandle(pStore->hMutex);
+  pStore->hMutex=NULL;
 
   i=STORE_SIZE;
 
@@ -140,7 +143,7 @@ void StoreLock(Store *pStore)
 {
   WaitForSingleObjectEx(
     pStore->hMutex,       // _In_ HANDLE hHandle,
-    INFINITE,             // _In_ DWORD  dwMilliseconds,
+    1000/*/INFINITE/**/,             // _In_ DWORD  dwMilliseconds,
     FALSE                 // _In_ BOOL   bAlertable
   );
 }
@@ -156,7 +159,7 @@ Result *StoreGet(Store *pStore)
 
   WaitForSingleObjectEx(
     pStore->hAvailable,   // _In_ HANDLE hHandle,
-    INFINITE,             // _In_ DWORD  dwMilliseconds,
+    1000/*/INFINITE/**/,             // _In_ DWORD  dwMilliseconds,
     FALSE                 // _In_ BOOL   bAlertable
   );
 

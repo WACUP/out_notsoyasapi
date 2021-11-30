@@ -51,5 +51,8 @@ event:
 void ResultDestroy(Result *pResult)
 {
   DPUTS(2,"    destroying result event\n");
+  if (pResult->hEvent) {
   CloseHandle(pResult->hEvent);
+    pResult->hEvent = NULL;
+  }
 }

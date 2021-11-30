@@ -42,7 +42,6 @@ extern "C" {
 ///////////////////////////////////////////////////////////////////////////////
 #define YA_EVENT_STACK
 #define YA_ABOUT
-//#define YA_THREAD_CO_INITIALIZE
 
 #if ! defined (YA_DEBUG) // {
 //#define YA_DUMP
@@ -69,7 +68,6 @@ extern "C" {
 
 ///////////////////////////////////////////////////////////////////////////////
 //#define YA_THREAD_AVRT
-//#define YA_THREAD_CO_INITIALIZE
 
 ///////////////////////////////////////////////////////////////////////////////
 #if defined (_MSC_VER) && ! defined (__func__) // {
@@ -160,7 +158,7 @@ extern "C" {
 
 ///////////////////////////////////////////////////////////////////////////////
 const wchar_t *basenamew(const wchar_t *s);
-wchar_t *yapath(wchar_t *file, HWND hWnd);
+wchar_t *yapath(wchar_t *file);
 void yafree(void *p);
 int messagea(int force, HRESULT x, HRESULT *y, const char *m, ...);
 int messagew(int force, HRESULT x, HRESULT *y, const wchar_t *m, ...);
@@ -193,10 +191,6 @@ void WFXXSetup(WAVEFORMATEXTENSIBLE *pwfxx, int samplerate, int numchannels,
 #define YA_PROPERTY_DEBUG       L"debug"
 #define YA_PROPERTY_FILE        L"file"
 #define YA_PROPERTY_SLEEP       L"sleep"
-#if 0 // {
-#define YA_PROPERTY_VIS         L"visualization"
-#define YA_PROPERTY_PAGE        L"page"
-#endif // }
 #if defined (YA_ABOUT) // {
 #define YA_PROPERTY_CONFIGX     L"posx"
 #define YA_PROPERTY_CONFIGY     L"posy"
@@ -279,7 +273,7 @@ int TraceCreate(Trace *pTrace, const char *label, const wchar_t *path,
 void TraceDestroy(Trace *pTrace, int nSleep, int bMutex);
 
 int TraceSwitch(Trace *pTrace);
-int TraceFixIdcs(Trace *pTrace, const int *pIdcs);
+int TraceFixIdcs(Trace *pTrace, const int *pTraceIdcs);
 Trace *TraceDefault();
 
 LRESULT TraceEnableDebug(HWND hDlg);

@@ -120,9 +120,9 @@ int messagew(int force, HRESULT x, HRESULT *y, const wchar_t *m, ...)
 void ConsoleOpen(void)
 {
   AllocConsole();
-  freopen("conin$","r",stdin);
-  freopen("conout$","w",stdout);
-  freopen("conout$","w",stderr);
+  (void)freopen("conin$","r",stdin);
+  (void)freopen("conout$","w",stdout);
+  (void)freopen("conout$","w",stderr);
 }
 
 void ConsoleClose(void)

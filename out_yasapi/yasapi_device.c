@@ -22,8 +22,8 @@
 int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,
     IMMDeviceEnumerator *pEnumerator)
 {
-  LPWSTR pstrId;
-  IMMDevice *pDevice;
+  LPWSTR pstrId=NULL;
+  IMMDevice *pDevice=NULL;
   HRESULT hr;
 
   DPRINTF(0,"  > %s <\n",__func__);
@@ -98,7 +98,7 @@ int PlayerDeviceGet(PlayerDevice *pPlayerDevice,
     IMMDeviceEnumerator *pEnumerator)
 {
   LPWSTR pstrId=pPlayerDevice->szId;
-  IMMDevice *pDevice;
+  IMMDevice *pDevice=NULL;
   HRESULT hr;
 
   DPRINTF(0,"  > %s <\n",__func__);

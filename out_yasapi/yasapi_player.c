@@ -171,8 +171,10 @@ stub:
 timer_underflow:
 #endif // }
   CloseHandle(pPlayer->base.timer.hRead);
+  pPlayer->base.timer.hRead=NULL;
 timer_read:
   CloseHandle(pPlayer->base.hEvent);
+  pPlayer->base.hEvent=NULL;
 event:
 module:
   pPlayer->state=PLAYER_STATE_NULL;
@@ -1458,7 +1460,6 @@ int PlayerTryStart(Player *pPlayer, int bUnderflow)
     }
 
     // https://www.gittprogram.com/question/399078_wasapi-exclusive-event-mode-causes-buzzing.html
-#if 1 // {
     ///////////////////////////////////////////////////////////////////////////
     pPlayer->state=PLAYER_STATE_PLAY;
 
@@ -1467,7 +1468,6 @@ int PlayerTryStart(Player *pPlayer, int bUnderflow)
       DMESSAGEV("playing");
       goto play;
     }
-#endif // }
 
     // start the audio client /////////////////////////////////////////////////
 	// changed - if we've an underflow state then
@@ -1513,9 +1513,7 @@ underflow:
 play:
 #endif // }
 start:
-#if 1 // {
 play:
-#endif // }
 connect:
 padding:
   pPlayer->state=state;
@@ -1733,8 +1731,9 @@ int PlayerPause(Player *pPlayer, Request *pRequest)
 #endif // }
   }
 
+  if (pTime) {
   *pTime=ms+0.5;
-
+  }
   return 0;
 time2:
 get2:
@@ -2091,7 +2090,7 @@ static void CopySampleDirect(char *wp, int m, const char *rp, int k)
     k                     // _In_  SIZE_T Length
   );
 
-  wp+=k;
+  //wp+=k;
 }
 
 static void CopySampleIndirect(char *wp, int m, const char *rp, int k,

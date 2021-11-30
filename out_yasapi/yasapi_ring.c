@@ -235,6 +235,7 @@ int RingRealloc(Ring *pRing, SIZE_T uSize)
   }
   else
     return 0;
+// cppcheck-suppress unusedLabel
 consistency2:
 range3:
 range2:
@@ -242,6 +243,7 @@ range1:
   YA_FREE(pRep);
 malloc:
 overflow:
+// cppcheck-suppress unusedLabel
 consistency1:
   return -1;
 }
@@ -277,6 +279,7 @@ static DWORD RingWriteUnwrapped(Ring *pRing, RingWriteConfig *pc)
   RING_CONSISTENCY(pRing,pc->dwTargetSize,__func__, __LINE__,NULL,consistency);
 
   return pc->dwSourceSize;
+// cppcheck-suppress unusedLabelConfiguration  
 consistency:
 range:
   return (DWORD)-1;
@@ -350,6 +353,7 @@ static DWORD RingWriteWrapped(Ring *pRing, RingWriteConfig *pc)
   RING_CONSISTENCY(pRing,pc->dwTargetSize,__func__, __LINE__,NULL,consistency);
 
   return pc->dwSourceSize;
+// cppcheck-suppress unusedLabelConfiguration
 consistency:
 range2:
 range1:
@@ -444,10 +448,12 @@ DWORD RingWrite(Ring *pRing, LPCSTR pData, SIZE_T dwSize)
   RING_CONSISTENCY(pRing,0,__func__, __LINE__,NULL,consistency2);
 
   return c.dwSourceSize;
+// cppcheck-suppress unusedLabel
 consistency2:
 overflow:
 unwrapped:
 wrapped:
+// cppcheck-suppress unusedLabel
 consistency1:
   return (DWORD)-1;
 }
@@ -477,6 +483,7 @@ static DWORD RingReadUnwrappedEx(Ring *pRing, RingReadConfig *pc)
   }
 
   return pc->dwSize;
+// cppcheck-suppress unusedLabel
 consistency:
 range:
   return (DWORD)-1;
@@ -545,9 +552,11 @@ static DWORD RingReadWrappedEx(Ring *pRing, RingReadConfig *pc)
   }
 
   return pc->dwSize;
+// cppcheck-suppress unusedLabel
 consistency2:
 range2:
 overread:
+// cppcheck-suppress unusedLabel
 consistency1:
 range1:
   return (DWORD)-1;
@@ -613,10 +622,12 @@ DWORD RingReadEx(Ring *pRing, LPSTR pData, SIZE_T dwSize, UINT uFlags,
   RING_CONSISTENCY(pRing,0,__func__, __LINE__,pError,consistency2);
 
   return dwSize;
+// cppcheck-suppress unusedLabel
 consistency2:
 overread:
 unwrapped:
 wrapped:
+// cppcheck-suppress unusedLabel
 consistency1:
   return (DWORD)-1;
 }

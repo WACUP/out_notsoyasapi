@@ -940,7 +940,7 @@ static int ConfigInitPage(HWND hDlg, HWND hWndTab, Config *pConfig, int nPage)
   PageTemplate *pTemplate=gaTemplates+nPage;
   Page *pPage=pConfig->aPages+nPage;
   TCITEM tie = {0};
-  RECT rc;
+  RECT rc={0};
 
   pPage->vmt=pTemplate->GetVMT();
 
@@ -1158,6 +1158,7 @@ void ConfigSaveSpecific(Config *pConfig)
 			//if (pConfigDevice) {
 			  // should be called before the lock in order to not dead-lock this window.
 		ConfigGet(pConfig);
+		// cppcheck-suppress syntaxError
 		PLAYER_SEND(pPlayer, PlayerWriteConfigSpecific);
 		//}
 	}
