@@ -1941,6 +1941,12 @@ int PlayerSend(Player *pPlayer, PlayerProc *pPlayerProc, ...)
   if (!pPlayer->base.pStub)
     return -1;
 
+  if (!pPlayer->base.pStub->hThread) {
+    if (!PlayerStubCreate(&gcIPlayer, pPlayer)) {
+      return -1;
+    }
+  }
+
   va_list ap;
   int state;
 

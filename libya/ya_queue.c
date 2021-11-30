@@ -167,7 +167,7 @@ retry:
     1+pQueue->nEvents,    // _In_       DWORD  nCount,
     aHandles,             // _In_ const HANDLE *lpHandles,
     FALSE,                // _In_       BOOL   bWaitAll,
-    1000/*/INFINITE/**/,  // _In_       DWORD  dwMilliseconds,
+    INFINITE,             // _In_       DWORD  dwMilliseconds,
     bAlertable            // _In_       BOOL   bAlertable
   );
 

@@ -29,6 +29,10 @@ PlayerStub *PlayerStubCreate(const IPlayer *lpVtbl, Player *pPlayer)
   /////////////////////////////////////////////////////////////////////////////
   if (pStub->lpVtbl) {
     DMESSAGE("vtbl already in use");
+    if (!pStub->hThread) {
+      goto create_thread;
+    }
+    return pStub;
     goto vtbl;
   }
 
@@ -63,6 +67,7 @@ PlayerStub *PlayerStubCreate(const IPlayer *lpVtbl, Player *pPlayer)
   DPUTS(0,"  store created\n");
 
   // create the thread ////////////////////////////////////////////////////////
+create_thread:
   pStub->hThread=CreateThread(
     NULL,               // _In_opt_   LPSECURITY_ATTRIBUTES lpThreadAttributes,
     0,                  // _In_       SIZE_T dwStackSize,
