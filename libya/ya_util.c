@@ -18,6 +18,8 @@
  * along with libya.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <ya.h>
+#include <shlwapi.h>
+#include <../loader/loader/paths.h>
 
 const wchar_t *basenamew(const wchar_t *s)
 {
@@ -29,51 +31,23 @@ const wchar_t *basenamew(const wchar_t *s)
   return p;
 }
 
-wchar_t *yapath(wchar_t *file, HWND hWnd)
+wchar_t *yapath(wchar_t *file)
 {
-  char *dir;
   size_t len1,len2;
-  wchar_t *path,*wp;
-
-  dir=(char *)SendMessageA(hWnd,WM_WA_IPC,0,IPC_GETINIDIRECTORY);
+  wchar_t *path;
+  const wchar_t *dir=GetPaths()->settings_sub_dir;
 
   if (NULL==dir)
     goto dir;
 
-  len1=MultiByteToWideChar(
-    CP_ACP,       // _In_      UINT   CodePage,
-    0,            // _In_      DWORD  dwFlags,
-    dir,          // _In_      LPCSTR lpMultiByteStr,
-    -1,           // _In_      int    cbMultiByte,
-    NULL,         // _Out_opt_ LPWSTR lpWideCharStr,
-    0             // _In_      int    cchWideChar
-  );
-
-  --len1;
+  len1=wcslen(dir);
   len2=wcslen(file);
   path=(wchar_t *)YA_MALLOC(((len1+1)+(len2+1))*(sizeof *path));
 
   if (NULL==path)
     goto path;
   
-  wp=path;
-
-  wp+=MultiByteToWideChar(
-    CP_ACP,       // _In_      UINT   CodePage,
-    0,            // _In_      DWORD  dwFlags,
-    dir,          // _In_      LPCSTR lpMultiByteStr,
-    -1,           // _In_      int    cbMultiByte,
-    wp,           // _Out_opt_ LPWSTR lpWideCharStr,
-    len1+1        // _In_      int    cchWideChar
-  );
-
-  --wp;
-  *wp++='\\';
-
-  memcpy(wp,file,len2*(sizeof *wp));
-  wp+=len2;
-  *wp++=0;
-
+  PathCombine(path,GetPaths()->settings_sub_dir,file);
   return path;
 // cleanup:
   //YASAPI_FREE(path);
