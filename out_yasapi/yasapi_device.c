@@ -131,9 +131,8 @@ device:
 int PlayerDeviceCreateV(Player *pPlayer, Request *pRequest)
 {
   PlayerDevice *pPlayerDevice=va_arg(pRequest->ap,PlayerDevice *);
-
-  return PlayerDeviceCreate(pPlayerDevice,pPlayer->options.common.szId,
-      pPlayer->run.pEnumerator);
+  return ((pPlayerDevice > 65535) ? PlayerDeviceCreate(pPlayerDevice,pPlayer->options.common.szId,
+                                                       pPlayer->run.pEnumerator) : 0);
 }
 
 int PlayerDeviceDestroyV(Player *pPlayer, Request *pRequest)

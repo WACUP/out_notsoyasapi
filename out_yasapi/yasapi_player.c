@@ -1731,7 +1731,7 @@ int PlayerPause(Player *pPlayer, Request *pRequest)
 #endif // }
   }
 
-  if (pTime) {
+  if (pTime > 65535) {
   *pTime=ms+0.5;
   }
   return 0;
@@ -1776,8 +1776,9 @@ int PlayerGetTime(Player *pPlayer, Request *pRequest)
   }
 null:
 invalid:
-  *pTime=ms+0.5;
-
+  if (pTime > 65535) {
+    *pTime=ms+0.5;
+  }
   return 0;
 time:
 state:
