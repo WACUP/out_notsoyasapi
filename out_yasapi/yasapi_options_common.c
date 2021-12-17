@@ -66,7 +66,7 @@ static const Property gcaConfigProperties[]={
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-int OptionsCommonLoad(OptionsCommon *pOptions, const wchar_t *pfx,
+void OptionsCommonLoad(OptionsCommon *pOptions, const wchar_t *pfx,
     const wchar_t *path)
 {
   PropertyIOConfig c;
@@ -81,8 +81,6 @@ int OptionsCommonLoad(OptionsCommon *pOptions, const wchar_t *pfx,
   c.pfx=pfx;
 #endif // }
   PropertiesLoad(gcaCommonProperties,&c);
-
-  return 0;
 }
 
 void OptionsCommonSave(OptionsCommon *pOptions, int mode, const wchar_t *path)

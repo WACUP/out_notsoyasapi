@@ -20,49 +20,36 @@
 #include <yasapi.h>
 
 #define GetTime(time) \
-  (bAudioClock?time:GetTickCount())
+  (player.options.common.bAudioClock?time:GetTickCount64())
 #if defined (OUT_YASAPI_SUBCLASS) // {
 #define PlayerIsUnderfow(pPlayer) \
   (PLAYER_STATE_UNDERFLOW==(pPlayer)->state)
 #endif // }
 #define PlayerHasChanged(pPlayer,module) \
-  wcscmp((pPlayer)->base.pszFileName,module)
+  !module||wcscmp((pPlayer)->base.pszFileName,module)
 
 int getwrittentime(void);
 int getoutputtime(void);
 
 int srate=0, numchan=0, bps=0;
-volatile int64_t writtentime=0, w_offset=0;
-int64_t start_t=0;
+volatile time_t writtentime=0, w_offset=0;
+time_t start_t=0;
 static int last_pause=0;
 static int ref_true=1;
 static int loaded=0;
 
 static wchar_t *path;
-static PlayerDevice device;
-Player player;
-static int bAudioClock;
+Player player={0};
 #if defined (YASAPI_GAPLESS) // {
 static int bReset;
 #endif // }
-static wchar_t out_module[MAX_PATH];
+static wchar_t *out_module;
 
 static prefsDlgRecW* output_prefs;
 
 #if defined (YASAPI_GAPLESS) // {
 //#define OUT_YASAPI_SUBCLASS
 #endif // }
-
-static int PlayerSendOpen(int _srate, int _numchan, int _bps)
-{
-  return PLAYER_SEND(&player,PlayerOpen,&device,_srate,_numchan,_bps);
-}
-
-static int PlayerSendClose(void)
-{
-  // cppcheck-suppress syntaxError
-   return PLAYER_SEND(&player,PlayerClose);
-}
 
 #if defined (OUT_YASAPI_SUBCLASS) // {
 
@@ -78,14 +65,15 @@ static LRESULT CALLBACK PluginWinampProc(HWND hWnd, UINT uMsg, WPARAM wParam,
       DPRINTF(0,"  WM_WA_IPC/IPC_CB_OUTPUTCHANGED: \"%s\"\n",m);
 
       if (m && *m) {
-        lstrcpyn(out_module, m, ARRAYSIZE(out_module));
+        wcsncpy(out_module, m, ARRAYSIZE(out_module));
 	  } else {
         out_module[0] = 0;
       }
 
       if (PlayerIsUnderfow(&player)&&PlayerHasChanged(&player,out_module))
 	  {
-        PlayerSendClose();
+		// cppcheck-suppress syntaxError
+		PLAYER_SEND(&player,PlayerClose);
 	  }
       break;
 	}
@@ -106,16 +94,6 @@ static LRESULT CALLBACK PluginWinampProc(HWND hWnd, UINT uMsg, WPARAM wParam,
   );
 }
 #endif // }
-
-static int64_t GetAudioTime(void)
-{
-  int64_t time=0;
-
-  if (PLAYER_STATE_PLAY<=player.state)
-    PLAYER_SEND(&player,PlayerGetTime,&time);
-
-  return time;
-}
 
 extern __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode);
 void config(HWND hwnd)
@@ -177,22 +155,6 @@ static void reset(void)
   last_pause=!ref_true;
 }
 
-#if defined (YASAPI_GAPLESS) // {
-static int drain(int _numchan, int _srate, int _bps)
-{
-  bReset=0;
-
-  if (PLAYER_STATE_RUN<player.state) {
-    while (PLAYER_SEND(&player,PlayerIsPlaying))
-      Sleep(1);
-  }
-
-  PlayerSendClose();
-
-  return PlayerSendOpen(_srate,_numchan,_bps);
-}
-#endif // }
-
 int open(int samplerate, int numchannels, int bitspersamp, int bufferlenms,
     int prebufferms)
 {
@@ -208,27 +170,27 @@ int open(int samplerate, int numchannels, int bitspersamp, int bufferlenms,
 
   DPRINTF(0,"%s (%s)\n",__func__,player.base.pszFileName);
 
-  bAudioClock=player.options.common.bAudioClock;
   reset();
-  lstrcpyn(out_module, player.base.pszFileName, ARRAYSIZE(out_module));
+  if (out_module) {
+	  free(out_module);
+  }
+  out_module = _wcsdup(player.base.pszFileName);
 
   numchan = numchannels;
   srate = samplerate;
   bps = bitspersamp;
 
-  if (PLAYER_SEND(&player,PlayerDeviceCreateV,&device)<0)
+  if (PLAYER_SEND(&player,PlayerDeviceCreateV)<0)
     return -1;
+
+    bReset=0;
 
 #if defined (YASAPI_GAPLESS) // {
   if (player.state<PLAYER_STATE_PAUSE) {
-    bReset=0;
-
-    return PlayerSendOpen(srate,numchan,bps);
+    return PLAYER_SEND(&player,PlayerOpen);
   }
   else if (bGapless&&bReset) {
-    bReset=0;
-
-    bChange=bChange||wcscmp(device.szId,player.device.szId);
+    bChange=bChange/*||wcscmp(device.szId,player.device.szId)*/;
 #if defined (YASAPI_SURROUND) // {
     bChange=bChange||player.options.common.bSurround!=player.open.bSurround;
 #endif // }
@@ -236,22 +198,21 @@ int open(int samplerate, int numchannels, int bitspersamp, int bufferlenms,
     bChange=bChange||samplerate!=nSamplesPerSec;
     bChange=bChange||bitspersamp!=wBitsPerSample;
 
-    if (bChange)
-      return drain(numchan,srate,bps);
-    else {
-      PLAYER_SEND(&player,PlayerDeviceDestroyV,&device);
-
+    if (!bChange) {
+      PLAYER_SEND(&player,PlayerDeviceDestroyV);
       return PLAYER_SEND(&player,PlayerReset);
     }
   }
-  else {
-    bReset=0;
 
-    return drain(numchan,srate,bps);
+  if (PLAYER_STATE_RUN<player.state) {
+	// cppcheck-suppress syntaxError
+    while (PLAYER_SEND(&player,PlayerIsPlaying))
+      Sleep(1);
   }
-#else // } {
-  return PlayerSendOpen(srate,numchan,bps);
+
+  PLAYER_SEND(&player,PlayerClose);
 #endif // }
+  return PLAYER_SEND(&player,PlayerOpen);
 }
 
 void close(void)
@@ -266,13 +227,13 @@ void close(void)
   DPRINTF(0,"%s (%s)\n",__func__,player.base.pszFileName);
 #if defined (YASAPI_GAPLESS) // {
   if (!bReset||!bGapless)
-    PlayerSendClose();
+    PLAYER_SEND(&player,PlayerClose);
 #if defined (YASAPI_CHECK_UNDERFLOW) // {
   else if (bDisconnect)
     PlayerSetTimerCheckUnderflow(&player);
 #endif // }
 #else // } {
-  PlayerSendClose();
+  PLAYER_SEND(&player,PlayerClose);
 #endif // }
 }
 
@@ -282,11 +243,9 @@ int write(char *buf, int len)
   writtentime += len;
   return 0;
 #else // } {
-  int bPause=ref_true==last_pause;
-
   DPRINTF(3,"%s (%s)\n",__func__,player.base.pszFileName);
 
-  if (!bPause&&PLAYER_SEND(&player,PlayerWrite,buf,len)<0)
+  if ((ref_true!=last_pause)&&PLAYER_SEND(&player,PlayerWrite,buf,len)<0)
     return 1;
   else {
     writtentime+=len;
@@ -297,11 +256,10 @@ int write(char *buf, int len)
 
 int canwrite(void)
 {
-  int bPause=ref_true==last_pause;
   int bytes;
 
   DPRINTF(3,"%s (%s)\n",__func__,player.base.pszFileName);
-  bytes=bPause?0:PLAYER_SEND(&player,PlayerCanWrite);
+  bytes=((ref_true==last_pause)?0:PLAYER_SEND(&player,PlayerCanWrite));
   DPRINTF(3,"  bytes: %d\n",bytes);
 
   return bytes;
@@ -342,12 +300,11 @@ int pause(int pause)
 #else // } {
   int bPause=ref_true==pause;
   int t=last_pause;
-  int64_t time=0;
 
   DPRINTF(0,"%s (%s: %d, %d)\n",__func__,player.base.pszFileName,pause,bPause);
 
   if (last_pause!=pause) {
-    PLAYER_SEND(&player,PlayerPause,&time);
+    time_t time=PLAYER_SEND(&player,PlayerPause);
 
     if (bPause) {
       w_offset+=GetTime(time)-start_t;
@@ -384,10 +341,10 @@ void setpan(int pan)
 
 void flush(int t)
 {
-  int64_t time=0;
+  time_t time;
 
   DPRINTF(0,"%s\n",__func__);
-  PLAYER_SEND(&player,PlayerFlush,&time);
+  time=PLAYER_SEND(&player,PlayerFlush);
   w_offset=t;
   start_t=GetTime(time);
   writtentime=0;
@@ -395,22 +352,13 @@ void flush(int t)
   
 int getoutputtime(void)
 {
-#if 0 // {
-  if (last_pause)
-    return w_offset;
-  return GetTickCount()-start_t + w_offset;
-#else // } {
-  int bPause=ref_true==last_pause;
-
-  if (bPause)
-    return w_offset;
-  return GetTime(GetAudioTime())-start_t + w_offset;
-#endif // }
+  return ((ref_true != last_pause) ? GetTime(((PLAYER_STATE_PLAY <= player.state) ?
+		  PLAYER_SEND(&player, PlayerGetTime) : 0)) - start_t + w_offset : w_offset);
 }
 
 int getwrittentime(void)
 {
-  int t=srate*numchan;
+  const int t=srate*numchan;
   int ms=writtentime;
 
   if (t) {
@@ -421,7 +369,7 @@ int getwrittentime(void)
 
     ms/=(bps/8);
 
-    return ms + w_offset;
+    ms += w_offset;
   }
    return ms;
 }
@@ -469,7 +417,10 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 		case OUT_UNSET:
 		{
 #if ! defined (OUT_YASAPI_SUBCLASS) // {
-			out_module[0] = 0;
+			if (out_module) {
+				free(out_module);
+				out_module = 0;
+			}
 #endif // }
 			// we've been unloaded so we can 
 			// reset everything just in-case
@@ -528,17 +479,23 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 				  }
 
 				#if ! defined (OUT_YASAPI_SUBCLASS) // {
-				  lstrcpyn(out_module, player.base.pszFileName, ARRAYSIZE(out_module));
+				  if (out_module) {
+					  free(out_module);
+				  }
+				  out_module = _wcsdup(player.base.pszFileName);
 				#endif // }
 				  loaded = TRUE;
 				  return;
-				//cleanup:
 				player:
 				#if defined (OUT_YASAPI_SUBCLASS) // {
 				  UnSubclass(plugin.hMainWindow, PluginWinampProc);
 				subclass:
 				#else
-				  out_module[0] = 0;
+				  if (out_module)
+				  {
+					  free(out_module);
+					  out_module = 0;
+				  }
 				#endif // }
 				#if defined (YASAPI_CO_INITIALIZE) // {
 				  CoUninitialize();

@@ -160,9 +160,9 @@ extern "C" {
 const wchar_t *basenamew(const wchar_t *s);
 wchar_t *yapath(wchar_t *file);
 void yafree(void *p);
-int messagea(int force, HRESULT x, HRESULT *y, const char *m, ...);
-int messagew(int force, HRESULT x, HRESULT *y, const wchar_t *m, ...);
-int crash(const char *format, ...);
+void messagea(int force, HRESULT x, HRESULT *y, const char *m, ...);
+void messagew(int force, HRESULT x, HRESULT *y, const wchar_t *m, ...);
+
 #if defined (YA_DEBUG) // {
 void ConsoleOpen(void);
 void ConsoleClose(void);

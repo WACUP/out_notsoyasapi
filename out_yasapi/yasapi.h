@@ -56,17 +56,13 @@ extern Out_Module plugin;
 ///////////////////////////////////////////////////////////////////////////////
 #if ! defined (YASAPI_VER) // {
   #define YASAPI_VER            1.7.25
-  #define PLUGIN_VERSION        "1.3"
+  #define PLUGIN_VERSION        "1.4"
 #endif // }
 
 #define YASAPI_VERSION          YA_STR(YASAPI_VER)
 #define PI_VER2                 "v" YASAPI_VERSION
 
-#if defined (OUT_YASAPI_SFX) // {
-  #define YASAPI_PREFIX         YA_CONCAT(out_yasapi,OUT_YASAPI_SFX)
-#else // } {
   #define YASAPI_PREFIX         out_notsoyasapi
-#endif // }
 
 #define YASAPI_ID_BASE          65536
 #define YASAPI_ID_OFFS          858
@@ -310,7 +306,7 @@ struct _OptionsCommon {
 #endif // }
 };
 
-int OptionsCommonLoad(OptionsCommon *pOptions, const wchar_t *pfx,
+void OptionsCommonLoad(OptionsCommon *pOptions, const wchar_t *pfx,
     const wchar_t *path);
 void OptionsCommonSave(OptionsCommon *pOptions, int mode, const wchar_t *path);
 const OptionsCommon *OptionsCommonDefault(void);
@@ -345,7 +341,7 @@ struct _OptionsDevice {
   } ring;
 };
 
-int OptionsDeviceLoad(OptionsDevice *pOptions, const wchar_t *pfx,
+void OptionsDeviceLoad(OptionsDevice *pOptions, const wchar_t *pfx,
     const wchar_t *pstrId, const wchar_t *path);
 void OptionsDeviceSave(OptionsDevice *pOptions, const wchar_t *pstrId,
     const wchar_t *path);
@@ -418,7 +414,7 @@ int TimeGetMS(Time *pTime, Connection *pConnect, double *pms);
 ///////////////////////////////////////////////////////////////////////////////
 struct _PlayerDevice {
   IMMDevice *pDevice;
-  wchar_t szId[YASAPI_ID_SIZE];
+  wchar_t *szId;
 };
 
 int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,

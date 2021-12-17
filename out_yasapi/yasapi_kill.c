@@ -197,12 +197,9 @@ void PlayerKill(Player *pPlayer, int bReset, const PlayerState state)
 
 int PlayerKillV(Player *pPlayer, Request *pRequest)
 {
-  int bReset=va_arg(pRequest->ap,int);
-  const PlayerState state=va_arg(pRequest->ap,const PlayerState);
-
   DPRINTF(0,"  > %s (state: %d -> %d, reset: %d) <\n",__func__,
-      pPlayer->state,state,bReset);
-  PlayerKill(pPlayer,bReset,state);
+      pPlayer->state,0,PLAYER_STATE_BASE);
+  PlayerKill(pPlayer,0,PLAYER_STATE_BASE);
 
   return 0;
 }

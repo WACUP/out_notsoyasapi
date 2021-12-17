@@ -54,8 +54,9 @@ static int vmessagew(const wchar_t *format, va_list ap)
   return wp-buf;
 }
 
-int messagea(int force, HRESULT x, HRESULT *y, const char *m, ...)
+void messagea(int force, HRESULT x, HRESULT *y, const char *m, ...)
 {
+#ifdef _DEBUG
   if ((!force&&x==*y)||force) {
 #if ! defined (YA_DEBUG) // {
 #if defined (YA_DUMP) // {
@@ -81,12 +82,12 @@ int messagea(int force, HRESULT x, HRESULT *y, const char *m, ...)
     if (y)
       *y=0;
   }
-
-  return 0;
+#endif
 }
 
-int messagew(int force, HRESULT x, HRESULT *y, const wchar_t *m, ...)
+void messagew(int force, HRESULT x, HRESULT *y, const wchar_t *m, ...)
 {
+#ifdef _DEBUG
   if ((!force&&x==*y)||force) {
 #if ! defined (YA_DEBUG) // {
 #if defined (YA_DUMP) // {
@@ -112,8 +113,7 @@ int messagew(int force, HRESULT x, HRESULT *y, const wchar_t *m, ...)
     if (y)
       *y=0;
   }
-
-  return 0;
+#endif
 }
 
 #if defined (YA_DEBUG) // {

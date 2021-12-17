@@ -425,6 +425,7 @@ static ConfigDevice *ConfigDeviceNew(Config *pConfig, int nDevice)
 
   /////////////////////////////////////////////////////////////////////////////
   hr=pProperties->lpVtbl->GetValue(pProperties,
+    // cppcheck-suppress ConfigurationNotChecked
     &PKEY_Device_FriendlyName,    // [in]  REFPROPERTYKEY key,
     &pConfigDevice->vName         // [out] PROPVARIANT    *pv
   );
@@ -441,8 +442,6 @@ static ConfigDevice *ConfigDeviceNew(Config *pConfig, int nDevice)
       pConfigDevice->vName.pwszVal);
 
   return pConfigDevice;
-//cleanup:
-  //PropVariantClear(&pConfigDevice->vName);
 name:
   pProperties->lpVtbl->Release(pProperties);
 properties:
@@ -555,6 +554,7 @@ static INT_PTR CALLBACK CommonProc(HWND hDlg, UINT uMsg, WPARAM wParam,
   switch (uMsg) {
   case WM_INITDIALOG:
     SetWindowLongPtrW(hDlg,GWLP_USERDATA,lParam);
+    // cppcheck-suppress unreadVariable
     pConfig=(Config *)lParam;
 #if 0 // {
 #if defined (YA_DEBUG) // {
@@ -700,6 +700,7 @@ static INT_PTR CALLBACK DeviceProc(HWND hDlg, UINT uMsg, WPARAM wParam,
 
   switch (uMsg) {
   case WM_INITDIALOG:
+    // cppcheck-suppress unreadVariable
     pConfig=(Config *)lParam;
     SetWindowLongPtrW(hDlg,GWLP_USERDATA,lParam);
     ControlsInit(gcaDeviceControls,hDlg/*,pConfig->hModule*/);
@@ -793,6 +794,7 @@ static INT_PTR CALLBACK BuffersProc(HWND hDlg, UINT uMsg, WPARAM wParam,
 
   switch (uMsg) {
   case WM_INITDIALOG:
+    // cppcheck-suppress unreadVariable
     pConfig=(Config *)lParam;
     SetWindowLongPtrW(hDlg,GWLP_USERDATA,lParam);
     ControlsInit(gcaBuffersControls,hDlg/*,pConfig->hModule*/);
@@ -866,6 +868,7 @@ static int ResizeComboBoxDropDown(HWND hParent, HWND hComboBox, const wchar_t *s
 	HFONT font = (HFONT)SendMessage(hParent, WM_GETFONT, 0, 0),
 		  oldfont = (HFONT)SelectObject(hdc, font);
 
+	// cppcheck-suppress lstrlenCalled
 	GetTextExtentPoint32(hdc, str, lstrlen(str) + 1, &size);
 
 	if (size.cx > width)
@@ -901,10 +904,10 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
       if (NULL==(pwszLabel=malloc((uLen+1)*(sizeof *pwszLabel))))
         goto label;
 
-      lstrcpyn(pwszLabel,L"Default Device -- ",uLen);
+      wcsncpy(pwszLabel,L"Default Device -- ",uLen);
 	  labelLen = wcslen(pwszLabel);
 	  uLen-=labelLen;
-	  lstrcpyn(pwszLabel+labelLen,pConfigDevice->vName.pwszVal,uLen);
+      wcsncpy(pwszLabel+labelLen,pConfigDevice->vName.pwszVal,uLen);
     }
     else
       pwszLabel=pConfigDevice->vName.pwszVal;
@@ -928,7 +931,6 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
   }
 
   SendMessage(hComboBox,CB_SETCURSEL,nDevice?nDevice-1:0,0);
-//cleanup:
 label:
 config:
   return;
@@ -1048,13 +1050,8 @@ void ConfigSet(Config *pConfig, LPWSTR pstrId, wchar_t *pwszLabel)
 {
   int cPage;
   Page *pPage;
-  int nLen;
 
-  nLen=(sizeof pConfig->options.common.szId);
-  nLen/=(sizeof pConfig->options.common.szId[0]);
-  nLen-=1;
-  lstrcpyn(pConfig->options.common.szId,pstrId,nLen);
-  pConfig->options.common.szId[nLen]=0;
+  wcsncpy(pConfig->options.common.szId, pstrId, ARRAYSIZE(pConfig->options.common.szId));
 
   ControlsSet(gcaCoreDeviceControls,pConfig->hDlg,&pConfig->options.device);
 
@@ -1102,30 +1099,6 @@ void ConfigReset(Config *pConfig)
 	}
 }
 
-static int PlayerWriteConfig(Player *pPlayer, Request *pRequest)
-{
-  ConfigDevice *pConfigDevice=va_arg((pRequest)->ap,ConfigDevice *);
-
-  OptionsDeviceSave(&pPlayer->options.device,pConfigDevice->pstrId,
-      pPlayer->options.path);
-  OptionsCommonSave(&pPlayer->options.common,0,pPlayer->options.path);
-#if defined (YASAP_DEBUG) // {
-  TraceSwitch(&trace);
-#endif // }
-
-  return 0;
-}
-
-static int PlayerWriteConfigSpecific(Player *pPlayer, Request *pRequest)
-{
-  OptionsCommonSave(&pPlayer->options.common,1,pPlayer->options.path);
-#if defined (YASAP_DEBUG) // {
-  TraceSwitch(&trace);
-#endif // }
-
-  return 0;
-}
-
 void ConfigSave(Config *pConfig)
 {
 	if (pConfig != NULL) {
@@ -1139,7 +1112,10 @@ void ConfigSave(Config *pConfig)
 			if (pConfigDevice && (pConfigDevice != CB_ERR)) {
 			// should be called before the lock in order to not dead-lock this window.
 			ConfigGet(pConfig);
-			PLAYER_SEND(pPlayer, PlayerWriteConfig, pConfigDevice);
+
+                OptionsDeviceSave(&pPlayer->options.device,pConfigDevice->pstrId,
+                                  pPlayer->options.path);
+                OptionsCommonSave(&pPlayer->options.common,0,pPlayer->options.path);
 		}
 	}
 }
@@ -1158,8 +1134,8 @@ void ConfigSaveSpecific(Config *pConfig)
 			//if (pConfigDevice) {
 			  // should be called before the lock in order to not dead-lock this window.
 		ConfigGet(pConfig);
-		// cppcheck-suppress syntaxError
-		PLAYER_SEND(pPlayer, PlayerWriteConfigSpecific);
+
+        OptionsCommonSave(&pPlayer->options.common, 1, pPlayer->options.path);
 		//}
 	}
 }
@@ -1439,7 +1415,6 @@ void ConfigDialog(Player *pPlayer, Config *pConfig, HWND hWndParent)
   ConfigOnInit(hWndParent, pConfig);
 
   /////////////////////////////////////////////////////////////////////////////
-//cleanup:
 count:
 collection:
 enumerator:

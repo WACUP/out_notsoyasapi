@@ -18,7 +18,6 @@
  * along with libya.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <ya.h>
-#include <shlwapi.h>
 #include <../loader/loader/paths.h>
 
 const wchar_t *basenamew(const wchar_t *s)
@@ -47,7 +46,7 @@ wchar_t *yapath(wchar_t *file)
   if (NULL==path)
     goto path;
   
-  PathCombine(path,GetPaths()->settings_sub_dir,file);
+  CombinePath(path,GetPaths()->settings_sub_dir,file);
   return path;
 // cleanup:
   //YASAPI_FREE(path);

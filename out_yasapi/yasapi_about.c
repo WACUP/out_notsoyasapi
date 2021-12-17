@@ -175,8 +175,9 @@ void AboutDialog(HWND hWndParent)
 #endif
 
 	StringCchPrintf(message, ARRAYSIZE(message), text, TEXT(PLUGIN_VERSION),
+					// cppcheck-suppress ConfigurationNotChecked
 					TEXT(YASAPI_VERSION), TEXT("Darren Owen aka DrO"),
-					TEXT("2016-2021"), TEXT(__DATE__));
+					TEXT("2016-2022"), TEXT(__DATE__));
 	MessageBoxW(hWndParent, message, (LPWSTR)GetLangString(IDS_ABOUT_TITLE), MB_OK);
 
 	if (text)

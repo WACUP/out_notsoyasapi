@@ -63,12 +63,19 @@ int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,
     }
   
     DPUTS(0,"  got the endpoint ID string\n");
-    lstrcpyn(pPlayerDevice->szId,pstrId,ARRAYSIZE(pPlayerDevice->szId));
+
+    if (pPlayerDevice->szId) {
+        free(pPlayerDevice->szId);
+    }
+    pPlayerDevice->szId=_wcsdup(pstrId);
     CoTaskMemFree(pstrId);
   }
   else {
     pPlayerDevice->pDevice=NULL;
-    lstrcpyn(pPlayerDevice->szId,pcstrId,ARRAYSIZE(pPlayerDevice->szId));
+    if (pPlayerDevice->szId) {
+        free(pPlayerDevice->szId);
+    }
+    pPlayerDevice->szId = _wcsdup(pcstrId);
   }
 
   return 0;
@@ -89,7 +96,7 @@ int PlayerDeviceDestroy(PlayerDevice *pPlayerDevice)
     pDevice->lpVtbl->Release(pDevice);
   }
 
-  SecureZeroMemory(pPlayerDevice, sizeof *pPlayerDevice);
+  memset(pPlayerDevice, 0, sizeof * pPlayerDevice);
 
   return 0;
 }
@@ -130,14 +137,11 @@ device:
 
 int PlayerDeviceCreateV(Player *pPlayer, Request *pRequest)
 {
-  PlayerDevice *pPlayerDevice=va_arg(pRequest->ap,PlayerDevice *);
-  return ((pPlayerDevice > 65535) ? PlayerDeviceCreate(pPlayerDevice,pPlayer->options.common.szId,
-                                                       pPlayer->run.pEnumerator) : 0);
+  return PlayerDeviceCreate(&pPlayer->device,pPlayer->options.common.szId,
+                            pPlayer->run.pEnumerator);
 }
 
 int PlayerDeviceDestroyV(Player *pPlayer, Request *pRequest)
 {
-  PlayerDevice *pPlayerDevice=va_arg(pRequest->ap,PlayerDevice *);
-
-  return PlayerDeviceDestroy(pPlayerDevice);
+  return PlayerDeviceDestroy(&pPlayer->device);
 }

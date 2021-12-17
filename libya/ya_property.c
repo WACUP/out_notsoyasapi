@@ -22,7 +22,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 void PropertiesLoad(const Property *pProperty, PropertyIOConfig *c)
 {
-  while (pProperty->type) {
+  while (pProperty && pProperty->type) {
     pProperty->type->Load(pProperty,c);
     ++pProperty;
   }
@@ -30,7 +30,7 @@ void PropertiesLoad(const Property *pProperty, PropertyIOConfig *c)
 
 void PropertiesSave(const Property *pProperty, const PropertyIOConfig *c)
 {
-  while (pProperty->type) {
+  while (pProperty && pProperty->type) {
     pProperty->type->Save(pProperty,c);
     ++pProperty;
   }
@@ -151,10 +151,11 @@ static void StringTypeLoad(const Property *pProperty, PropertyIOConfig *c)
 static void StringTypeSave(const Property *pProperty,
     const PropertyIOConfig *c)
 {
+  LPCWSTR value = PROPERTY_STRING(pProperty, c->pData);
   WritePrivateProfileStringW(
     (c->group ? c->group : L"default"),         // _In_  LPCTSTR lpAppName,
     pProperty->key,   // _In_  LPCTSTR lpKeyName,
-    PROPERTY_STRING(pProperty,c->pData),
+    (*value ? PROPERTY_STRING(pProperty,c->pData) : NULL),
                       // _In_  LPCTSTR lpString,
     c->path           // _In_  LPCTSTR lpFileName
   );

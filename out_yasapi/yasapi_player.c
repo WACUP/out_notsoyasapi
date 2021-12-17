@@ -64,13 +64,14 @@ int PlayerCreate(Player *pPlayer, HINSTANCE hModule, const wchar_t *path)
   DPRINTF(0,"  > %s <\n",__func__);
 
   /////////////////////////////////////////////////////////////////////////////
-  SecureZeroMemory(pPlayer,sizeof *pPlayer);
+  memset(pPlayer,0,sizeof *pPlayer);
   pPlayer->hDlgConfig=NULL;
 
   /////////////////////////////////////////////////////////////////////////////
   pPlayer->options.path=path;
   OptionsCommonLoad(&pPlayer->options.common,L"    ",path);
   DPUTS(0,"  common options loaded\n");
+
   OptionsDeviceLoad(&pPlayer->options.device,L"    ",
       pPlayer->options.common.szId,path);
   DPUTS(0,"  device options loaded\n");
@@ -162,7 +163,6 @@ int PlayerCreate(Player *pPlayer, HINSTANCE hModule, const wchar_t *path)
   }
 
   return 0;
-// cleanup:
 run:
   PlayerStubDestroy(pPlayer->base.pStub);
 stub:
@@ -184,7 +184,8 @@ module:
 void PlayerDestroy(Player *pPlayer)
 {
   if (PLAYER_STATE_BASE<pPlayer->state)
-    PLAYER_SEND(pPlayer,PlayerKillV,0,PLAYER_STATE_BASE);
+	// cppcheck-suppress syntaxError
+    PLAYER_SEND(pPlayer,PlayerKillV);
 
   if (PLAYER_STATE_NULL<pPlayer->state)
     PlayerKill(pPlayer,0,PLAYER_STATE_NULL);
@@ -205,7 +206,7 @@ int PlayerRun(Player *pPlayer, Request *pRequest)
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  SecureZeroMemory(&pPlayer->run,sizeof pPlayer->run);
+  memset(&pPlayer->run,0,sizeof pPlayer->run);
 
   // create a device enumerator ///////////////////////////////////////////////
   hr=CoCreateInstance(
@@ -238,7 +239,6 @@ int PlayerRun(Player *pPlayer, Request *pRequest)
   ++pPlayer->state;
 
   return 0;
-//cleanup:
 #if defined (YASAPI_NOTIFY) // {
   PlayerRemoveNotify(pPlayer);
 notify:
@@ -267,11 +267,11 @@ int PlayerCreateConnect(Player *pPlayer, int bNegociate, int bReset)
   AUDCLNT_SHAREMODE eShareMode = AUDCLNT_SHAREMODE_SHARED;
   REFERENCE_TIME hnsDefaultDevicePeriod;
   REFERENCE_TIME hnsMinimumDevicePeriod;
-  REFERENCE_TIME hnsDevicePeriod;
+  REFERENCE_TIME hnsDevicePeriod=0;
   DWORD dwStreamFlags;
-  int retry;
+  int retry=0;
   WAVEFORMATEX *pClosestMatch;
-  IAudioClient *pClient;
+  IAudioClient *pClient=NULL;
   IAudioRenderClient *pRender;
   IAudioClock *pClock;
   HRESULT hr;
@@ -307,8 +307,6 @@ int PlayerCreateConnect(Player *pPlayer, int bNegociate, int bReset)
 #endif // }
 
   /////////////////////////////////////////////////////////////////////////////
-  hnsDevicePeriod=0;
-  retry=0;
 retry:
   if (bNegociate) {
     // remember the share mode ////////////////////////////////////////////////
@@ -318,12 +316,12 @@ retry:
     eShareMode=pPlayer->open.eShareMode;
 
   // activate the audio client ////////////////////////////////////////////////
-  hr=pDevice->lpVtbl->Activate(pDevice,
+  hr=(pDevice ? pDevice->lpVtbl->Activate(pDevice,
     &IID_IAudioClient,    // [in]   REFIID iid,
     CLSCTX_ALL,           // [in]   DWORD dwClsCtx,
     NULL,                 // [in]   PROPVARIANT *pActivationParams,
     (void **)&pClient     // [out]  void **ppInterface
-  );
+  ) : E_POINTER);
 
   if (FAILED(hr)) {
     DERROR(E_NOINTERFACE,hr,client);
@@ -387,10 +385,13 @@ retry:
 
   if (AUDCLNT_SHAREMODE_SHARED==eShareMode
         &&pPlayer->options.device.bAutoConvertPCM) {
+	  // cppcheck-suppress ConfigurationNotChecked
       dwStreamFlags|=AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM;
 
-     if (pPlayer->options.device.bSRCDefaultQuality)
+     if (pPlayer->options.device.bSRCDefaultQuality) {
+	   // cppcheck-suppress ConfigurationNotChecked
        dwStreamFlags|=AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY;
+  }
   }
 
   pPlayer->open.dwStreamFlags=dwStreamFlags;
@@ -439,10 +440,7 @@ retry:
           " (device period: %I64d)\n",
           qShareSize,hnsDevicePeriod);
     }
-
-    pPlayer->open.hnsDevicePeriod=hnsDevicePeriod;
   }
-  else
     pPlayer->open.hnsDevicePeriod=hnsDevicePeriod;
 
   // initialize the audio client //////////////////////////////////////////////
@@ -675,9 +673,7 @@ execution:
 
 int PlayerCreateWFXX(Player *pPlayer, Request *pRequest)
 {
-  int samplerate=va_arg(pRequest->ap,int);
-  int numchannels=va_arg(pRequest->ap,int);
-  int bitspersamp=va_arg(pRequest->ap,int);
+  extern int srate,numchan,bps;
   WAVEFORMATEXTENSIBLE *pwfxx=&pPlayer->open.wfxx;
   WAVEFORMATEX *pwfx=&pwfxx->Format;
   int bMono2Stereo=pPlayer->options.common.bMono2Stereo;
@@ -690,40 +686,40 @@ int PlayerCreateWFXX(Player *pPlayer, Request *pRequest)
   int bSurround;
 #endif // }
 
-  DPRINTF(0,"  > %s (%d, %d, %d) <\n",__func__,
-      samplerate,numchannels,bitspersamp);
+  DPRINTF(0,"  > %s (%d, %d, %d) <\n",
+      __func__,srate,numchan,bps);
 
   /////////////////////////////////////////////////////////////////////////////
   DPRINTF(0,"  samplerate: %d\n",samplerate);
 
 #if defined (YASAPI_FORCE24BIT) // {
   if (bForce24Bit) {
-    switch (bitspersamp) {
+    switch (bps) {
     case 8:
       pSource->nBytesPerSample=1;
-      pSource->nChannels=numchannels;
+      pSource->nChannels=numchan;
       pTarget->nBytesPerSample=3;
-      pTarget->nChannels=bMono2Stereo&&numchannels<2?2:numchannels;
+      pTarget->nChannels=bMono2Stereo&&numchan<2?2:numchan;
       break;
     case 16:
       pSource->nBytesPerSample=2;
-      pSource->nChannels=numchannels;
+      pSource->nChannels=numchan;
       pPlayer->open.target.nBytesPerSample=3;
-      pTarget->nChannels=bMono2Stereo&&numchannels<2?2:numchannels;
+      pTarget->nChannels=bMono2Stereo&&numchan<2?2:numchan;
       break;
     default:
-      pSource->nBytesPerSample=bitspersamp>>3;
-      pSource->nChannels=numchannels;
-      pTarget->nBytesPerSample=bitspersamp>>3;
-      pTarget->nChannels=bMono2Stereo&&numchannels<2?2:numchannels;
+      pSource->nBytesPerSample=bps>>3;
+      pSource->nChannels=numchan;
+      pTarget->nBytesPerSample=bps>>3;
+      pTarget->nChannels=bMono2Stereo&&numchan<2?2:numchan;
       break;
     }
   }
   else {
-    pSource->nBytesPerSample=bitspersamp>>3;
-    pSource->nChannels=numchannels;
-    pTarget->nBytesPerSample=bitspersamp>>3;
-    pTarget->nChannels=bMono2Stereo&&numchannels<2?2:numchannels;
+    pSource->nBytesPerSample=bps>>3;
+    pSource->nChannels=numchan;
+    pTarget->nBytesPerSample=bps>>3;
+    pTarget->nChannels=bMono2Stereo&&numchan<2?2:numchan;
   }
 
   pSource->nBytesPerFrame=pSource->nBytesPerSample*pSource->nChannels;
@@ -741,8 +737,6 @@ int PlayerCreateWFXX(Player *pPlayer, Request *pRequest)
   else
     DPRINTF(0,"  bitspersamp: %d\n",bitspersamp);
 
-  bitspersamp=pTarget->nBytesPerSample<<3;
-  numchannels=pTarget->nChannels;
 #else // } {
   if (bMono2Stereo&&numchannels<2) {
     DPUTS(0,"  numchannels: 1 -> 2\n");
@@ -759,9 +753,9 @@ int PlayerCreateWFXX(Player *pPlayer, Request *pRequest)
 
 #if defined (YASAPI_SURROUND) // {
   bSurround=pPlayer->open.bSurround=pPlayer->options.common.bSurround;
-  WFXXSetup(pwfxx,samplerate,numchannels,bitspersamp,bSurround,FALSE);
+  WFXXSetup(pwfxx,srate,pTarget->nChannels,(pTarget->nBytesPerSample<<3),bSurround,FALSE);
 #else // } {
-  WFXXSetup(pwfxx,samplerate,numchannels,bitspersamp,FALSE,FALSE);
+  WFXXSetup(pwfxx,samplerate,pTarget->nChannels,(pTarget->nBytesPerSample<<3),FALSE,FALSE);
 #endif // }
   pPlayer->open.wBytesPerSample=pwfx->wBitsPerSample>>3;
 
@@ -881,7 +875,6 @@ int PlayerOpen(Player *pPlayer, Request *pRequest)
   };
 #endif // }
 
-  PlayerDevice *pPlayerDevice=va_arg(pRequest->ap,PlayerDevice *);
   const PlayerState state=pPlayer->state;
   const wchar_t *path=pPlayer->options.path;
 
@@ -894,14 +887,13 @@ int PlayerOpen(Player *pPlayer, Request *pRequest)
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  SecureZeroMemory(&pPlayer->device,sizeof pPlayer->device);
-  SecureZeroMemory(&pPlayer->open,sizeof pPlayer->open);
-  SecureZeroMemory(&pPlayer->connect,sizeof pPlayer->connect);
-  SecureZeroMemory(&pPlayer->time,sizeof pPlayer->time);
+  memset(&pPlayer->open,0,sizeof pPlayer->open);
+  memset(&pPlayer->connect,0,sizeof pPlayer->connect);
+  memset(&pPlayer->time,0,sizeof pPlayer->time);
 
   /////////////////////////////////////////////////////////////////////////////
-  OptionsDeviceLoad(&pPlayer->options.device,L"    ",
-      pPlayerDevice->szId,path);
+  OptionsDeviceLoad(&pPlayer->options.device,
+      L"    ",pPlayer->device.szId,path);
   DPUTS(0,"  device options loaded\n");
 
   /////////////////////////////////////////////////////////////////////////////
@@ -913,12 +905,9 @@ int PlayerOpen(Player *pPlayer, Request *pRequest)
       =pPlayer->options.common.bDisconnect?&gcDisconnectYes:&gcDisconnectNo;
 
   /////////////////////////////////////////////////////////////////////////////
-  pPlayer->device=*pPlayerDevice;
-  SecureZeroMemory(pPlayerDevice,sizeof *pPlayerDevice);
-  pPlayerDevice=&pPlayer->device;
 
-  if (!pPlayerDevice->pDevice
-      &&PlayerDeviceGet(pPlayerDevice,pPlayer->run.pEnumerator)<0) {
+  if (!*&pPlayer->device.pDevice
+      &&PlayerDeviceGet(&pPlayer->device,pPlayer->run.pEnumerator)<0) {
     DMESSAGE("getting the device");
     goto device;
   }
@@ -984,7 +973,7 @@ execution:
 #endif // }
 #endif // }
 wfxx:
-  PlayerDeviceDestroy(pPlayerDevice);
+  PlayerDeviceDestroy(&pPlayer->device);
 device:
 state:
   pPlayer->state=state;
@@ -997,7 +986,7 @@ int PlayerMigrate(Player *pPlayer, Request *pRequest)
   LPCWSTR pwstrId=va_arg(pRequest->ap,LPCWSTR);
   const wchar_t *path=pPlayer->options.path;
   Connection *pConnect=&pPlayer->connect;
-  PlayerDevice device,*pPlayerDevice=&device;
+  PlayerDevice device={0}, *pPlayerDevice=&device;
 
   DPRINTF(0,"  > %s <\n",__func__);
 
@@ -1031,7 +1020,7 @@ int PlayerMigrate(Player *pPlayer, Request *pRequest)
   ConnectionSetInvalid(pConnect,0);
   
   pPlayer->device=device;
-  SecureZeroMemory(pPlayerDevice,sizeof *pPlayerDevice);
+  memset(pPlayerDevice,0,sizeof *pPlayerDevice);
   pPlayerDevice=&pPlayer->device;
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1352,7 +1341,7 @@ int PlayerPlay(Player *pPlayer, UINT32 uFramesPadding, int bUnderflow)
     dwFramesRead/=pwfx->nBlockAlign;
 
   if (c.dwWriteSize<c.dwSize&&bNeedPadding)
-    SecureZeroMemory(pData+c.dwWriteSize,c.dwSize-c.dwWriteSize);
+    memset(pData+c.dwWriteSize,0,c.dwSize-c.dwWriteSize);
 
   // release the render buffer ////////////////////////////////////////////////
   hr=pRender->lpVtbl->ReleaseBuffer(pRender,
@@ -1387,7 +1376,7 @@ int PlayerPlay(Player *pPlayer, UINT32 uFramesPadding, int bUnderflow)
 
   // no critical section needed in order to block unexpected write
   // requests to the ring buffer because all requests are serialized.
-  SecureZeroMemory(&error,sizeof error);
+  memset(&error,0,sizeof error);
   error.Cleanup=RingErrorNop;
   RingReadEx(pRing,(LPSTR)pData,c.dwWriteSize,RING_COMMIT,&error);
 nop:
@@ -1585,8 +1574,7 @@ align:
 
 int PlayerFlush(Player *pPlayer, Request *pRequest)
 {
-  int64_t *pTime=va_arg(pRequest->ap,int64_t *);
-  double ms;
+  double ms=0.0;
 
   DPRINTF(0,"  > %s (%d) <\n",__func__,pPlayer->state);
 
@@ -1617,9 +1605,7 @@ int PlayerFlush(Player *pPlayer, Request *pRequest)
     }
 
     PlayerKill(pPlayer,1,PLAYER_STATE_CONNECTED);
-    *pTime=ms+0.5;
-
-    return 0;
+    return ms + 0.5;
   }
   else
     return 0;
@@ -1676,9 +1662,8 @@ int PlayerIsPlaying(Player *pPlayer, Request *pRequest)
 
 int PlayerPause(Player *pPlayer, Request *pRequest)
 {
-  int64_t *pTime=va_arg(pRequest->ap,int64_t *);
   int bPause=PLAYER_STATE_PAUSE==pPlayer->state;
-  double ms;
+  double ms=0.0;
 
   DPRINTF(0,"  > %s (%d) <\n",__func__,pPlayer->state);
 
@@ -1689,7 +1674,6 @@ int PlayerPause(Player *pPlayer, Request *pRequest)
 
   if (ConnectionIsInvalid(&pPlayer->connect)) {
     DWARNINGV("invalid connection in %s",__func__);
-    ms=0.0;
   }
   else if (bPause) {
     ++pPlayer->state;
@@ -1731,10 +1715,7 @@ int PlayerPause(Player *pPlayer, Request *pRequest)
 #endif // }
   }
 
-  if (pTime > 65535) {
-  *pTime=ms+0.5;
-  }
-  return 0;
+  return ms + 0.5;
 time2:
 get2:
 get1:
@@ -1748,7 +1729,6 @@ state:
 int PlayerGetTime(Player *pPlayer, Request *pRequest)
 {
   enum { DEBUG=3 };
-  int64_t *pTime=va_arg(pRequest->ap,int64_t *);
   double ms=0.0;
 
   DPRINTF(DEBUG,"  > %s (%d) <\n",__func__,pPlayer->state);
@@ -1776,10 +1756,7 @@ int PlayerGetTime(Player *pPlayer, Request *pRequest)
   }
 null:
 invalid:
-  if (pTime > 65535) {
-    *pTime=ms+0.5;
-  }
-  return 0;
+  return ms + 0.5;
 time:
 state:
   return -1;
@@ -1976,17 +1953,12 @@ void PlayerPost(Player *pPlayer, PlayerProc *pPlayerProc)
 #endif // }
 
 ///////////////////////////////////////////////////////////////////////////////
-void PlayerPostRead(void *data)
-{
-  PLAYER_POST(data,PlayerRead);
-}
-
 VOID CALLBACK PlayerFireRead(LPVOID lpArg, DWORD dwLow, DWORD dwHigh)
 {
 #if defined (YASAPI_READ_COUNT) // {
   --((Player *)lpArg)->base.timer.nRead;
 #endif // }
-  PlayerPostRead(lpArg);
+  PLAYER_POST(lpArg, PlayerRead);
 }
 
 void PlayerSetTimerRead(Player *pPlayer, LONGLONG time)
@@ -2086,12 +2058,12 @@ static void CopySampleDirect(char *wp, int m, const char *rp, int k)
   int l=m-k;
 
   if (0<l) {
-    SecureZeroMemory(wp,l);
+    memset(wp,0,l);
     wp+=l;
   }
 
   // copy source to the temorary location.
-  CopyMemory(
+  memcpy(
     wp,                   // _In_  PVOID Destination,
     rp,                   // _In_  const VOID *Source,
     k                     // _In_  SIZE_T Length
@@ -2108,7 +2080,7 @@ static void CopySampleIndirect(char *wp, int m, const char *rp, int k,
   const char *i32rp=((const char *)&i32)+(sizeof i32)-m;
 
   // copy source to the temorary location.
-  CopyMemory(
+  memcpy(
     i32wp,                // _In_  PVOID Destination,
     rp,                   // _In_  const VOID *Source,
     k                     // _In_  SIZE_T Length
@@ -2117,7 +2089,7 @@ static void CopySampleIndirect(char *wp, int m, const char *rp, int k,
   i32=MulDiv(i32,nVolume,YASAPI_MAX_VOLUME);
 
   // copy the temorary location to the target.
-  CopyMemory(
+  memcpy(
     wp,                   // _In_  PVOID Destination,
     i32rp,                // _In_  const VOID *Source,
     m                     // _In_  SIZE_T Length
@@ -2167,7 +2139,7 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
 #if defined (YASAPI_FORCE24BIT) // {
   if (!PlayerFormatChanged(pPlayer)) {
     if (YASAPI_MAX_VOLUME==nVolume) {
-      CopyMemory(
+      memcpy(
         Destination,            // _In_  PVOID Destination,
         Source,                 // _In_  const VOID *Source,
         Length                  // _In_  SIZE_T Length
@@ -2199,7 +2171,7 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
         }
         else {
           // mono: duplicate the last channel (lwp is last wp)
-          CopyMemory(
+          memcpy(
             wp,                 // _In_  PVOID Destination,
             lwp,                // _In_  const VOID *Source,
             m                   // _In_  SIZE_T Length
@@ -2214,7 +2186,7 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
 #else // } {
   if (!pPlayer->open.nShift) {
     if (!pOptions->common.bVolume||1.0==qVolume) {
-      CopyMemory(
+      memcpy(
         Destination,            // _In_  PVOID Destination,
         Source,                 // _In_  const VOID *Source,
         Length                  // _In_  SIZE_T Length
@@ -2224,7 +2196,7 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
       while (wp<mp) {
         i32=0;
 
-        CopyMemory(
+        memcpy(
           &i32,                 // _In_  PVOID Destination,
           rp,                   // _In_  const VOID *Source,
           m                     // _In_  SIZE_T Length
@@ -2233,7 +2205,7 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
         i32<<=n;
         i32=q*i32+0.5;
 
-        CopyMemory(
+        memcpy(
           wp,                   // _In_  PVOID Destination,
           &i32,                 // _In_  const VOID *Source,
           m                     // _In_  SIZE_T Length
@@ -2247,7 +2219,7 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
   else {
     if (!pOptions->common.bVolume||1.0==qVolume) {
       while (wp<mp) {
-        CopyMemory(
+        memcpy(
           wp,                   // _In_  PVOID Destination,
           rp,                   // _In_  const VOID *Source,
           m                     // _In_  SIZE_T Length
@@ -2255,7 +2227,7 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
 
         wp+=m;
 
-        CopyMemory(
+        memcpy(
           wp,                   // _In_  PVOID Destination,
           rp,                   // _In_  const VOID *Source,
           m                     // _In_  SIZE_T Length
@@ -2269,7 +2241,7 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
       while (wp<mp) {
         i32=0;
 
-        CopyMemory(
+        memcpy(
           &i32,                 // _In_  PVOID Destination,
           rp,                   // _In_  const VOID *Source,
           m                     // _In_  SIZE_T Length
@@ -2278,7 +2250,7 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
         i32<<=n;
         i32=q*i32+0.5;
 
-        CopyMemory(
+        memcpy(
           wp,                   // _In_  PVOID Destination,
           &i32,                 // _In_  const VOID *Source,
           m                     // _In_  SIZE_T Length
@@ -2286,7 +2258,7 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
 
         wp+=m;
 
-        CopyMemory(
+        memcpy(
           wp,                   // _In_  PVOID Destination,
           &i32,                 // _In_  const VOID *Source,
           m                     // _In_  SIZE_T Length

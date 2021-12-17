@@ -175,7 +175,7 @@ int RingRealloc(Ring *pRing, SIZE_T uSize)
           goto range1;
         }
 
-        CopyMemory(
+        memcpy(
           pTail,              // _In_       PVOID  Destination,
           pRing->pTail,       // _In_ const VOID   *Source,
           pRing->dwWritten    // _In_       SIZE_T Length
@@ -195,7 +195,7 @@ int RingRealloc(Ring *pRing, SIZE_T uSize)
       }
 
       if (0<dwOffs1) {
-        CopyMemory(
+        memcpy(
           pRep,               // _In_       PVOID  Destination,
           pRing->pRep,        // _In_ const VOID   *Source,
           dwOffs1             // _In_       SIZE_T Length
@@ -210,7 +210,7 @@ int RingRealloc(Ring *pRing, SIZE_T uSize)
       }
 
       if (0<dwOffs2) {
-        CopyMemory(
+        memcpy(
           pTail,              // _In_       PVOID  Destination,
           pRing->pTail,       // _In_ const VOID   *Source,
           dwOffs2             // _In_       SIZE_T Length
@@ -467,7 +467,7 @@ static DWORD RingReadUnwrappedEx(Ring *pRing, RingReadConfig *pc)
       goto range;
     }
 
-    CopyMemory(
+    memcpy(
       pc->pData,        // _In_  PVOID Destination,
       pRing->pTail,     // _In_  const VOID *Source,
       pc->dwSize        // _In_  SIZE_T Length
@@ -504,7 +504,7 @@ static DWORD RingReadWrappedEx(Ring *pRing, RingReadConfig *pc)
       goto range1;
     }
 
-    CopyMemory(
+    memcpy(
       pc->pData,          // _In_  PVOID Destination,
       pRing->pTail,       // _In_  const VOID *Source,
       dwCopySize          // _In_  SIZE_T Length
@@ -534,7 +534,7 @@ static DWORD RingReadWrappedEx(Ring *pRing, RingReadConfig *pc)
     }
 
     if (RING_COPY&pc->uFlags) {
-      CopyMemory(
+      memcpy(
         pc->pData,        // _In_  PVOID Destination,
         pRing->pRep,      // _In_  const VOID *Source,
         dwCopySize        // _In_  SIZE_T Length
@@ -640,7 +640,7 @@ DWORD RingRead(Ring *pRing, LPSTR pData, SIZE_T dwSize, RingIOError *pError)
 void RingCopyMemory(PVOID *Client, PVOID Destination, const VOID *Source,
     SIZE_T Length)
 {
-  CopyMemory(
+  memcpy(
     Destination,              // _In_  PVOID Destination,
     Source,                   // _In_  const VOID *Source,
     Length                    // _In_  SIZE_T Length

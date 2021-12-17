@@ -33,7 +33,6 @@ PlayerStub *PlayerStubCreate(const IPlayer *lpVtbl, Player *pPlayer)
       goto create_thread;
     }
     return pStub;
-    goto vtbl;
   }
 
   pStub->lpVtbl=lpVtbl;
@@ -111,7 +110,6 @@ store:
   QueueDestroy(&pStub->queue);
 queue:
 player:
-vtbl:
   return NULL;
 }
 

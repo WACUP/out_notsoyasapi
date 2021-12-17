@@ -220,7 +220,7 @@ int StoreCreate(Store *pStore)
   /////////////////////////////////////////////////////////////////////////////
   return 0;
 // cleanup:
-  CloseHandle(pStore->hAvailable);
+// CloseHandle(pStore->hAvailable);
 available:
   CloseHandle(pStore->hMutex);
 mutex:
@@ -587,7 +587,7 @@ int ModelCreate(Model *pModel)
   /////////////////////////////////////////////////////////////////////////////
   return 0;
 // cleanup:
-  CloseHandle(pModel->hThread);
+// CloseHandle(pModel->hThread);
 thread:
   CloseHandle(pModel->hTimer);
 timer:

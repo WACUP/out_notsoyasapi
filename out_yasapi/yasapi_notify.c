@@ -265,7 +265,7 @@ int PlayerAddNotify(Player *pPlayer)
     goto malloc;
   }
 
-  SecureZeroMemory(pNotify,sizeof *pNotify);
+  memset(pNotify,0,sizeof *pNotify);
   pNotify->lpVtbl=&gPlayerNotificationClientVtbl;
   pNotify->lRefCount=1;
   pNotify->pPlayer=pPlayer;

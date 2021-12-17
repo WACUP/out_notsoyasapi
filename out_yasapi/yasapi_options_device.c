@@ -45,7 +45,7 @@ static const Property gcaDeviceProperties[]={
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-int OptionsDeviceLoad(OptionsDevice *pOptions, const wchar_t *pfx,
+void OptionsDeviceLoad(OptionsDevice *pOptions, const wchar_t *pfx,
     const wchar_t *pstrId, const wchar_t *path)
 {
   PropertyIOConfig c;
@@ -75,9 +75,6 @@ int OptionsDeviceLoad(OptionsDevice *pOptions, const wchar_t *pfx,
   if (YASAPI_MAX_UNDERFLOW<pOptions->ring.qUnderflow)
     pOptions->ring.qUnderflow=YASAPI_MAX_UNDERFLOW;
 #endif // }
-
-  /////////////////////////////////////////////////////////////////////////////
-  return 0;
 }
 
 void OptionsDeviceSave(OptionsDevice *pOptions, const wchar_t *pstrId,

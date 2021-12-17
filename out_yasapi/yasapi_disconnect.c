@@ -83,7 +83,7 @@ clock:
 #if 0 // {
 invalid:
 #endif // }
-  SecureZeroMemory(&pPlayer->connect,sizeof pPlayer->connect);
+  memset(&pPlayer->connect,0,sizeof pPlayer->connect);
 }
 
 static void DisconnectAllDisconnect(Player *pPlayer, int bReset)
