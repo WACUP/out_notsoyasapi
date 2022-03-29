@@ -22,6 +22,8 @@
 
 #define CONTROL_TYPE_MAGIC "control_type_magic"
 
+extern LPWSTR GetLangString(const UINT id);
+
 ///////////////////////////////////////////////////////////////////////////////
 // How to Create a Tooltip for a Control
 // https://msdn.microsoft.com/en-us/library/windows/desktop/hh298368%28v=vs.85%29.aspx
@@ -48,7 +50,6 @@ HWND ControlCreateToolTip(HWND hDlg/*, HINSTANCE hInstance*/)
   return hwndTip;
 }
 
-extern LPWSTR GetLangString(UINT id);
 void ControlAddToolTip(HWND hDlg, HWND hWnd, int idc, UINT idText/*PWSTR pszText*/)
 {
   TOOLINFOW ti={0};
@@ -58,7 +59,7 @@ void ControlAddToolTip(HWND hDlg, HWND hWnd, int idc, UINT idText/*PWSTR pszText
     ti.hwnd=hDlg;
     ti.uFlags=TTF_IDISHWND|TTF_SUBCLASS;
     ti.uId=(UINT_PTR)GetDlgItem(hDlg,idc);
-    ti.lpszText=(wchar_t*)GetLangString(idText)/*pszText*/;
+    ti.lpszText=(LPWSTR)GetLangString(idText)/*pszText*/;
     SendMessage(hWnd,TTM_ADDTOOLW,0,(LPARAM)&ti);
 	SendMessage(hWnd,TTM_SETMAXTIPWIDTH,0,(LPARAM)450);
 	SendMessage(hWnd,TTM_SETWINDOWTHEME,0,(LPARAM)L"");

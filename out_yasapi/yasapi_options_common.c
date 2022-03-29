@@ -39,29 +39,11 @@ static const Property gcaCommonProperties[]={
   { L"audioclock",&gcIntType,offsetof(OptionsCommon,bAudioClock),0 },
   { YASAPI_PROPERTY_VIS,&gcIntType,offsetof(OptionsCommon,bVisualization),0 },
   { YASAPI_PROPERTY_PAGE,&gcIntType,offsetof(OptionsCommon,nPage),0 },
-#if defined (YASAPI_ABOUT) // {
-  { YA_PROPERTY_CONFIGX,&gcIntType,offsetof(OptionsCommon,nConfigX),0 },
-  { YA_PROPERTY_CONFIGY,&gcIntType,offsetof(OptionsCommon,nConfigY),0 },
-  { YA_PROPERTY_ABOUTX,&gcIntType,offsetof(OptionsCommon,nAboutX),0 },
-  { YA_PROPERTY_ABOUTY,&gcIntType,offsetof(OptionsCommon,nAboutY),0 },
-#else // } {
-  /*{ YA_PROPERTY_CONFIGX,&gcIntType,offsetof(OptionsCommon,nPosX),0 },
-  { YA_PROPERTY_CONFIGY,&gcIntType,offsetof(OptionsCommon,nPosY),0 },*/
-#endif // }
   { NULL,NULL,0,0 }
 };
 
 static const Property gcaConfigProperties[]={
   { YASAPI_PROPERTY_PAGE,&gcIntType,offsetof(OptionsCommon,nPage),0 },
-#if defined (YASAPI_ABOUT) // {
-  { YA_PROPERTY_CONFIGX,&gcIntType,offsetof(OptionsCommon,nConfigX),0 },
-  { YA_PROPERTY_CONFIGY,&gcIntType,offsetof(OptionsCommon,nConfigY),0 },
-  { YA_PROPERTY_ABOUTX,&gcIntType,offsetof(OptionsCommon,nAboutX),0 },
-  { YA_PROPERTY_ABOUTY,&gcIntType,offsetof(OptionsCommon,nAboutY),0 },
-#else // } {
-  /*{ YA_PROPERTY_CONFIGX,&gcIntType,offsetof(OptionsCommon,nPosX),0 },
-  { YA_PROPERTY_CONFIGY,&gcIntType,offsetof(OptionsCommon,nPosY),0 },*/
-#endif // }
   { NULL,NULL,0,0 }
 };
 
@@ -119,15 +101,6 @@ const OptionsCommon *OptionsCommonDefault(void)
     options.bAudioClock=TRUE;
     options.bVisualization=TRUE;
     options.nPage=0;
-#if defined (YASAPI_ABOUT) // {
-    options.nConfigX=-1;
-    options.nConfigY=-1;
-    options.nAboutX=-1;
-    options.nAboutY=-1;
-#else // } {
-    /*options.nPosX=-1;
-    options.nPosY=-1;*/
-#endif // }
 
     initialized=1;
   }

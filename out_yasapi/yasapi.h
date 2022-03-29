@@ -33,7 +33,6 @@ extern "C" {
 extern Out_Module plugin;
 
 ///////////////////////////////////////////////////////////////////////////////
-//#define YASAPI_ABOUT
 #define YASAPI_GAPLESS
 #define YASAPI_SURROUND
 #define YASAPI_RING_REALLOC
@@ -56,7 +55,7 @@ extern Out_Module plugin;
 ///////////////////////////////////////////////////////////////////////////////
 #if ! defined (YASAPI_VER) // {
   #define YASAPI_VER            1.7.25
-  #define PLUGIN_VERSION        "1.4"
+  #define PLUGIN_VERSION        "1.4.4"
 #endif // }
 
 #define YASAPI_VERSION          YA_STR(YASAPI_VER)
@@ -295,15 +294,6 @@ struct _OptionsCommon {
   int bAudioClock;
   int bVisualization;
   int nPage;
-#if defined (YASAPI_ABOUT) // {
-  int nConfigX;
-  int nConfigY;
-  int nAboutX;
-  int nAboutY;
-#else // } {
-  /*int nPosX;
-  int nPosY;*/
-#endif // }
 };
 
 void OptionsCommonLoad(OptionsCommon *pOptions, const wchar_t *pfx,
@@ -476,7 +466,7 @@ struct _Player {
   struct {
     //HINSTANCE hModule;
     //wchar_t aszModuleName[MAX_PATH];
-    const wchar_t *pszFileName;
+    //const wchar_t *pszFileName;
 #if defined (YASAPI_FORCE24BIT) // {
     int nVolume;
 #else // } {
@@ -605,7 +595,7 @@ int PlayerCreate(Player *pPlayer, HINSTANCE hModule, const wchar_t *path);
 void PlayerDestroy(Player *pPlayer);
 int PlayerRun(Player *pPlayer, Request *pRequest);
 int PlayerCreateConnect(Player *pPlayer, int bNegociate, int bReset);
-int PlayerCreateWFXX(Player *pPlayer, Request *pRequest);
+void PlayerCreateWFXX(Player *pPlayer, Request *pRequest);
 int PlayerCreateRing(Player *pPlayer);
 int PlayerReallocRing(Player *pPlayer);
 #if 0 // {
@@ -697,11 +687,6 @@ enum {
 };
 
 void ConfigDialog(Player *pPlayer, Config *pConfig, HWND hWndParent);
-#if defined (YASAPI_ABOUT) // {
-void AboutDialog(Player *pPlayer, HINSTANCE hInstance, HWND hWndParent);
-#else // } {
-void AboutDialog(HWND hWndParent);
-#endif // }
 
 #ifdef __cpluplus
 }

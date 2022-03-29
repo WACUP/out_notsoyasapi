@@ -614,7 +614,6 @@ void PlayerStubDestroy(PlayerStub *pStub);
 void PlayerStubSyncDebug(PlayerStub *pStub, int stamp, HWND hDlg);
 #endif // }
 
-
 const PlayerStub *PlayerStubGet(void);
 
 DWORD WINAPI PlayerStubThread(LPVOID lpParameter);
@@ -638,4 +637,5 @@ void PlayerStubPost(PlayerStub *pStub, int exit, int stamp,
 #ifdef __cpluplus
 }
 #endif
+
 #endif // }

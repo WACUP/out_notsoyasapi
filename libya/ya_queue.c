@@ -137,16 +137,20 @@ void QueuePopEvent(Queue *pQueue)
 ///////////////////////////////////////////////////////////////////////////////
 void QueueLockMutex(Queue *pQueue)
 {
+  if (pQueue && pQueue->hMutex) {
   WaitForSingleObjectEx(
     pQueue->hMutex,   // _In_ HANDLE hHandle,
     1000/*/INFINITE/**/,  // _In_ DWORD  dwMilliseconds,
     TRUE/*/FALSE/**/      // _In_ BOOL   bAlertable
   );
 }
+}
 
 void QueueUnlockMutex(Queue *pQueue)
 {
+  if (pQueue && pQueue->hMutex) {
   ReleaseMutex(pQueue->hMutex);
+}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -255,6 +259,7 @@ void QueueUnlock(Queue *pQueue, const QueueStrategy *pStrategy,
 
   ppRequest=pStrategy->GetRequest(pQueue);
 
+  if (ppRequest)
   if (++*ppRequest==pQueue->mp)
     *ppRequest=pQueue->aRequest;
 
@@ -304,7 +309,7 @@ void QueueUnlockWrite(Queue *pQueue, Result *pResult)
 {
   QueueUnlock(pQueue,&cqsWrite,NULL);
 
-  if (pResult) {
+  if (pResult && pResult->hEvent) {
     WaitForSingleObjectEx(
       pResult->hEvent,      // _In_ HANDLE hHandle,
       1000/*/INFINITE/**/,  // _In_ DWORD  dwMilliseconds,

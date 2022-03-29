@@ -165,6 +165,9 @@ void AboutDialog(Player *pPlayer, HINSTANCE hInstance, HWND hWndParent)
 #define WA_UTILS_SIMPLE
 #include <loader/loader/utils.h>
 #endif
+
+extern LPWSTR GetLangString(const UINT id);
+
 void AboutDialog(HWND hWndParent)
 {
 	wchar_t message[4096] = {0};
@@ -178,7 +181,7 @@ void AboutDialog(HWND hWndParent)
 					// cppcheck-suppress ConfigurationNotChecked
 					TEXT(YASAPI_VERSION), TEXT("Darren Owen aka DrO"),
 					TEXT("2016-2022"), TEXT(__DATE__));
-	MessageBoxW(hWndParent, message, (LPWSTR)GetLangString(IDS_ABOUT_TITLE), MB_OK);
+	MessageBoxW(hWndParent, message, GetLangString(IDS_ABOUT_TITLE), MB_OK);
 
 	if (text)
 	{

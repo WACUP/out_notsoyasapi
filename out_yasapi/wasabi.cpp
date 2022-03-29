@@ -4,11 +4,13 @@
 #include <wasabi/api/service/api_service.h>
 #include <Agave/Language/api_language.h>
 #include <wasabi/api/service/waServiceFactory.h>
-#ifdef WACUP_BUILD
 #include <loader/hook/get_api_service.h>
 #include <loader/hook/squash.h>
-#endif
 #include <resource.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // TODO add to lang.h
 // {6C82B613-30DD-4d1e-89D2-23672CD87679}
@@ -27,12 +29,7 @@ extern "C" void SetupWasabiServices(Out_Module *_plugin)
 	// load all of the required wasabi services from the winamp client
 	if (WASABI_API_SVC == NULL)
 	{
-#ifdef WACUP_BUILD
 		WASABI_API_SVC = GetServiceAPIPtr();
-#else
-		WASABI_API_SVC = reinterpret_cast<api_service*>(SendMessage(plugin->hMainWindow, WM_WA_IPC, 0, IPC_GET_API_SERVICE));
-		if (WASABI_API_SVC == reinterpret_cast<api_service*>(1)) WASABI_API_SVC = NULL;/**/
-#endif
 	}
 	if (WASABI_API_SVC != NULL)
 	{
@@ -47,7 +44,12 @@ extern "C" void SetupWasabiServices(Out_Module *_plugin)
 	}
 }
 
-extern "C" LPWSTR GetLangString(UINT id)
+extern "C" LPWSTR GetLangStringBuf(const UINT id, LPWSTR buffer, const size_t buffer_len)
+{
+	return WASABI_API_LNGSTRINGW_BUF(id, buffer, buffer_len);
+}
+
+extern "C" LPWSTR GetLangString(const UINT id)
 {
 	return WASABI_API_LNGSTRINGW(id);
 }
@@ -62,20 +64,37 @@ extern "C" HWND WACreateDialogParam(UINT id, HWND parent, DLGPROC proc, LPARAM p
 	return WASABI_API_CREATEDIALOGPARAMW(id, parent, proc, param);
 }
 
-extern "C" LPWSTR GetTextResource(UINT id)
+extern "C" LPWSTR GetTextResource(const UINT id, LPWSTR* text)
 {
 	// the resource is utf-8 encoded so we convert
 	// before passing it on to then be displayed
 	DWORD data_size = 0;
-#ifdef WACUP_BUILD
 	unsigned char *data = (unsigned char *)WASABI_API_LOADRESFROMFILEW(L"GZ", MAKEINTRESOURCEW(id), &data_size),
 				  *output = NULL;
 	DecompressResource(data, data_size, &output, 0);
 
-	LPWSTR text = AutoWideDup((LPCSTR)output, CP_UTF8);
+	*text = AutoWideDup((LPCSTR)output, CP_UTF8);
 	DecompressResourceFree(output);
-	return text;
-#else
-	return AutoWideDup((LPCSTR)WASABI_API_LOADRESFROMFILEW(L"TEXT", MAKEINTRESOURCE(id), &data_size), CP_UTF8);
-#endif
+	return *text;
 }
+
+void __cdecl about(HWND hWndParent)
+{
+	wchar_t message[4096] = {0};
+    LPWSTR text = GetTextResource(IDR_ABOUT_GZ, &text);
+
+	StringCchPrintf(message, ARRAYSIZE(message), text, TEXT(PLUGIN_VERSION),
+					// cppcheck-suppress ConfigurationNotChecked
+					TEXT(YASAPI_VERSION), TEXT("Darren Owen aka DrO"),
+					TEXT("2016-2022"), TEXT(__DATE__));
+	MessageBoxW(hWndParent, message, GetLangString(IDS_ABOUT_TITLE), MB_OK);
+
+	if (text)
+	{
+		free(text);
+	}
+}
+
+#ifdef __cplusplus
+}
+#endif

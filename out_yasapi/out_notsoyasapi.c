@@ -26,7 +26,7 @@
   (PLAYER_STATE_UNDERFLOW==(pPlayer)->state)
 #endif // }
 #define PlayerHasChanged(pPlayer,module) \
-  !module||wcscmp((pPlayer)->base.pszFileName,module)
+  !module/*||wcscmp((pPlayer)->base.pszFileName,module)*/
 
 int getwrittentime(void);
 int getoutputtime(void);
@@ -43,7 +43,8 @@ Player player={0};
 #if defined (YASAPI_GAPLESS) // {
 static int bReset;
 #endif // }
-static wchar_t *out_module;
+//static wchar_t *out_module;
+static int out_module;
 
 static prefsDlgRecW* output_prefs;
 
@@ -105,15 +106,11 @@ void config(HWND hwnd)
   }
 }
 
-void about(HWND hwnd)
-{
-  DPRINTF(0,"%s\n",__func__);
-#if defined (YASAPI_ABOUT) // {
-  AboutDialog(&player,plugin.hDllInstance,hwnd);
-#else // } {
-  AboutDialog(hwnd);
-#endif // }
-}
+// grab the function from wasabi.cpp
+// as that resolves 64-bit issues in
+// how the string related parts work
+// to avoid some odd crashes seen :(
+void about(HWND hwnd);
 
 void init(void)
 {
@@ -171,10 +168,10 @@ int open(int samplerate, int numchannels, int bitspersamp, int bufferlenms,
   DPRINTF(0,"%s (%s)\n",__func__,player.base.pszFileName);
 
   reset();
-  if (out_module) {
+  /*if (out_module) {
 	  free(out_module);
   }
-  out_module = _wcsdup(player.base.pszFileName);
+  out_module = _wcsdup(player.base.pszFileName);*/
 
   numchan = numchannels;
   srate = samplerate;
@@ -414,18 +411,15 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 	// just look at the set / unset state
 	switch (mode & ~0xFF0)
 	{
+#if ! defined (OUT_YASAPI_SUBCLASS) // {
 		case OUT_UNSET:
 		{
-#if ! defined (OUT_YASAPI_SUBCLASS) // {
-			if (out_module) {
-				free(out_module);
-				out_module = 0;
-			}
-#endif // }
+			out_module = FALSE;
 			// we've been unloaded so we can 
 			// reset everything just in-case
 			break;
 		}
+#endif // }
 		case OUT_SET:
 		{
 			if (!loaded)
@@ -479,10 +473,7 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 				  }
 
 				#if ! defined (OUT_YASAPI_SUBCLASS) // {
-				  if (out_module) {
-					  free(out_module);
-				  }
-				  out_module = _wcsdup(player.base.pszFileName);
+				  out_module = TRUE;
 				#endif // }
 				  loaded = TRUE;
 				  return;
@@ -491,11 +482,7 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 				  UnSubclass(plugin.hMainWindow, PluginWinampProc);
 				subclass:
 				#else
-				  if (out_module)
-				  {
-					  free(out_module);
-					  out_module = 0;
-				  }
+				  out_module = FALSE;
 				#endif // }
 				#if defined (YASAPI_CO_INITIALIZE) // {
 				  CoUninitialize();
@@ -513,6 +500,8 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 HINSTANCE WASABI_API_LNG_HINST = NULL;
 INT_PTR CALLBACK ConfigProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+extern LPWSTR GetLangString(const UINT id);
+
 __declspec(dllexport) BOOL __cdecl winampGetOutPrefs(prefsDlgRecW* prefs)
 {
 	// this is called when the preferences window is being created
@@ -523,7 +512,7 @@ __declspec(dllexport) BOOL __cdecl winampGetOutPrefs(prefsDlgRecW* prefs)
 		// TODO localise
 		prefs->hInst = plugin.hDllInstance/*WASABI_API_LNG_HINST*/;
 		prefs->dlgID = IDD_CONFIG;
-		prefs->name = _wcsdup((LPWSTR)GetLangString(IDS_WASAPI));
+		prefs->name = _wcsdup(GetLangString(IDS_WASAPI));
 		prefs->proc = (void *)ConfigProc;
 		prefs->where = 9;
 		prefs->_id = 52;

@@ -97,7 +97,7 @@ int PlayerCreate(Player *pPlayer, HINSTANCE hModule, const wchar_t *path)
     goto module;
   }
 
-  pPlayer->base.pszFileName=basenamew(aszModuleName);
+  //pPlayer->base.pszFileName=_wcsdup(basenamew(aszModuleName));
   DPRINTF(0,"  got module name: \"%s\"\n",pPlayer->base.pszFileName);
   //pPlayer->base.hModule=hModule;
 
@@ -671,7 +671,7 @@ execution:
   return -1;
 }
 
-int PlayerCreateWFXX(Player *pPlayer, Request *pRequest)
+void PlayerCreateWFXX(Player *pPlayer, Request *pRequest)
 {
   extern int srate,numchan,bps;
   WAVEFORMATEXTENSIBLE *pwfxx=&pPlayer->open.wfxx;
@@ -758,8 +758,6 @@ int PlayerCreateWFXX(Player *pPlayer, Request *pRequest)
   WFXXSetup(pwfxx,samplerate,pTarget->nChannels,(pTarget->nBytesPerSample<<3),FALSE,FALSE);
 #endif // }
   pPlayer->open.wBytesPerSample=pwfx->wBitsPerSample>>3;
-
-  return 0;
 }
 
 int PlayerCreateRing(Player *pPlayer)
@@ -905,13 +903,11 @@ int PlayerOpen(Player *pPlayer, Request *pRequest)
       =pPlayer->options.common.bDisconnect?&gcDisconnectYes:&gcDisconnectNo;
 
   /////////////////////////////////////////////////////////////////////////////
-
   if (!*&pPlayer->device.pDevice
       &&PlayerDeviceGet(&pPlayer->device,pPlayer->run.pEnumerator)<0) {
     DMESSAGE("getting the device");
     goto device;
   }
-
   DPUTS(0,"  got the device\n");
 
 #if 0 // {
@@ -922,10 +918,7 @@ int PlayerOpen(Player *pPlayer, Request *pRequest)
 #endif // }
 
   // Create WAVEFORMATEXTENSIBLE //////////////////////////////////////////////
-  if (PlayerCreateWFXX(pPlayer,pRequest)<0) {
-    DMESSAGE("creating WAVEFORMATEXTENSIBLE");
-    goto wfxx;
-  }
+  PlayerCreateWFXX(pPlayer,pRequest);
 
 /*
 #if defined (YASAPI_EXECUTION_STATE) // {
@@ -972,7 +965,6 @@ connect:
 execution:
 #endif // }
 #endif // }
-wfxx:
   PlayerDeviceDestroy(&pPlayer->device);
 device:
 state:
@@ -997,7 +989,7 @@ int PlayerMigrate(Player *pPlayer, Request *pRequest)
   }
 
   ////////////////////////////////////////////////////////////////////////////
-  if (pwstrId!=NULL && 0==wcscmp(pwstrId,pPlayerDevice->szId)) {
+  if (pwstrId!=NULL && pPlayerDevice->szId && 0==wcscmp(pwstrId,pPlayerDevice->szId)) {
     DWARNING("device not changed");
     goto device1;
   }

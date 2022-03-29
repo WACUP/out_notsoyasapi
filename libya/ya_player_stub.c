@@ -182,6 +182,10 @@ DWORD WINAPI PlayerStubThread(LPVOID lpParameter)
     hEvent=lpVtbl->GetEvent?lpVtbl->GetEvent(pPlayer):NULL;
     pRequest=QueueLockRead(pQueue,hEvent,EventProc,pPlayer);
 #endif // }
+    if (!pRequest || !lpVtbl) {
+        state = -1;
+        break;
+    }
 
     if (pRequest->stamp!=lpVtbl->GetStamp(pPlayer)) {
       DWARNINGV("outdated stamp - skipping %s",pRequest->id);

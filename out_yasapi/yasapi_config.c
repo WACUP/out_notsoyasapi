@@ -858,31 +858,7 @@ static void ConfigOnSelChangeTabCtrl(HWND hDlg, Config *pConfig, HWND hWndTab)
   pConfig->options.common.nPage=nCurPage;
 }
 
-#ifndef WACUP_BUILD
-static int ResizeComboBoxDropDown(HWND hParent, HWND hComboBox, const wchar_t *str, int width)
-{
-	SIZE size = {0};
-	HDC hdc = GetDC(hComboBox);
-
-	// get and select parent dialog's font so that it'll calculate things correctly
-	HFONT font = (HFONT)SendMessage(hParent, WM_GETFONT, 0, 0),
-		  oldfont = (HFONT)SelectObject(hdc, font);
-
-	// cppcheck-suppress lstrlenCalled
-	GetTextExtentPoint32(hdc, str, lstrlen(str) + 1, &size);
-
-	if (size.cx > width)
-	{
-		SendMessage(hComboBox, CB_SETDROPPEDWIDTH, size.cx, 0);
-	}
-
-	SelectObject(hdc, oldfont);
-	ReleaseDC(hComboBox, hdc);
-	return size.cx;
-}
-#else
 __declspec(dllimport) int _cdecl ResizeComboBoxDropDown(HWND hwndDlg, UINT id, const wchar_t *str, int width);
-#endif
 
 static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
 {
@@ -898,14 +874,14 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
 
     if (!cDevice) {
       uLen=0;
-      uLen+=wcslen(L"Default Device -- ");
-      uLen+=wcslen(pConfigDevice->vName.pwszVal);
+      uLen+=(UINT)wcslen(L"Default Device -- ");
+      uLen+=(UINT)wcslen(pConfigDevice->vName.pwszVal);
 
       if (NULL==(pwszLabel=malloc((uLen+1)*(sizeof *pwszLabel))))
         goto label;
 
       wcsncpy(pwszLabel,L"Default Device -- ",uLen);
-	  labelLen = wcslen(pwszLabel);
+	  labelLen=(UINT)wcslen(pwszLabel);
 	  uLen-=labelLen;
       wcsncpy(pwszLabel+labelLen,pConfigDevice->vName.pwszVal,uLen);
     }
@@ -913,11 +889,8 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
       pwszLabel=pConfigDevice->vName.pwszVal;
 
     SendMessage(hComboBox,CB_ADDSTRING,0,(LPARAM)pwszLabel);
-#ifndef WACUP_BUILD
-	comboWidth = ResizeComboBoxDropDown(hDlg,hComboBox,pwszLabel,comboWidth);
-#else
+
 	comboWidth = ResizeComboBoxDropDown(hDlg,idc,pwszLabel,comboWidth);
-#endif
 
     if (!cDevice)
       free(pwszLabel);
@@ -936,9 +909,11 @@ config:
   return;
 }
 
+extern LPWSTR GetLangStringBuf(const UINT id, LPWSTR buffer, const size_t buffer_len);
 static int ConfigInitPage(HWND hDlg, HWND hWndTab, Config *pConfig, int nPage)
 {
   int code=-1;
+  wchar_t buf[128]={0};
   PageTemplate *pTemplate=gaTemplates+nPage;
   Page *pPage=pConfig->aPages+nPage;
   TCITEM tie = {0};
@@ -946,12 +921,11 @@ static int ConfigInitPage(HWND hDlg, HWND hWndTab, Config *pConfig, int nPage)
 
   pPage->vmt=pTemplate->GetVMT();
 
-  tie.mask=TCIF_TEXT|TCIF_IMAGE;
-  tie.iImage=-1;
-  tie.pszText=(LPWSTR)GetLangString(pTemplate->label);
+  tie.mask=TCIF_TEXT;
+  tie.pszText=GetLangStringBuf(pTemplate->label,buf,ARRAYSIZE(buf));
   SendMessage(hWndTab,TCM_INSERTITEM,nPage,(LPARAM)&tie);
 
-  pPage->hDlg=(HWND)WACreateDialogParam(
+  pPage->hDlg=(HWND)(LONG_PTR)WACreateDialogParam(
     pTemplate->idd,   // _In_     LPCTSTR   lpTemplateName,
     hDlg,             // _In_opt_ HWND      hWndParent,
     pPage->vmt->lpDialogFunc,
@@ -1015,29 +989,8 @@ item:
 
 static INT_PTR ConfigOnInit(HWND hDlg, Config *pConfig)
 {
-#if defined (YASAPI_ABOUT)
-  Options *pOptions=&pConfig->pPlayer->options;
-#endif
   HWND hWndTip;
-
-#if defined (YASAPI_ABOUT) // {
-  if (0<=pOptions->common.nConfigX&&0<=pOptions->common.nConfigY) {
-    SetWindowPos(
-      hDlg,     // _In_     HWND hWnd,
-      NULL,     // _In_opt_ HWND hWndInsertAfter,
-      pOptions->common.nConfigX,
-                // _In_     int  X,
-      pOptions->common.nConfigY,
-                // _In_     int  Y,
-      0,        // _In_     int  cx,
-      0,        // _In_     int  cy,
-      SWP_NOOWNERZORDER|SWP_NOSIZE
-                //_In_     UINT uFlags
-    );
-  }
-#endif // }
-
-  hWndTip=ControlsInit(gcaCoreDeviceControls,hDlg/*,pConfig->hModule*/);
+  hWndTip=ControlsInit(gcaCoreDeviceControls,hDlg);
   ControlAddToolTip(hDlg,hWndTip,IDC_COMBOBOX_DEVICE,IDS_DEVICE_FOR_OUTPUT);
   ConfigInitTabControl(hDlg,pConfig,IDC_TABCONTROL);
   ConfigInitComboBox(hDlg,pConfig,IDC_COMBOBOX_DEVICE);
@@ -1065,19 +1018,9 @@ void ConfigGet(Config *pConfig)
   Player *pPlayer=pConfig->pPlayer;
   int cPage;
   Page *pPage;
-  //RECT rc;
 
   for (cPage=0,pPage=pConfig->aPages;cPage<NUM_PAGES;++cPage,++pPage)
     pPage->vmt->Get(pPage,pConfig);
-
-  //GetWindowRect(pConfig->hDlg,&rc);
-#if defined (YASAPI_ABOUT) // {
-  pConfig->options.common.nConfigX=rc.left;
-  pConfig->options.common.nConfigY=rc.top;
-#else // } {
-  /*pConfig->options.common.nPosX=rc.left;
-  pConfig->options.common.nPosY=rc.top;*/
-#endif // }
 
   pPlayer->options.common=pConfig->options.common;
   pPlayer->options.device=pConfig->options.device;

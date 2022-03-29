@@ -43,7 +43,6 @@
 #define IDS_SLIDER_SHARED_BUFFER        39
 #define IDS_SLIDER_PREBUFFER            40
 #define IDR_TEXT1                       106
-#define IDR_ABOUT_TEXT                  106
 #define IDR_ABOUT_GZ                    107
 #define IDD_CONFIG                      168
 #define IDD_PAGE_BUFFERS                169
