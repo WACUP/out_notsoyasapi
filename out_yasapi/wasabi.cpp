@@ -95,6 +95,11 @@ void __cdecl about(HWND hWndParent)
 	}
 }
 
+extern "C" float safe_w_to_f(LPCWSTR str)
+{
+	return (float)WASABI_API_LNG->SafeWtofL(str);
+}
+
 #ifdef __cplusplus
 }
 #endif

@@ -445,7 +445,8 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 				#if defined (YASAPI_CO_INITIALIZE) // {
 				  hr=CoInitializeEx(
 					NULL,                     // _In_opt_ LPVOID pvReserved
-					COINIT_MULTITHREADED      // _In_     DWORD  dwCoInit
+					COINIT_MULTITHREADED |    // _In_     DWORD  dwCoInit
+					COINIT_DISABLE_OLE1DDE
 				  );
 
 				  if (FAILED(hr)) {

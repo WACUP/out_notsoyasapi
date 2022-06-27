@@ -18,6 +18,8 @@
  * along with libya.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <ya.h>
+#define WA_UTILS_SIMPLE
+#include <../loader/loader/utils.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 void PropertiesLoad(const Property *pProperty, PropertyIOConfig *c)
@@ -37,12 +39,11 @@ void PropertiesSave(const Property *pProperty, const PropertyIOConfig *c)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void PropertySaveInt(const wchar_t *group, const wchar_t *key, int n,
-    const wchar_t *path)
+void PropertySaveInt(const wchar_t *group, const wchar_t *key, int n, const wchar_t *path)
 {
   wchar_t buf[YA_PROPERTY_SIZE] = {0};
 
-  _itow_s(n, buf, ARRAYSIZE(buf), 10);
+  I2WStr(n, buf, ARRAYSIZE(buf));
 
   WritePrivateProfileStringW(
 	(group ? group : L"default"),    // _In_  LPCTSTR lpAppName,
@@ -81,6 +82,7 @@ const PropertyType gcIntType={
 };
 
 ///////////////////////////////////////////////////////////////////////////////
+extern float safe_w_to_f(LPCWSTR str);
 static void DoubleTypeLoad(const Property *pProperty, PropertyIOConfig *c)
 {
   wchar_t set[YA_PROPERTY_SIZE] = {0};
@@ -99,7 +101,11 @@ static void DoubleTypeLoad(const Property *pProperty, PropertyIOConfig *c)
   );
 
   // cppcheck-suppress invalidPointerCast
-  PROPERTY_DOUBLE(pProperty,c->pData)=_wtof(get);
+  // instead of using the runtime version we'll
+  // swap out for a wacup core provided method
+  // that'll do what's needed to be local safe.
+  /*PROPERTY_DOUBLE(pProperty,c->pData)=_wtof(get);/*/
+  PROPERTY_DOUBLE(pProperty,c->pData)=safe_w_to_f(get);/**/
   // cppcheck-suppress invalidPointerCast
   DWPRINTF(0,L"%soption \"%s\": %f (%f)\n",
       c->pfx,pProperty->key,

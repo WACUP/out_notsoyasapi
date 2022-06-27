@@ -164,7 +164,8 @@ DWORD WINAPI PlayerStubThread(LPVOID lpParameter)
 
   hr=CoInitializeEx(
     NULL,                     // _In_opt_ LPVOID pvReserved
-    COINIT_MULTITHREADED      // _In_     DWORD  dwCoInit
+    COINIT_MULTITHREADED |    // _In_     DWORD  dwCoInit
+    COINIT_DISABLE_OLE1DDE
   );
 
   if (FAILED(hr)) {
