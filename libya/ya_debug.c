@@ -29,7 +29,7 @@ static int vmessagea(const char *format, va_list ap)
     NULL,                       // _In_opt_  HWND hWnd,
     buf,                        // _In_opt_  LPCTSTR lpText,
     "YASAPI Error Message",     // _In_opt_  LPCTSTR lpCaption,
-	MB_SYSTEMMODAL|MB_OK|MB_ICONERROR
+	MB_SYSTEMMODAL|MB_ICONERROR
                                 // _In_      UINT uType
   );
 
@@ -47,7 +47,7 @@ static int vmessagew(const wchar_t *format, va_list ap)
     NULL,                       // _In_opt_  HWND hWnd,
     buf,                        // _In_opt_  LPCTSTR lpText,
     L"YASAPI Error Message",    // _In_opt_  LPCTSTR lpCaption,
-	MB_SYSTEMMODAL|MB_OK|MB_ICONERROR
+	MB_SYSTEMMODAL|MB_ICONERROR
                                 // _In_      UINT uType
   );
 

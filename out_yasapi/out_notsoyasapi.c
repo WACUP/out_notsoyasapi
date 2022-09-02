@@ -66,7 +66,7 @@ static LRESULT CALLBACK PluginWinampProc(HWND hWnd, UINT uMsg, WPARAM wParam,
       DPRINTF(0,"  WM_WA_IPC/IPC_CB_OUTPUTCHANGED: \"%s\"\n",m);
 
       if (m && *m) {
-        wcsncpy(out_module, m, ARRAYSIZE(out_module));
+        StringCchCopy(out_module, ARRAYSIZE(out_module), m);
 	  } else {
         out_module[0] = 0;
       }
@@ -171,7 +171,7 @@ int open(int samplerate, int numchannels, int bitspersamp, int bufferlenms,
   /*if (out_module) {
 	  free(out_module);
   }
-  out_module = _wcsdup(player.base.pszFileName);*/
+  out_module = safe_wcsdup(player.base.pszFileName);*/
 
   numchan = numchannels;
   srate = samplerate;
@@ -501,7 +501,7 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 HINSTANCE WASABI_API_LNG_HINST = NULL;
 INT_PTR CALLBACK ConfigProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-extern LPWSTR GetLangString(const UINT id);
+extern LPWSTR GetLangStringDup(const UINT id);
 
 __declspec(dllexport) BOOL __cdecl winampGetOutPrefs(prefsDlgRecW* prefs)
 {
@@ -513,7 +513,7 @@ __declspec(dllexport) BOOL __cdecl winampGetOutPrefs(prefsDlgRecW* prefs)
 		// TODO localise
 		prefs->hInst = plugin.hDllInstance/*WASABI_API_LNG_HINST*/;
 		prefs->dlgID = IDD_CONFIG;
-		prefs->name = _wcsdup(GetLangString(IDS_WASAPI));
+		prefs->name = GetLangStringDup(IDS_WASAPI);
 		prefs->proc = (void *)ConfigProc;
 		prefs->where = 9;
 		prefs->_id = 52;

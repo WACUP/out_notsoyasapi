@@ -67,7 +67,7 @@ int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,
     if (pPlayerDevice->szId) {
         free(pPlayerDevice->szId);
     }
-    pPlayerDevice->szId=_wcsdup(pstrId);
+    pPlayerDevice->szId=safe_wcsdup(pstrId);
     CoTaskMemFree(pstrId);
   }
   else {
@@ -75,7 +75,7 @@ int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,
     if (pPlayerDevice->szId) {
         free(pPlayerDevice->szId);
     }
-    pPlayerDevice->szId = _wcsdup(pcstrId);
+    pPlayerDevice->szId=safe_wcsdup(pcstrId);
   }
 
   return 0;

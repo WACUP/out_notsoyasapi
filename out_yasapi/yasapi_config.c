@@ -880,10 +880,10 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
       if (NULL==(pwszLabel=malloc((uLen+1)*(sizeof *pwszLabel))))
         goto label;
 
-      wcsncpy(pwszLabel,L"Default Device -- ",uLen);
+      StringCchCopy(pwszLabel,uLen,L"Default Device -- ");
 	  labelLen=(UINT)wcslen(pwszLabel);
 	  uLen-=labelLen;
-      wcsncpy(pwszLabel+labelLen,pConfigDevice->vName.pwszVal,uLen);
+      StringCchCopy(pwszLabel+labelLen,uLen,pConfigDevice->vName.pwszVal);
     }
     else
       pwszLabel=pConfigDevice->vName.pwszVal;
@@ -1004,7 +1004,7 @@ void ConfigSet(Config *pConfig, LPWSTR pstrId, wchar_t *pwszLabel)
   int cPage;
   Page *pPage;
 
-  wcsncpy(pConfig->options.common.szId, pstrId, ARRAYSIZE(pConfig->options.common.szId));
+  StringCchCopy(pConfig->options.common.szId, ARRAYSIZE(pConfig->options.common.szId), pstrId);
 
   ControlsSet(gcaCoreDeviceControls,pConfig->hDlg,&pConfig->options.device);
 
@@ -1275,7 +1275,7 @@ void ConfigDialog(Player *pPlayer, Config *pConfig, HWND hWndParent)
       "Inconsistent number of pages.",
                                 // _In_opt_ LPCTSTR lpText,
       "YASAPI Error Message",   // _In_opt_ LPCTSTR lpCaption,
-      MB_SYSTEMMODAL|MB_OK|MB_ICONERROR
+      MB_SYSTEMMODAL|MB_ICONERROR
                                 // _In_     UINT    uType
     );
 

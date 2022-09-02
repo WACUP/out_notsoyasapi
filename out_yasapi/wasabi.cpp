@@ -2,6 +2,7 @@
 #include <nu/servicebuilder.h>
 #include <nu/autowide.h>
 #include <wasabi/api/service/api_service.h>
+#include <wasabi/api/memmgr/api_memmgr.h>
 #include <Agave/Language/api_language.h>
 #include <wasabi/api/service/waServiceFactory.h>
 #include <loader/hook/get_api_service.h>
@@ -18,6 +19,7 @@ static const GUID OutNotSoYASAPILangGUID =
 { 0x6c82b613, 0x30dd, 0x4d1e, { 0x89, 0xd2, 0x23, 0x67, 0x2c, 0xd8, 0x76, 0x79 } };
 
 api_service* WASABI_API_SVC = NULL;
+api_memmgr* WASABI_API_MEMMGR = NULL;
 api_language* WASABI_API_LNG = NULL;
 extern "C" HINSTANCE WASABI_API_LNG_HINST = 0;
 HINSTANCE WASABI_API_ORIG_HINST = 0;
@@ -41,6 +43,11 @@ extern "C" void SetupWasabiServices(Out_Module *_plugin)
 			StringCchPrintf(pluginTitle, ARRAYSIZE(pluginTitle), WASABI_API_LNGSTRINGW(IDS_PLUGIN_NAME), TEXT(PLUGIN_VERSION));
 			_plugin->description = (char*)pluginTitle;
 		}
+
+		if (WASABI_API_MEMMGR == NULL)
+		{
+			ServiceBuild(WASABI_API_SVC, WASABI_API_MEMMGR, memMgrApiServiceGuid);
+		}
 	}
 }
 
@@ -52,6 +59,11 @@ extern "C" LPWSTR GetLangStringBuf(const UINT id, LPWSTR buffer, const size_t bu
 extern "C" LPWSTR GetLangString(const UINT id)
 {
 	return WASABI_API_LNGSTRINGW(id);
+}
+
+extern "C" LPWSTR GetLangStringDup(const UINT id)
+{
+	return WASABI_API_LNGSTRINGW_DUP(id);
 }
 
 extern "C" INT_PTR WADialogBoxParam(UINT id, HWND parent, DLGPROC proc, LPARAM param)
@@ -98,6 +110,11 @@ void __cdecl about(HWND hWndParent)
 extern "C" float safe_w_to_f(LPCWSTR str)
 {
 	return (float)WASABI_API_LNG->SafeWtofL(str);
+}
+
+extern "C" wchar_t* safe_wcsdup(LPCWSTR str)
+{
+	return WASABI_API_MEMMGR->sysDupStr((wchar_t*)str);
 }
 
 #ifdef __cplusplus
