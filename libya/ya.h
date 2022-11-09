@@ -150,8 +150,8 @@ extern "C" {
   #define YA_MALLOC(size)       GlobalAlloc(GMEM_FIXED,size)
   #define YA_FREE(p)            GlobalFree(p)
 #else // } {
-  #define YA_MALLOC(size)       malloc(size)
-  #define YA_FREE(p)            free(p)
+  #define YA_MALLOC(size)       yamalloc(size)
+  #define YA_FREE(ptr)          yafree(ptr)
 #endif // }
 
 #define YA_INT_MAX(n)           (~(~0ull<<((n)-1)))
@@ -159,7 +159,8 @@ extern "C" {
 ///////////////////////////////////////////////////////////////////////////////
 const wchar_t *basenamew(const wchar_t *s);
 wchar_t *yapath(wchar_t *file);
-void yafree(void *p);
+void* yamalloc(const size_t size);
+void yafree(void *ptr);
 void messagea(int force, HRESULT x, HRESULT *y, const char *m, ...);
 void messagew(int force, HRESULT x, HRESULT *y, const wchar_t *m, ...);
 

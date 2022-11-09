@@ -26,6 +26,16 @@ HINSTANCE WASABI_API_ORIG_HINST = 0;
 
 static wchar_t pluginTitle[256] = {0};
 
+extern "C" void* safe_calloc(const size_t size)
+{
+	return WASABI_API_MEMMGR->sysMalloc(size);
+}
+
+extern "C" void safe_free(void* ptr)
+{
+	WASABI_API_MEMMGR->sysFree(ptr);
+}
+
 extern "C" void SetupWasabiServices(Out_Module *_plugin)
 {
 	// load all of the required wasabi services from the winamp client
@@ -103,7 +113,7 @@ void __cdecl about(HWND hWndParent)
 
 	if (text)
 	{
-		free(text);
+		safe_free(text);
 	}
 }
 

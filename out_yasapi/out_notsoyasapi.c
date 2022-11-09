@@ -135,7 +135,7 @@ void quit(void)
 #elif defined (YA_DUMP) // } {
   DumpDestroy(&dump);
 #endif // }
-  yafree(path);
+  YA_FREE(path);
 }
 
 static void reset(void)
@@ -240,14 +240,16 @@ int write(char *buf, int len)
   writtentime += len;
   return 0;
 #else // } {
+  if (buf && (len > 0)) {
   DPRINTF(3,"%s (%s)\n",__func__,player.base.pszFileName);
 
   if ((ref_true!=last_pause)&&PLAYER_SEND(&player,PlayerWrite,buf,len)<0)
     return 1;
   else {
     writtentime+=len;
-    return 0;
+    }
   }
+    return 0;
 #endif // }
 }
 
@@ -489,7 +491,7 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
 				  CoUninitialize();
 				com:
 				#endif // }
-				  yafree(path);
+				  YA_FREE(path);
 				path:
 				  return;
 			}

@@ -46,8 +46,7 @@ wchar_t *yapath(wchar_t *file)
   if (NULL==path)
     goto path;
   
-  CombinePath(path,GetPaths()->settings_sub_dir,file);
-  return path;
+  return (wchar_t *)CombinePath(path,GetPaths()->settings_sub_dir,file);
 // cleanup:
   //YASAPI_FREE(path);
 path:
@@ -55,7 +54,14 @@ dir:
   return NULL;
 }
 
-void yafree(void *p)
+extern void* safe_calloc(const size_t size);
+void* yamalloc(const size_t size)
 {
-  YA_FREE(p);
+    return safe_calloc(size);
+}
+
+extern void safe_free(void* ptr);
+void yafree(void *ptr)
+{
+    safe_free(ptr);
 }

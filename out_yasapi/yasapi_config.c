@@ -343,7 +343,7 @@ static ConfigDevice *ConfigDeviceNew(Config *pConfig, int nDevice)
   IPropertyStore *pProperties = 0;
   HRESULT hr;
 
-  if (NULL==(pConfigDevice=malloc(sizeof *pConfigDevice)))
+  if (NULL==(pConfigDevice=YA_MALLOC(sizeof *pConfigDevice)))
     goto malloc;
 
   pConfigDevice->nDevice=nDevice;
@@ -449,7 +449,7 @@ properties:
 id:
   CoTaskMemFree(pstrId);
 device:
-  free(pConfigDevice);
+  YA_FREE(pConfigDevice);
 malloc:
   return NULL;
 }
@@ -464,7 +464,7 @@ static void ConfigDeviceDelete(ConfigDevice *pConfigDevice)
   pProperties->lpVtbl->Release(pProperties);
   pDevice->lpVtbl->Release(pDevice);
   CoTaskMemFree(pstrId);
-  free(pConfigDevice);
+  YA_FREE(pConfigDevice);
 }
 
 // set progress bar.
@@ -877,7 +877,7 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
       uLen+=(UINT)wcslen(L"Default Device -- ");
       uLen+=(UINT)wcslen(pConfigDevice->vName.pwszVal);
 
-      if (NULL==(pwszLabel=malloc((uLen+1)*(sizeof *pwszLabel))))
+      if (NULL==(pwszLabel=YA_MALLOC((uLen+1)*(sizeof *pwszLabel))))
         goto label;
 
       StringCchCopy(pwszLabel,uLen,L"Default Device -- ");
@@ -893,7 +893,7 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
 	comboWidth = ResizeComboBoxDropDown(hDlg,idc,pwszLabel,comboWidth);
 
     if (!cDevice)
-      free(pwszLabel);
+      YA_FREE(pwszLabel);
 
     SendMessage(hComboBox,CB_SETITEMDATA,cDevice,(LPARAM)pConfigDevice);
 
@@ -1126,7 +1126,7 @@ static void ConfigOnSelChangeComboBox(HWND hDlg,Config *pConfig,
     goto device;
   }
 
-  if (NULL==(pwszLabel=malloc((nLen+1)*(sizeof *pwszLabel))))
+  if (NULL==(pwszLabel=YA_MALLOC((nLen+1)*(sizeof *pwszLabel))))
     goto label;
 
   SendMessage(hComboBox,CB_GETLBTEXT,cDevice,(LPARAM)pwszLabel);
@@ -1152,7 +1152,7 @@ static void ConfigOnSelChangeComboBox(HWND hDlg,Config *pConfig,
 #endif // }
 #endif // }
 
-  free(pwszLabel);
+  YA_FREE(pwszLabel);
 label:
 device:
   ;
@@ -1193,7 +1193,7 @@ INT_PTR CALLBACK ConfigProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			  pConfig->pCollection = NULL;
 		  }
 
-		  free(pConfig);
+          YA_FREE(pConfig);
 	  }
 	  break;
   }
@@ -1283,7 +1283,7 @@ void ConfigDialog(Player *pPlayer, Config *pConfig, HWND hWndParent)
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  pConfig = calloc(1, sizeof(Config));
+  pConfig = YA_MALLOC(sizeof(Config));
   pConfig->pPlayer=pPlayer;
   //config.hModule=hInstance;
   pConfig->options.common=pPlayer->options.common;

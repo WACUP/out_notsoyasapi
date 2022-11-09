@@ -65,7 +65,7 @@ int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,
     DPUTS(0,"  got the endpoint ID string\n");
 
     if (pPlayerDevice->szId) {
-        free(pPlayerDevice->szId);
+        YA_FREE(pPlayerDevice->szId);
     }
     pPlayerDevice->szId=safe_wcsdup(pstrId);
     CoTaskMemFree(pstrId);
@@ -73,7 +73,7 @@ int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,
   else {
     pPlayerDevice->pDevice=NULL;
     if (pPlayerDevice->szId) {
-        free(pPlayerDevice->szId);
+        YA_FREE(pPlayerDevice->szId);
     }
     pPlayerDevice->szId=safe_wcsdup(pcstrId);
   }
