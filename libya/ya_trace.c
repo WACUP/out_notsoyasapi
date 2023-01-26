@@ -157,7 +157,7 @@ int TraceCreate(Trace *pTrace, const char *label, const wchar_t *path,
       time.wMilliseconds
     );
 
-    pTrace->f=_wfopen(filepath,L"w");;
+    pTrace->f=_wfopen(filepath,L"w");
   }
   else {
     pTrace->tag=TRACE_CONSOLE;

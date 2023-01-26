@@ -8,6 +8,7 @@
 #include <loader/hook/get_api_service.h>
 #include <loader/hook/squash.h>
 #include <resource.h>
+#include <../wacup_version.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -108,7 +109,7 @@ void __cdecl about(HWND hWndParent)
 	StringCchPrintf(message, ARRAYSIZE(message), text, TEXT(PLUGIN_VERSION),
 					// cppcheck-suppress ConfigurationNotChecked
 					TEXT(YASAPI_VERSION), TEXT("Darren Owen aka DrO"),
-					TEXT("2016-2022"), TEXT(__DATE__));
+					TEXT("2016-") WACUP_COPYRIGHT, TEXT(__DATE__));
 	MessageBoxW(hWndParent, message, GetLangString(IDS_ABOUT_TITLE), MB_OK);
 
 	if (text)
