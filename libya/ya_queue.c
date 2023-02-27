@@ -167,6 +167,7 @@ Request *QueueLock(Queue *pQueue, const QueueStrategy *pStrategy)
   if (0<pQueue->nEvents)
     memcpy(aHandles+1,pQueue->aHandles,pQueue->nEvents*(sizeof *aHandles));
 retry:
+  if (pQueue)
   dwCode=WaitForMultipleObjectsEx(
     1+pQueue->nEvents,    // _In_       DWORD  nCount,
     aHandles,             // _In_ const HANDLE *lpHandles,
@@ -174,6 +175,8 @@ retry:
     INFINITE,             // _In_       DWORD  dwMilliseconds,
     bAlertable            // _In_       BOOL   bAlertable
   );
+  else
+    return 0;
 
   switch (dwCode) {
   case WAIT_IO_COMPLETION:
@@ -218,6 +221,7 @@ Request *QueueLock(Queue *pQueue, const QueueStrategy *pStrategy,
   if (hEvent)
     ahHandles[nCount++]=hEvent;
 retry:
+  if (pQueue)
   dwCode=WaitForMultipleObjectsEx(
     nCount,           // _In_       DWORD  nCount,
     ahHandles,        // _In_ const HANDLE *lpHandles,
@@ -225,6 +229,8 @@ retry:
     INFINITE,         // _In_       DWORD  dwMilliseconds,
     bAlertable        // _In_       BOOL   bAlertable
   );
+  else
+    return 0;
 
   switch (dwCode) {
   case WAIT_IO_COMPLETION:
