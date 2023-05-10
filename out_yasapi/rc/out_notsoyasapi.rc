@@ -68,7 +68,7 @@ BEGIN
     CONTROL         "",IDC_PROGRESSBAR_RING,"msctls_progress32",0x0,63,90,197,12
     RTEXT           "Shared Buffer:",IDC_STATIC_SHARED,9,109,50,9
     CONTROL         "",IDC_PROGRESSBAR_SHARED,"msctls_progress32",0x0,63,107,197,12
-    CONTROL         "",IDC_TABCONTROL,"SysTabControl32",WS_TABSTOP,5,131,261,165
+    CONTROL         "",IDC_TABCONTROL,"SysTabControl32",WS_TABSTOP,5,131,262,165
     PUSHBUTTON      "Defaults",IDC_BUTTON_DEFAULT,216,129,50,13
 END
 
@@ -175,8 +175,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,4,6,0
- PRODUCTVERSION 1,4,6,0
+ FILEVERSION 1,4,7,0
+ PRODUCTVERSION 1,4,7,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -193,12 +193,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "WACUP"
             VALUE "FileDescription", "Output Plug-in"
-            VALUE "FileVersion", "1.4.6.0"
+            VALUE "FileVersion", "1.4.7.0"
             VALUE "InternalName", "out_notsoyasapi.dll"
             VALUE "LegalCopyright", "Copyright © 2015-2016 Peter Belkner, Not So YASAPI modifications by Darren Owen aka DrO © 2016-2023"
             VALUE "OriginalFilename", "out_notsoyasapi.dll"
             VALUE "ProductName", "Not So YASAPI"
-            VALUE "ProductVersion", "1.4.6.0"
+            VALUE "ProductVersion", "1.4.7.0"
         END
     END
     BLOCK "VarFileInfo"

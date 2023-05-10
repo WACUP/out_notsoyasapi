@@ -32,9 +32,10 @@ const wchar_t *basenamew(const wchar_t *s)
 
 wchar_t *yapath(wchar_t *file)
 {
+  const winamp_paths* paths = GetPaths();
   size_t len1,len2;
   wchar_t *path;
-  const wchar_t *dir=GetPaths()->settings_sub_dir;
+  const wchar_t *dir=paths->settings_sub_dir;
 
   if (NULL==dir)
     goto dir;
@@ -46,7 +47,7 @@ wchar_t *yapath(wchar_t *file)
   if (NULL==path)
     goto path;
   
-  return (wchar_t *)CombinePath(path,GetPaths()->settings_sub_dir,file);
+  return (wchar_t *)CombinePath(path,paths->settings_sub_dir,file);
 // cleanup:
   //YASAPI_FREE(path);
 path:

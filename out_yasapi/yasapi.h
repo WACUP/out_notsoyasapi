@@ -20,6 +20,7 @@
 #ifndef __YASAPI_H__ // {
 #define __YASAPI_H__
 #include <ya.h>
+#include <dshow.h>
 #include <yasapi_guid.h>
 #include <winamp/out.h>
 #include <winamp/wa_cup.h>
@@ -55,7 +56,7 @@ extern Out_Module plugin;
 ///////////////////////////////////////////////////////////////////////////////
 #if ! defined (YASAPI_VER) // {
   #define YASAPI_VER            1.7.25
-  #define PLUGIN_VERSION        "1.4.6"
+  #define PLUGIN_VERSION        "1.4.7"
 #endif // }
 
 #define YASAPI_VERSION          YA_STR(YASAPI_VER)
@@ -264,7 +265,7 @@ void RingDump(Ring *pRing, SIZE_T dwSize);
 
 ///////////////////////////////////////////////////////////////////////////////
 enum _OptionsSize {
-  YASAPI_ID_SIZE=128
+  YASAPI_ID_SIZE=64
 };
 
 enum _TimeTag {

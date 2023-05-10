@@ -65,17 +65,20 @@ int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,
     DPUTS(0,"  got the endpoint ID string\n");
 
     if (pPlayerDevice->szId) {
-        YA_FREE(pPlayerDevice->szId);
+      CoTaskMemFree(pPlayerDevice->szId);
     }
-    pPlayerDevice->szId=safe_wcsdup(pstrId);
-    CoTaskMemFree(pstrId);
+    pPlayerDevice->szId=pstrId;
   }
   else {
+    const size_t uLen = (wcslen(pcstrId) + 1);
     pPlayerDevice->pDevice=NULL;
     if (pPlayerDevice->szId) {
-        YA_FREE(pPlayerDevice->szId);
+        CoTaskMemFree(pPlayerDevice->szId);
     }
-    pPlayerDevice->szId=safe_wcsdup(pcstrId);
+    pPlayerDevice->szId=CoTaskMemAlloc(uLen * 2);
+    if (pPlayerDevice->szId) {
+      StringCchCopy(pPlayerDevice->szId, uLen, pcstrId);
+    }
   }
 
   return 0;
@@ -104,7 +107,6 @@ int PlayerDeviceDestroy(PlayerDevice *pPlayerDevice)
 int PlayerDeviceGet(PlayerDevice *pPlayerDevice,
     IMMDeviceEnumerator *pEnumerator)
 {
-  LPWSTR pstrId=pPlayerDevice->szId;
   IMMDevice *pDevice=NULL;
   HRESULT hr;
 
@@ -113,7 +115,7 @@ int PlayerDeviceGet(PlayerDevice *pPlayerDevice,
   if(!pPlayerDevice->pDevice) {
     ///////////////////////////////////////////////////////////////////////////
     hr=pEnumerator->lpVtbl->GetDevice(pEnumerator,
-      pstrId,               // [in]  LPCWSTR   pwstrId,
+      pPlayerDevice->szId,  // [in]  LPCWSTR   pwstrId,
       &pDevice              // [out] IMMDevice **ppDevice
     );
 
@@ -122,7 +124,7 @@ int PlayerDeviceGet(PlayerDevice *pPlayerDevice,
       DERROR(E_NOTFOUND,hr,device);
       DERROR(E_OUTOFMEMORY,hr,device);
       DUNKNOWN(hr);
-      DWMESSAGEV(L"getting the audio device %s",pstrId);
+      DWMESSAGEV(L"getting the audio device %s",pPlayerDevice->szId);
       goto device;
     }
 
