@@ -297,7 +297,7 @@ extern Dump dump;
 int DumpCreate(Dump *pDump, const char *label, const wchar_t *path);
 void DumpDestroy(Dump *pDump);
 
-FILE *DumpOpenFile(Dump *pDump);
+FILE *DumpOpenFile(const Dump *pDump);
 #endif // }
 
 #if defined (YA_DEBUG) // {

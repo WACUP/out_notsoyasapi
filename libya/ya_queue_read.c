@@ -20,12 +20,12 @@
 #include <ya.h>
 
 ///////////////////////////////////////////////////////////////////////////////
-static HANDLE ReadGetSemaphoreDown(Queue *pQueue)
+static HANDLE ReadGetSemaphoreDown(const Queue *pQueue)
 {
   return pQueue->hWritten;
 }
 
-static HANDLE ReadGetSemaphoreUp(Queue *pQueue)
+static HANDLE ReadGetSemaphoreUp(const Queue *pQueue)
 {
   return pQueue->hAvailable;
 }

@@ -19,7 +19,7 @@
  */
 #include <yasapi.h>
 
-void TimeSegmentReset(TimeSegment *pSegment, UINT64 u64Frequency)
+void TimeSegmentReset(TimeSegment *pSegment, const UINT64 u64Frequency)
 {
   DPRINTF(0,"  > %s <\n",__func__);
 
@@ -29,8 +29,8 @@ void TimeSegmentReset(TimeSegment *pSegment, UINT64 u64Frequency)
     pSegment->xSeconds=0.0;
 }
 
-void TimeSegmentAdd(TimeSegment *pOffset, TimeSegment *pCurrent,
-    UINT64 u64Frequency)
+void TimeSegmentAdd(TimeSegment *pOffset, const TimeSegment *pCurrent,
+                                          const UINT64 u64Frequency)
 {
   DPRINTF(0,"  > %s <\n",__func__);
 
@@ -40,8 +40,8 @@ void TimeSegmentAdd(TimeSegment *pOffset, TimeSegment *pCurrent,
     pOffset->xSeconds+=pCurrent->xSeconds;
 }
 
-void TimeSegmentSub(TimeSegment *pOffset, TimeSegment *pCurrent,
-    UINT64 u64Frequency)
+void TimeSegmentSub(TimeSegment *pOffset, const TimeSegment *pCurrent,
+                                          const UINT64 u64Frequency)
 {
   if (u64Frequency)
     pOffset->u64Position-=pCurrent->u64Position;
@@ -292,8 +292,8 @@ int TimeGetMS(Time *pTime, Connection *pConnect, double *pms)
 {
   enum { DEBUG=3 };
   TimeSegment *pCurrent=&pTime->current;
-  TimeSegment *pPause=&pTime->pause;
-  TimeSegment *pGapless=&pTime->gapless;
+  const TimeSegment *pPause=&pTime->pause;
+  const TimeSegment *pGapless=&pTime->gapless;
 
   if (!pConnect) {
     DMESSAGE("null pointer connect");

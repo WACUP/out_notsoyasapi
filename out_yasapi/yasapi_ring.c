@@ -88,7 +88,7 @@ void RingDestroy(Ring *pRing)
     YA_FREE(pRing->pRep);
 }
 
-int RingGetSize(Ring *pRing)
+int RingGetSize(const Ring *pRing)
 {
   return pRing->pMax-pRing->pRep;
 }
@@ -102,22 +102,22 @@ void RingReset(Ring *pRing)
 }
 
 #if defined (YASAPI_FORCE24BIT) // {
-DWORD RingSourceSize(Ring *pRing, DWORD dwTargetSize)
+DWORD RingSourceSize(const Ring *pRing, const DWORD dwTargetSize)
 {
   return MulDiv(dwTargetSize,pRing->nNumerator,pRing->nDenominator);
 }
 
-DWORD RingTargetSize(Ring *pRing, DWORD dwSourceSize)
+DWORD RingTargetSize(const Ring *pRing, const DWORD dwSourceSize)
 {
   return MulDiv(dwSourceSize,pRing->nDenominator,pRing->nNumerator);
 }
 #else // } {
-DWORD RingSourceSize(Ring *pRing, DWORD dwTargetSize)
+DWORD RingSourceSize(const Ring *pRing, const DWORD dwTargetSize)
 {
   return dwTargetSize>>pRing->nShift;
 }
 
-DWORD RingTargetSize(Ring *pRing, DWORD dSourcewSize)
+DWORD RingTargetSize(const Ring *pRing, const DWORD dSourcewSize)
 {
   return dwSourceSize<<pRing->nShift;
 }
@@ -259,6 +259,7 @@ int RingReallocAvailable(Ring *pRing, SIZE_T dwAvailable)
 
 static DWORD RingWriteUnwrapped(Ring *pRing, RingWriteConfig *pc)
 {
+  if (pRing && pc) {
   if (0<pc->dwSourceSize) {
     if (pRing->pHead<pRing->pRep||pRing->pMax<pRing->pHead+pc->dwTargetSize) {
       DMESSAGE("write operation out of range");
@@ -279,6 +280,7 @@ static DWORD RingWriteUnwrapped(Ring *pRing, RingWriteConfig *pc)
   RING_CONSISTENCY(pRing,pc->dwTargetSize,__func__, __LINE__,NULL,consistency);
 
   return pc->dwSourceSize;
+  }
 // cppcheck-suppress unusedLabelConfiguration  
 consistency:
 range:
@@ -441,8 +443,13 @@ DWORD RingWrite(Ring *pRing, LPCSTR pData, SIZE_T dwSize)
         goto wrapped;
     }
 
+	if (pRing) {
     pRing->dwWritten+=c.dwTargetSize;
     pRing->dwAvailable-=c.dwTargetSize;
+	}
+	else {
+		goto consistency1;
+	}
   }
 
   RING_CONSISTENCY(pRing,0,__func__, __LINE__,NULL,consistency2);
@@ -648,7 +655,7 @@ void RingCopyMemory(PVOID *Client, PVOID Destination, const VOID *Source,
 }
 
 #if defined (YA_DEBUG) // {
-static void RingDumpUnwrapped(Ring *pRing, SIZE_T dwSize)
+static void RingDumpUnwrapped(const Ring *pRing, const SIZE_T dwSize)
 {
   LPCSTR pData=pRing->pTail;
   LPCSTR pMax=pData+dwSize;
@@ -657,7 +664,7 @@ static void RingDumpUnwrapped(Ring *pRing, SIZE_T dwSize)
     DPRINTF(0,"%02X",*pData++);
 }
 
-static void RingDumpWrapped(Ring *pRing, SIZE_T dwSize)
+static void RingDumpWrapped(const Ring *pRing, const SIZE_T dwSize)
 {
   DWORD dwOffs1=pRing->pMax-pRing->pTail;
   DWORD dwOffs2=pRing->pHead-pRing->pRep;
@@ -689,7 +696,7 @@ overread:
   ;
 }
 
-void RingDump(Ring *pRing, SIZE_T dwSize)
+void RingDump(const Ring *pRing, const SIZE_T dwSize)
 {
   if (pRing->dwWritten<dwSize)
     dwSize=pRing->dwWritten;
@@ -725,8 +732,8 @@ overread:
 #endif // }
 
 #if defined (YASAPI_RING_DEBUG) // {
-static int RingConsistency(Ring *pRing, DWORD dwSize, const char *func,
-    int line, RingIOError *pError)
+static int RingConsistency(const Ring *pRing, const DWORD dwSize, const char *func,
+                                              const int line, RingIOError *pError)
 {
   DWORD dwWritten=pRing->dwWritten+dwSize;
   DWORD dwAvailable=pRing->dwAvailable-dwSize;

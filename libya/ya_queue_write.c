@@ -20,17 +20,17 @@
 #include <ya.h>
 
 ///////////////////////////////////////////////////////////////////////////////
-static HANDLE WriteGetSemaphoreDown(Queue *pQueue)
+static HANDLE WriteGetSemaphoreDown(const Queue *pQueue)
 {
   return pQueue->hAvailable;
 }
 
-static HANDLE WriteGetSemaphoreUp(Queue *pQueue)
+static HANDLE WriteGetSemaphoreUp(const Queue *pQueue)
 {
   return pQueue->hWritten;
 }
 
-static BOOL WriteIsAlertable(Queue *pQueue)
+static BOOL WriteIsAlertable(const Queue *pQueue)
 {
   return FALSE;
 }

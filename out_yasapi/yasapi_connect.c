@@ -106,7 +106,7 @@ null:
   return -1;
 }
 
-int ConnectionIsInvalid(Connection *pConnect)
+int ConnectionIsInvalid(const Connection *pConnect)
 {
 #if defined (YASAPI_NOTIFY) // {
   return pConnect->bInvalid;
@@ -115,7 +115,7 @@ int ConnectionIsInvalid(Connection *pConnect)
 #endif // }
 }
 
-int ConnectionSetInvalid(Connection *pConnect, int bInvalid)
+int ConnectionSetInvalid(Connection *pConnect, const int bInvalid)
 {
 #if defined (YASAPI_NOTIFY) // {
   return pConnect->bInvalid=bInvalid;

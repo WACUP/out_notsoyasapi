@@ -260,7 +260,7 @@ int PlayerCreateConnect(Player *pPlayer, int bNegociate, int bReset)
 
   double qShareSize=pPlayer->options.device.qShareSize;
   WAVEFORMATEXTENSIBLE *pwfxx=&pPlayer->open.wfxx;
-  WAVEFORMATEX *pwfx=&pwfxx->Format;
+  const WAVEFORMATEX *pwfx=&pwfxx->Format;
   IMMDevice *pDevice=pPlayer->device.pDevice;
   const Strategy *pStrategy=pPlayer->open.pStrategy;
   Connection *pConnect=&pPlayer->connect;
@@ -675,7 +675,7 @@ void PlayerCreateWFXX(Player *pPlayer, Request *pRequest)
 {
   extern int srate,numchan,bps;
   WAVEFORMATEXTENSIBLE *pwfxx=&pPlayer->open.wfxx;
-  WAVEFORMATEX *pwfx=&pwfxx->Format;
+  const WAVEFORMATEX *pwfx=&pwfxx->Format;
   int bMono2Stereo=pPlayer->options.common.bMono2Stereo;
 #if defined (YASAPI_FORCE24BIT) // {
   int bForce24Bit=pPlayer->options.device.bForce24Bit;
@@ -763,13 +763,13 @@ void PlayerCreateWFXX(Player *pPlayer, Request *pRequest)
 int PlayerCreateRing(Player *pPlayer)
 {
   Connection *pConnect=&pPlayer->connect;
-  WAVEFORMATEX *pwfx=&pPlayer->open.wfxx.Format;
+  const WAVEFORMATEX *pwfx=&pPlayer->open.wfxx.Format;
   Ring *pRing=&pPlayer->open.ring;
   double qRingFill=pPlayer->options.device.ring.qFill;
   double qRingSize=pPlayer->options.device.ring.qSize;
 #if defined (YASAPI_FORCE24BIT) // {
-  Convert *pSource=&pPlayer->open.source;
-  Convert *pTarget=&pPlayer->open.target;
+  const Convert *pSource=&pPlayer->open.source;
+  const Convert *pTarget=&pPlayer->open.target;
   int nNumerator;
   int nDenominator;
   int nGcd;
@@ -825,7 +825,7 @@ ring:
 #if defined (YASAPI_NOTIFY) // {
 int PlayerReallocRing(Player *pPlayer)
 {
-  WAVEFORMATEX *pwfx=&pPlayer->open.wfxx.Format;
+  const WAVEFORMATEX *pwfx=&pPlayer->open.wfxx.Format;
   double qRingFill=pPlayer->options.device.ring.qFill;
   double qRingSize=pPlayer->options.device.ring.qSize;
   UINT32 uBufSize;
@@ -856,15 +856,14 @@ ring:
   return -1;
 }
 #endif // }
-#if 0 // {
-int PlayerGetMaxLatency(Player *pPlayer)
-{
-  Connection *pConnect=&pPlayer->connect;
-  WAVEFORMATEX *pwfx=&pPlayer->open.wfxx.Format;
 
-  return YASAPI_FRAMES_MS(pConnect->uFramesMin,pwfx);
+int PlayerGetMaxLatency(const Player *pPlayer)
+{
+  const Connection *pConnect=&pPlayer->connect;
+  const WAVEFORMATEX *pwfx=&pPlayer->open.wfxx.Format;
+  return MulDiv(1000,pConnect->uFramesMin,pwfx->nSamplesPerSec);
 }
-#endif // }
+
 int PlayerOpen(Player *pPlayer, Request *pRequest)
 {
 #if 0 // {
@@ -950,10 +949,7 @@ int PlayerOpen(Player *pPlayer, Request *pRequest)
     DMESSAGE("re-setting time offset");
     goto time;
   }
-  // in_mp3 doesn't like this returning zero when
-  // attempting to play streams so we'll return 1
-  // which also will keep the main vis working ok
-  return 1/*/PlayerGetMaxLatency(pPlayer)/**/;
+  return PlayerGetMaxLatency(pPlayer);
 time:
   RingDestroy(&pPlayer->open.ring);
 ring:
@@ -1051,7 +1047,7 @@ int PlayerMigrate(Player *pPlayer, Request *pRequest)
 
   PlayerTryStart(pPlayer,0);
 
-  return 0/*/PlayerGetMaxLatency(pPlayer)/**/;
+  return PlayerGetMaxLatency(pPlayer);
 time:
   RingDestroy(&pPlayer->open.ring);
 ring:
@@ -1129,7 +1125,7 @@ int PlayerReset(Player *pPlayer, Request *pRequest)
   }
 #endif // }
 
-  return 0/*/PlayerGetMaxLatency(pPlayer)/**/;
+  return PlayerGetMaxLatency(pPlayer);
 //add:
 //padding:
 reset:
@@ -1191,7 +1187,7 @@ int PlayerGetWriteSize(Player *pPlayer, UINT32 uFramesPadding,
     int bUnderflow, int nDebug, PlayConfig *pc)
 {
   int bNeedPadding=pPlayer->open.pStrategy->NeedPadding(pPlayer);
-  WAVEFORMATEX *pwfx=&pPlayer->open.wfxx.Format;
+  const WAVEFORMATEX *pwfx=&pPlayer->open.wfxx.Format;
 
   DPRINTF(nDebug,"  > %s (%d) <\n",__func__,pPlayer->state);
 
@@ -1244,7 +1240,7 @@ static void RingErrorNop(RingIOError *pError)
 int PlayerPlay(Player *pPlayer, UINT32 uFramesPadding, int bUnderflow)
 {
   enum { DEBUG=3 };
-  WAVEFORMATEX *pwfx=&pPlayer->open.wfxx.Format;
+  const WAVEFORMATEX *pwfx=&pPlayer->open.wfxx.Format;
   IAudioRenderClient *pRender=pPlayer->connect.pRender;
   Ring *pRing=&pPlayer->open.ring;
   Connection *pConnect=&pPlayer->connect;
@@ -1397,8 +1393,8 @@ int PlayerTryStart(Player *pPlayer, int bUnderflow)
   const PlayerState state=pPlayer->state;
   const Strategy *pStrategy=pPlayer->open.pStrategy;
   const Disconnect *pDisconnect=pPlayer->open.pDisconnect;
-  WAVEFORMATEX *pwfx=&pPlayer->open.wfxx.Format;
-  Ring *pRing=&pPlayer->open.ring;
+  const WAVEFORMATEX *pwfx=&pPlayer->open.wfxx.Format;
+  const Ring *pRing=&pPlayer->open.ring;
   UINT32 uFramesRingWritten=pRing->dwWritten/pwfx->nBlockAlign;
   HANDLE hTask=NULL;
   IAudioClient *pClient = NULL;
@@ -1511,7 +1507,7 @@ int PlayerWrite(Player *pPlayer, Request *pRequest)
   Connection *pConnect=&pPlayer->connect;
   Ring *pRing=&pPlayer->open.ring;
 #if defined (YASAPI_FORCE24BIT) // {
-  Convert *pSource=&pPlayer->open.source;
+  const Convert *pSource=&pPlayer->open.source;
 #endif // }
 
   DPRINTF(DEBUG,"  > %s (%d) <\n",__func__,pPlayer->state);
@@ -2024,7 +2020,7 @@ HANDLE PlayerGetEvent(Player *pPlayer)
       ?NULL:pPlayer->open.pStrategy->GetEvent(pPlayer);
 }
 
-int PlayerGetStamp(Player *pPlayer)
+int PlayerGetStamp(const Player *pPlayer)
 {
   return pPlayer->stamp;
 }
@@ -2033,8 +2029,8 @@ int PlayerGetStamp(Player *pPlayer)
 #if defined (YASAPI_FORCE24BIT) // {
 static int PlayerFormatChanged(Player *pPlayer)
 {
-  Convert *pSource=&pPlayer->open.source;
-  Convert *pTarget=&pPlayer->open.target;
+  const Convert *pSource=&pPlayer->open.source;
+  const Convert *pTarget=&pPlayer->open.target;
 
   if (pSource->nBytesPerSample-pTarget->nBytesPerSample)
     return 1;
@@ -2095,8 +2091,8 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
   enum { DEBUG=3 };
   Player *pPlayer=p;
 #if defined (YASAPI_FORCE24BIT) // {
-  Convert *pSource=&pPlayer->open.source;
-  Convert *pTarget=&pPlayer->open.target;
+  const Convert *pSource=&pPlayer->open.source;
+  const Convert *pTarget=&pPlayer->open.target;
   int nVolume=pPlayer->options.common.bVolume
       ?pPlayer->base.nVolume:YASAPI_MAX_VOLUME;
   int k;
@@ -2106,8 +2102,8 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
   double q;
   int32_t i32;
 #endif // }
-  char *wp=Destination,*lwp=wp,*mp=wp+Length;
-  const char *rp=Source;
+  char *wp=Destination;
+  const char *lwp=wp, *mp=wp+Length, *rp=Source;
   int m;
 
   DPRINTF(DEBUG," > %s <\n",__func__);

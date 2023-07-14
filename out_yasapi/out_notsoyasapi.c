@@ -96,7 +96,7 @@ static LRESULT CALLBACK PluginWinampProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 }
 #endif // }
 
-extern __declspec(dllexport) void __cdecl winampGetOutModeChange(int mode);
+extern __declspec(dllexport) void __cdecl winampGetOutModeChange(const int mode);
 void config(HWND hwnd)
 {
   DPRINTF(0, "%s\n", __func__);
@@ -152,16 +152,16 @@ static void reset(void)
   last_pause=!ref_true;
 }
 
-int open(int samplerate, int numchannels, int bitspersamp, int bufferlenms,
-    int prebufferms)
+int open(const int samplerate, const int numchannels, const int bitspersamp,
+							   const int bufferlenms, const int prebufferms)
 {
 #if defined (YASAPI_GAPLESS) // {
   int bGapless=player.options.common.bGapless;
   WAVEFORMATEXTENSIBLE *pwfxx=&player.open.wfxx;
-  WAVEFORMATEX *pwfx=&pwfxx->Format;
-  WORD wBitsPerSample=pwfx->wBitsPerSample;
-  int nChannels=pwfx->nChannels;
-  int nSamplesPerSec=pwfxx->Format.nSamplesPerSec;
+  const WAVEFORMATEX *pwfx=&pwfxx->Format;
+  const WORD wBitsPerSample=pwfx->wBitsPerSample;
+  const int nChannels=pwfx->nChannels;
+  const int nSamplesPerSec=pwfxx->Format.nSamplesPerSec;
   int bChange=0;
 #endif // }
 
@@ -187,7 +187,7 @@ int open(int samplerate, int numchannels, int bitspersamp, int bufferlenms,
     return PLAYER_SEND(&player,PlayerOpen);
   }
   else if (bGapless&&bReset) {
-    bChange=bChange/*||wcscmp(device.szId,player.device.szId)*/;
+    //bChange=bChange/*||wcscmp(device.szId,player.device.szId)*/;
 #if defined (YASAPI_SURROUND) // {
     bChange=bChange||player.options.common.bSurround!=player.open.bSurround;
 #endif // }
@@ -234,7 +234,7 @@ void close(void)
 #endif // }
 }
 
-int write(char *buf, int len)
+int write(const char *buf, const int len)
 {
 #if 0 // {
   writtentime += len;
@@ -288,7 +288,7 @@ int isplaying(void)
   return bPlaying;
 }
 
-int pause(int pause)
+int pause(const int pause)
 {
 #if 0 // {
   int t=last_pause;
@@ -319,7 +319,7 @@ int pause(int pause)
 #endif // }
 }
 
-void setvolume(int volume)
+void setvolume(const int volume)
 {
   enum { DEBUG=3 };
 
@@ -334,7 +334,7 @@ void setvolume(int volume)
   }
 }
 
-void setpan(int pan)
+void setpan(const int pan)
 {
 }
 
@@ -408,7 +408,7 @@ __declspec(dllexport) int __cdecl winampUninstallPlugin(HINSTANCE hDllInst, HWND
 	return OUT_PLUGIN_UNINSTALL_REBOOT;
 }
 
-__declspec(dllexport) void __cdecl winampGetOutModeChange(int mode)
+__declspec(dllexport) void __cdecl winampGetOutModeChange(const int mode)
 {
 	// just look at the set / unset state
 	switch (mode & ~0xFF0)

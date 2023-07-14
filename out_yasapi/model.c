@@ -311,17 +311,17 @@ void StorePut(Store *pStore, Result *pResult)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-static HANDLE WriteGetSemaphoreDown(Queue *pQueue)
+static HANDLE WriteGetSemaphoreDown(const Queue *pQueue)
 {
   return pQueue->hAvailable;
 }
 
-static HANDLE WriteGetSemaphoreUp(Queue *pQueue)
+static HANDLE WriteGetSemaphoreUp(const Queue *pQueue)
 {
   return pQueue->hWritten;
 }
 
-static BOOL WriteIsAlertable(Queue *pQueue)
+static BOOL WriteIsAlertable(const Queue *pQueue)
 {
   return FALSE;
 }
@@ -340,17 +340,17 @@ const QueueStrategy cqsWrite={
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-static HANDLE ReadGetSemaphoreDown(Queue *pQueue)
+static HANDLE ReadGetSemaphoreDown(const Queue *pQueue)
 {
   return pQueue->hWritten;
 }
 
-static HANDLE ReadGetSemaphoreUp(Queue *pQueue)
+static HANDLE ReadGetSemaphoreUp(const Queue *pQueue)
 {
   return pQueue->hAvailable;
 }
 
-static BOOL ReadIsAlertable(Queue *pQueue)
+static BOOL ReadIsAlertable(const Queue *pQueue)
 {
   return TRUE;
 }

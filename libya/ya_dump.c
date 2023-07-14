@@ -31,11 +31,11 @@ int DumpCreate(Dump *pDump, const char *label, const wchar_t *path)
   return 0;
 }
 
-void DumpDestroy(Dump *pDump)
+void DumpDestroy(const Dump *pDump)
 {
 }
 
-FILE *DumpOpenFile(Dump *pDump)
+FILE *DumpOpenFile(const Dump *pDump)
 {
   if (pDump->path) {
     wchar_t filepath[MAX_PATH]={0};

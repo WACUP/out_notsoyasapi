@@ -83,7 +83,7 @@ static PageTemplate gaTemplates[]={
 ///////////////////////////////////////////////////////////////////////////////
 struct _Page {
   PageVMT *vmt;
-  Config *pConfig;
+  //Config *pConfig;
   HWND hDlg;
 };
 
@@ -846,7 +846,7 @@ static void ConfigOnSelChangeComboBox(HWND hDlg,Config *pConfig,
 static void ConfigOnSelChangeTabCtrl(HWND hDlg, Config *pConfig, HWND hWndTab)
 {
   int nCurPage=TabCtrl_GetCurSel(hWndTab);
-  Page *pPage=pConfig->aPages+nCurPage;
+  const Page *pPage=pConfig->aPages+nCurPage;
 
   if (pConfig->hTabCtlPage) {
     ShowWindow(pConfig->hTabCtlPage,FALSE);

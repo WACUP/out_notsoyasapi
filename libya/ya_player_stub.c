@@ -184,7 +184,7 @@ DWORD WINAPI PlayerStubThread(LPVOID lpParameter)
     pRequest=QueueLockRead(pQueue,hEvent,EventProc,pPlayer);
 #endif // }
     if (!pRequest || !lpVtbl) {
-        state = -1;
+        //state = -1;
         break;
     }
 

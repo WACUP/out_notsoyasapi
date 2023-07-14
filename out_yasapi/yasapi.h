@@ -56,7 +56,7 @@ extern Out_Module plugin;
 ///////////////////////////////////////////////////////////////////////////////
 #if ! defined (YASAPI_VER) // {
   #define YASAPI_VER            1.7.25
-  #define PLUGIN_VERSION        "1.4.8"
+  #define PLUGIN_VERSION        "1.4.9"
 #endif // }
 
 #define YASAPI_VERSION          YA_STR(YASAPI_VER)
@@ -98,11 +98,6 @@ extern Out_Module plugin;
     (AUDCLNT_SHAREMODE_SHARED==(eShareMode)?"SHARED":"EXCLUSIVE")
 
 ///////////////////////////////////////////////////////////////////////////////
-#if 0 // {
-#define YASAPI_FRAMES_MS(nFrames,pwfx) \
-  MulDiv(1000,nFrames,(pwfx)->nSamplesPerSec)
-#endif // }
-
 #define YASAPI_FRAMES_TIMER(nFrames,pwfx) \
   (10000.0*1000*(nFrames)/(pwfx)->nSamplesPerSec)
 
@@ -243,10 +238,10 @@ DWORD RingCreate(Ring *pRing, SIZE_T dwSize, SIZE_T nShift);
 #endif // }
 void RingDestroy(Ring *pRing);
 
-DWORD RingSourceSize(Ring *pRing, DWORD dwTargetSize);
-DWORD RingTargetSize(Ring *pRing, DWORD dwSourceSize);
+DWORD RingSourceSize(const Ring *pRing, const DWORD dwTargetSize);
+DWORD RingTargetSize(const Ring *pRing, const DWORD dwSourceSize);
 
-int RingGetSize(Ring *pRing);
+int RingGetSize(const Ring *pRing);
 void RingReset(Ring *pRing);
 #if defined (YASAPI_RING_REALLOC) // {
 int RingRealloc(Ring *pRing, SIZE_T uSize);
@@ -361,8 +356,8 @@ struct _Connection {
   IAudioClock *pClock;
 };
 
-int ConnectionIsInvalid(Connection *pConnect);
-int ConnectionSetInvalid(Connection *pConnect, int bInvalid);
+int ConnectionIsInvalid(const Connection *pConnect);
+int ConnectionSetInvalid(Connection *pConnect, const int bInvalid);
 
 int ConnectionGetPosition(Connection *pConnect, UINT64 *pu64Position);
 int ConnectionGetFrequency(Connection *pConnect, UINT64 *pu64Frequency);
@@ -373,9 +368,9 @@ union _TimeSegment {
   double xSeconds;
 };
 
-void TimeSegmentReset(TimeSegment *pSegment, UINT64 u64Frequency);
-void TimeSegmentAdd(TimeSegment *pOffset, TimeSegment *pCurrent,
-    UINT64 u64Frequency);
+void TimeSegmentReset(TimeSegment *pSegment, const UINT64 u64Frequency);
+void TimeSegmentAdd(TimeSegment *pOffset, const TimeSegment *pCurrent,
+                                          const UINT64 u64Frequency);
 #if 0 // {
 void TimeSegmentSub(TimeSegment *pOffset, TimeSegment *pCurrent,
     UINT64 u64Frequency);
@@ -599,15 +594,11 @@ int PlayerCreateConnect(Player *pPlayer, int bNegociate, int bReset);
 void PlayerCreateWFXX(Player *pPlayer, Request *pRequest);
 int PlayerCreateRing(Player *pPlayer);
 int PlayerReallocRing(Player *pPlayer);
-#if 0 // {
-int PlayerGetMaxLatency(Player *pPlayer);
-#endif // }
+int PlayerGetMaxLatency(const Player *pPlayer);
 int PlayerOpen(Player *pPlayer, Request *pRequest);
 #if defined (YASAPI_NOTIFY) // {
 int PlayerMigrate(Player *pPlayer, Request *pRequest);
 #endif // }
-void PlayerShutdown(Player *pPlayer);
-void PlayerDisconnect(Player *pPlayer);
 #if 0 // {
 void PlayerDestroyEventSource(Player *pPlayer);
 void PlayerDestroyConnect(Player *pPlayer);
@@ -640,7 +631,9 @@ void PlayerPost(Player *pPlayer, const char *id, PlayerProc *pPlayerProc);
 int PlayerSend(Player *pPlayer, PlayerProc *pPlayerProc, ...);
 void PlayerPost(Player *pPlayer, PlayerProc *pPlayerProc);
 #endif // }
+#if ! defined (YA_EVENT_STACK) // {
 void PlayerPostRead(void *data);
+#endif // }
 VOID CALLBACK PlayerFireRead(LPVOID lpArg, DWORD dwLow, DWORD dwHigh);
 void PlayerSetTimerRead(Player *pPlayer, LONGLONG time);
 void PlayerSetThreadCharacteristics(Player *pPlayer, HANDLE *pTask);
@@ -651,7 +644,7 @@ VOID CALLBACK PlayerFireShutdownUnderflow(LPVOID lpArg, DWORD dwLow,
 void PlayerSetTimerCheckUnderflow(Player *pPlayer);
 #endif // }
 HANDLE PlayerGetEvent(Player *pPlayer);
-int PlayerGetStamp(Player *pPlayer);
+int PlayerGetStamp(const Player *pPlayer);
 //DWORD WINAPI PlayerThread(LPVOID lpParameter);
 void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
     SIZE_T Length);
