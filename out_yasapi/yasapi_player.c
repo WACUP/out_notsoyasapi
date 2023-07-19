@@ -357,11 +357,12 @@ retry:
 
     switch (hr) {
     case S_OK:
-      break;
     case S_FALSE:
+      break;
+    /*case S_FALSE:
       //DERROR(S_FALSE,hr);
       DMESSAGE("format not supported");
-      goto support;
+      goto support;*/
     default:
       if (FAILED(hr)) {
         DERROR(AUDCLNT_E_UNSUPPORTED_FORMAT,hr,support);
