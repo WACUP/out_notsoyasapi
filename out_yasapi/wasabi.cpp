@@ -1,6 +1,5 @@
 #include <yasapi.h>
 #include <nu/servicebuilder.h>
-#include <nu/autowide.h>
 #include <wasabi/api/service/api_service.h>
 #include <wasabi/api/memmgr/api_memmgr.h>
 #include <Agave/Language/api_language.h>
@@ -92,12 +91,9 @@ extern "C" LPWSTR GetTextResource(const UINT id, LPWSTR* text)
 	// the resource is utf-8 encoded so we convert
 	// before passing it on to then be displayed
 	DWORD data_size = 0;
-	unsigned char *data = (unsigned char *)WASABI_API_LOADRESFROMFILEW(L"GZ", MAKEINTRESOURCEW(id), &data_size),
-				  *output = NULL;
-	DecompressResource(data, data_size, &output, 0);
-
-	*text = AutoWideDup((LPCSTR)output, CP_UTF8);
-	DecompressResourceFree(output);
+	unsigned char *data = (unsigned char *)WASABI_API_LOADRESFROMFILEW(L"GZ",
+										   MAKEINTRESOURCEW(id), &data_size);
+	DecompressResource(data, data_size, (unsigned char**)text, 0, true);
 	return *text;
 }
 

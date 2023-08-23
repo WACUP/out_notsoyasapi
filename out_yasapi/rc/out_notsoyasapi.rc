@@ -175,8 +175,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,4,10,0
- PRODUCTVERSION 1,4,10,0
+ FILEVERSION 1,4,11,0
+ PRODUCTVERSION 1,4,11,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -193,12 +193,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "WACUP"
             VALUE "FileDescription", "Output Plug-in"
-            VALUE "FileVersion", "1.4.10.0"
+            VALUE "FileVersion", "1.4.11.0"
             VALUE "InternalName", "out_notsoyasapi.dll"
             VALUE "LegalCopyright", "Copyright © 2015-2016 Peter Belkner, Not So YASAPI modifications by Darren Owen aka DrO © 2016-2023"
             VALUE "OriginalFilename", "out_notsoyasapi.dll"
             VALUE "ProductName", "Not So YASAPI"
-            VALUE "ProductVersion", "1.4.10.0"
+            VALUE "ProductVersion", "1.4.11.0"
         END
     END
     BLOCK "VarFileInfo"
