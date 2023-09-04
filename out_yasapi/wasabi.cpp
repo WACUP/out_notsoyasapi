@@ -6,6 +6,7 @@
 #include <wasabi/api/service/waServiceFactory.h>
 #include <loader/hook/get_api_service.h>
 #include <loader/hook/squash.h>
+#include <loader/loader/utils.h>
 #include <resource.h>
 #include <../wacup_version.h>
 
@@ -106,7 +107,7 @@ void __cdecl about(HWND hWndParent)
 					// cppcheck-suppress ConfigurationNotChecked
 					TEXT(YASAPI_VERSION), TEXT("Darren Owen aka DrO"),
 					TEXT("2016-") WACUP_COPYRIGHT, TEXT(__DATE__));
-	MessageBoxW(hWndParent, message, GetLangString(IDS_ABOUT_TITLE), MB_OK);
+	AboutMessageBox(hWndParent, message, GetLangString(IDS_ABOUT_TITLE));
 
 	if (text)
 	{

@@ -76,7 +76,9 @@ static void PlayerDestroyPause(Player *pPlayer)
 static void PlayerDestroyRun(Player *pPlayer)
 {
   IMMDeviceEnumerator *pEnumerator=pPlayer->run.pEnumerator;
-
+  // for some WINE based setups this may not be working
+  // so we'll abort instead of continuing & crashing...
+  if (pEnumerator) {
 #if defined (YASAPI_NOTIFY) // {
   /////////////////////////////////////////////////////////////////////////////
   DPUTS(0,"  removing notify\n");
@@ -85,6 +87,7 @@ static void PlayerDestroyRun(Player *pPlayer)
 
   DPUTS(0,"  destroying device enumerator\n");
   pEnumerator->lpVtbl->Release(pEnumerator);
+  }
 }
 
 static void PlayerDestroyBase(Player *pPlayer)

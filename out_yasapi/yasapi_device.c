@@ -29,6 +29,11 @@ int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,
   DPRINTF(0,"  > %s <\n",__func__);
 
   if (!pcstrId||!pcstrId[0]) {
+    // for some WINE based setups this may not be working
+    // so we'll abort instead of continuing & crashing...
+    if (!pEnumerator) {
+      goto device;
+    }
     ///////////////////////////////////////////////////////////////////////////
     hr=pEnumerator->lpVtbl->GetDefaultAudioEndpoint(pEnumerator,
       eRender,              // [in]  EDataFlow dataFlow,
@@ -113,6 +118,11 @@ int PlayerDeviceGet(PlayerDevice *pPlayerDevice,
   DPRINTF(0,"  > %s <\n",__func__);
 
   if(!pPlayerDevice->pDevice) {
+    // for some WINE based setups this may not be working
+    // so we'll abort instead of continuing & crashing...
+    if (!pEnumerator) {
+      goto device;
+    }
     ///////////////////////////////////////////////////////////////////////////
     hr=pEnumerator->lpVtbl->GetDevice(pEnumerator,
       pPlayerDevice->szId,  // [in]  LPCWSTR   pwstrId,
