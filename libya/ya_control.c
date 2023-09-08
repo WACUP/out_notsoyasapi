@@ -324,10 +324,9 @@ static void SliderCascadeSetStatic(HWND hDlg, int idc, UINT/*const wchar_t **/fo
 {
   if (format) {
     enum { SIZE=128 };
-    HWND hWnd=GetDlgItem(hDlg,idc);
     wchar_t buf[SIZE]={0};
     StringCchPrintf(buf,SIZE,GetLangString(format),x);
-    SetWindowTextW(hWnd,buf);
+    SetDlgItemTextW(hDlg,idc,buf);
   }
 }
 

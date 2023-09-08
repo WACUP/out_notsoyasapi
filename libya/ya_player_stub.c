@@ -19,6 +19,8 @@
  */
 #include <ya.h>
 #include <avrt.h>
+#define WA_UTILS_SIMPLE
+#include <../loader/loader/utils.h>
 
 static PlayerStub stub;
 
@@ -162,11 +164,7 @@ DWORD WINAPI PlayerStubThread(LPVOID lpParameter)
   int state;
   HRESULT hr;
 
-  hr=CoInitializeEx(
-    NULL,                     // _In_opt_ LPVOID pvReserved
-    COINIT_MULTITHREADED |    // _In_     DWORD  dwCoInit
-    COINIT_DISABLE_OLE1DDE
-  );
+  hr=CreateCOM();
 
   if (FAILED(hr)) {
     /*DERROR(S_FALSE,hr);
@@ -207,7 +205,7 @@ DWORD WINAPI PlayerStubThread(LPVOID lpParameter)
     QueueUnlockRead(pQueue,pRequest->pResult);
   }
 
-  CoUninitialize();
+  CloseCOM();
 coinit:
 
 #if defined (YA_THREAD_AVRT) // {

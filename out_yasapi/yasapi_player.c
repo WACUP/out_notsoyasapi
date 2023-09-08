@@ -352,7 +352,7 @@ retry:
       DPRINTF(0,"  closest match: %d, %d\n",
           pClosestMatch->wBitsPerSample,
           pClosestMatch->nSamplesPerSec);
-      CoTaskMemFree(pClosestMatch);
+      MemFreeCOM(pClosestMatch);
     }
 
     switch (hr) {

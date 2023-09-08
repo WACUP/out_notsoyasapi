@@ -70,7 +70,7 @@ int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,
     DPUTS(0,"  got the endpoint ID string\n");
 
     if (pPlayerDevice->szId) {
-      CoTaskMemFree(pPlayerDevice->szId);
+      MemFreeCOM(pPlayerDevice->szId);
     }
     pPlayerDevice->szId=pstrId;
   }
@@ -78,7 +78,7 @@ int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,
     const size_t uLen = (wcslen(pcstrId) + 1);
     pPlayerDevice->pDevice=NULL;
     if (pPlayerDevice->szId) {
-        CoTaskMemFree(pPlayerDevice->szId);
+      MemFreeCOM(pPlayerDevice->szId);
     }
     pPlayerDevice->szId=CoTaskMemAlloc(uLen * 2);
     if (pPlayerDevice->szId) {
@@ -101,7 +101,10 @@ int PlayerDeviceDestroy(PlayerDevice *pPlayerDevice)
 
   if (pDevice) {
     DPUTS(0,"  destroying device\n");
-    pDevice->lpVtbl->Release(pDevice);
+    if (!pDevice->lpVtbl->Release(pDevice))
+    {
+      pDevice = NULL;
+    }
   }
 
   memset(pPlayerDevice, 0, sizeof * pPlayerDevice);

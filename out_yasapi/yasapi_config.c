@@ -447,7 +447,7 @@ name:
 properties:
   pDevice->lpVtbl->Release(pDevice);
 id:
-  CoTaskMemFree(pstrId);
+  MemFreeCOM(pstrId);
 device:
   YA_FREE(pConfigDevice);
 malloc:
@@ -460,10 +460,10 @@ static void ConfigDeviceDelete(ConfigDevice *pConfigDevice)
   LPWSTR pstrId=pConfigDevice->pstrId;
   IPropertyStore *pProperties=pConfigDevice->pProperties;
 
-  PropVariantClear(&pConfigDevice->vName);
+  ClearPropVariant(&pConfigDevice->vName);
   pProperties->lpVtbl->Release(pProperties);
   pDevice->lpVtbl->Release(pDevice);
-  CoTaskMemFree(pstrId);
+  MemFreeCOM(pstrId);
   YA_FREE(pConfigDevice);
 }
 
@@ -481,19 +481,17 @@ static void ConfigSyncVisualization(HWND hDlg, Config *pConfig)
 {
   Player *pPlayer=pConfig->pPlayer;
   BOOL bVisualization=IsDlgButtonChecked(hDlg,IDC_CHECKBOX_VISUALIZATION);
-  HWND hWndRing=GetDlgItem(pConfig->hDlg,IDC_PROGRESSBAR_RING);
-  HWND hWndShared=GetDlgItem(pConfig->hDlg,IDC_PROGRESSBAR_SHARED);
 
   if (!bVisualization) {
     // clear progress bars.
-    ConfigUpdateProgress(hWndRing,0);
-    ConfigUpdateProgress(hWndShared,0);
+    ConfigUpdateProgress(GetDlgItem(pConfig->hDlg,IDC_PROGRESSBAR_RING),0);
+    ConfigUpdateProgress(GetDlgItem(pConfig->hDlg,IDC_PROGRESSBAR_SHARED),0);
   }
 
   EnableControl(pConfig->hDlg,IDC_STATIC_RING,bVisualization);
-  EnableWindow(hWndRing,bVisualization);
+  EnableControl(pConfig->hDlg,IDC_PROGRESSBAR_RING,bVisualization);
   EnableControl(pConfig->hDlg,IDC_STATIC_SHARED,bVisualization);
-  EnableWindow(hWndShared,bVisualization);
+  EnableControl(pConfig->hDlg,IDC_PROGRESSBAR_SHARED,bVisualization);
 
   pConfig->options.common.bVisualization=bVisualization;
   pPlayer->options.common.bVisualization=bVisualization;
@@ -849,12 +847,12 @@ static void ConfigOnSelChangeTabCtrl(HWND hDlg, Config *pConfig, HWND hWndTab)
   const Page *pPage=pConfig->aPages+nCurPage;
 
   if (pConfig->hTabCtlPage) {
-    ShowWindow(pConfig->hTabCtlPage,FALSE);
+    ShowWindow(pConfig->hTabCtlPage,SW_HIDE);
     pConfig->hTabCtlPage=NULL;
   }
 
   pConfig->hTabCtlPage=pPage->hDlg;
-  ShowWindow(pConfig->hTabCtlPage,TRUE);
+  ShowWindow(pConfig->hTabCtlPage,SW_SHOWNA);
   pConfig->options.common.nPage=nCurPage;
 }
 

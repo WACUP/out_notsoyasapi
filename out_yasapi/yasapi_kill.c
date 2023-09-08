@@ -69,7 +69,10 @@ static void PlayerDestroyPause(Player *pPlayer)
   SetThreadExecutionState(pPlayer->open.ePrevState);
 #endif // }
 #endif // }
-  //PlayerDeviceDestroy(&pPlayer->device);
+  if (pPlayer->device.pDevice && !pPlayer->device.pDevice->lpVtbl->Release(pPlayer->device.pDevice))
+  {
+    pPlayer->device.pDevice = NULL;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
