@@ -85,7 +85,10 @@ rep:
 void RingDestroy(Ring *pRing)
 {
   if (pRing->pRep)
+  {
     YA_FREE(pRing->pRep);
+    pRing->pRep = NULL;
+  }
 }
 
 int RingGetSize(const Ring *pRing)

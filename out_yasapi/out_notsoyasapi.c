@@ -136,6 +136,7 @@ void quit(void)
   DumpDestroy(&dump);
 #endif // }
   YA_FREE(path);
+  path = NULL;
 }
 
 static void reset(void)
@@ -255,6 +256,7 @@ int write(const char *buf, const int len)
 
 int canwrite(void)
 {
+#if defined (YA_DEBUG) // {
   int bytes;
 
   DPRINTF(3,"%s (%s)\n",__func__,player.base.pszFileName);
@@ -262,6 +264,9 @@ int canwrite(void)
   DPRINTF(3,"  bytes: %d\n",bytes);
 
   return bytes;
+#else // } {
+  return ((ref_true == last_pause) ? 0 : PLAYER_SEND(&player, PlayerCanWrite));
+#endif // }
 }
 
 int isplaying(void)
@@ -492,6 +497,7 @@ __declspec(dllexport) void __cdecl winampGetOutModeChange(const int mode)
 				com:
 				#endif // }
 				  YA_FREE(path);
+				  path = NULL;
 				path:
 				  return;
 			}

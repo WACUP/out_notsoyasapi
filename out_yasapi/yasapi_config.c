@@ -1192,6 +1192,7 @@ INT_PTR CALLBACK ConfigProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		  }
 
           YA_FREE(pConfig);
+          pConfig = NULL;
 	  }
 	  break;
   }

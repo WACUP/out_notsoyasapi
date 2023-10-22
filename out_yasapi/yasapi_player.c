@@ -2090,6 +2090,7 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
     SIZE_T Length)
 {
   enum { DEBUG=3 };
+  if (!p) return;
   Player *pPlayer=p;
 #if defined (YASAPI_FORCE24BIT) // {
   const Convert *pSource=&pPlayer->open.source;
