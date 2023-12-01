@@ -216,9 +216,9 @@ static void SliderTypeSet(const Control *pControl, HWND hDlg,
   HWND hWndCtl=GetDlgItem(hDlg,config->idcSlider);
   LRESULT lMin=SendMessage(hWndCtl,TBM_GETRANGEMIN,0,0);
   LRESULT lMax=SendMessage(hWndCtl,TBM_GETRANGEMAX,0,0);
-  LPARAM lPos=(double)lMin
+  LPARAM lPos=(LPARAM)((double)lMin
       +(x-config->min)/(config->max-config->min)*(lMax-lMin)
-      +0.5;
+      +0.5);
 
   SendMessage(hWndCtl,TBM_SETPOS,TRUE,lPos);
   SliderTypeSetStatic(pControl,hDlg,x);
@@ -363,8 +363,8 @@ static void SliderCascadeSetSliderWidth(HWND hDlg, int idc, int idcParent)
   RECT rc={0};
 
   lWidth=MulDiv(SliderCascadeGetSliderWidth(hWndParent),
-      lPosParent-lRangeMinParent,
-      lRangeMaxParent-lRangeMinParent);
+                (int)(lPosParent-lRangeMinParent),
+                (int)(lRangeMaxParent-lRangeMinParent));
   lWidth+=SliderCascadeGetHumbleWidth(hWnd);
 
   GetWindowRect(hWnd,&rc);
@@ -412,11 +412,11 @@ void SliderCascadeSetSlider(HWND hDlg, int idc, LONG *plWidthRoot,
 
   if (*plWidthRoot<0) {
     *plWidthRoot=lWidth;
-    lPos=lRangeMin+(x-min)/(max-min)*(lRangeMax-lRangeMin)+0.5;
+    lPos=(LPARAM)(lRangeMin+(x-min)/(max-min)*(lRangeMax-lRangeMin)+0.5);
   }
   else {
     double q=(double)(*plWidthRoot)/lWidth;
-    lPos=lRangeMin+(q*(x-min)/(max-min)*(lRangeMax-lRangeMin)+0.5);
+    lPos=(LPARAM)(lRangeMin+(q*(x-min)/(max-min)*(lRangeMax-lRangeMin)+0.5));
   }
 
   SendMessage(hWnd,TBM_SETPOS,TRUE,lPos);

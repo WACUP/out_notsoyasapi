@@ -356,14 +356,14 @@ void flush(int t)
   
 int getoutputtime(void)
 {
-  return ((ref_true != last_pause) ? GetTime(((PLAYER_STATE_PLAY <= player.state) ?
+  return (int)((ref_true != last_pause) ? GetTime(((PLAYER_STATE_PLAY <= player.state) ?
 		  PLAYER_SEND(&player, PlayerGetTime) : 0)) - start_t + w_offset : w_offset);
 }
 
 int getwrittentime(void)
 {
   const int t=srate*numchan;
-  int ms=writtentime;
+  int ms=(int)writtentime;
 
   if (t) {
     int l = ms%t;
@@ -373,7 +373,7 @@ int getwrittentime(void)
 
     ms/=(bps/8);
 
-    ms += w_offset;
+    ms += (int)w_offset;
   }
    return ms;
 }

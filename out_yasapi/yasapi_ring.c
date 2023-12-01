@@ -75,7 +75,7 @@ DWORD RingCreate(Ring *pRing, SIZE_T dwSize, SIZE_T nShift)
   pRing->pMax=pRing->pRep+dwSize;
   RingReset(pRing);
 
-  return dwSize;
+  return (DWORD)dwSize;
 // cleanup:
   //YA_FREE(pRing->pRep);
 rep:
@@ -93,7 +93,7 @@ void RingDestroy(Ring *pRing)
 
 int RingGetSize(const Ring *pRing)
 {
-  return pRing->pMax-pRing->pRep;
+  return (int)(pRing->pMax-pRing->pRep);
 }
 
 void RingReset(Ring *pRing)
@@ -152,7 +152,7 @@ int RingRealloc(Ring *pRing, SIZE_T uSize)
     } while (uBufSize<uSize);
 
     uSize=uBufSize;
-    dwAvailable=uSize-pRing->dwWritten;
+    dwAvailable= (DWORD)(uSize-pRing->dwWritten);
 
     DPRINTF(DEBUG,"  > %s (%d bytes) <\n",__func__,uSize);
 
@@ -166,8 +166,8 @@ int RingRealloc(Ring *pRing, SIZE_T uSize)
     // are we un-wrapped?
     if (pRing->pTail<pRing->pHead) {
       // yes, we are.
-      dwOffs1=pRing->pTail-pRing->pRep;
-      dwOffs2=pRing->pHead-pRing->pRep;
+      dwOffs1= (DWORD)(pRing->pTail-pRing->pRep);
+      dwOffs2= (DWORD)(pRing->pHead-pRing->pRep);
 
       pTail=pRep+dwOffs1;
       pHead=pRep+dwOffs2;
@@ -187,8 +187,8 @@ int RingRealloc(Ring *pRing, SIZE_T uSize)
     }
     else if (pRing->pHead<pRing->pTail||0<pRing->dwWritten) {
       // no, we are wrapped.
-      dwOffs1=pRing->pHead-pRing->pRep;
-      dwOffs2=pRing->pMax-pRing->pTail;
+      dwOffs1=(DWORD)(pRing->pHead-pRing->pRep);
+      dwOffs2=(DWORD)(pRing->pMax-pRing->pTail);
 
       pHead=pRep+dwOffs1;
 
@@ -254,7 +254,7 @@ consistency1:
 int RingReallocAvailable(Ring *pRing, SIZE_T dwAvailable)
 {
   // transform into target units.
-  dwAvailable=RingTargetSize(pRing,dwAvailable);
+  dwAvailable=RingTargetSize(pRing,(const DWORD)dwAvailable);
 
   return RingRealloc(pRing,pRing->dwWritten+dwAvailable);
 }
@@ -282,7 +282,7 @@ static DWORD RingWriteUnwrapped(Ring *pRing, RingWriteConfig *pc)
 
   RING_CONSISTENCY(pRing,pc->dwTargetSize,__func__, __LINE__,NULL,consistency);
 
-  return pc->dwSourceSize;
+    return (DWORD)pc->dwSourceSize;
   }
 // cppcheck-suppress unusedLabelConfiguration  
 consistency:
@@ -315,7 +315,7 @@ static DWORD RingWriteWrapped(Ring *pRing, RingWriteConfig *pc)
   DWORD dwTargetSize;
   DWORD dwSourceSize;
 
-  if (0<(dwTargetSize=pRing->pMax-pRing->pHead)) {
+  if (0<(dwTargetSize=(DWORD)(pRing->pMax-pRing->pHead))) {
     dwSourceSize=RingSourceSize(pRing,dwTargetSize);
 
     if (pRing->pHead<pRing->pRep||pRing->pMax<pRing->pHead) {
@@ -336,7 +336,7 @@ static DWORD RingWriteWrapped(Ring *pRing, RingWriteConfig *pc)
   else
     dwTargetSize=0;
 
-  if (0<(dwTargetSize=pc->dwTargetSize-dwTargetSize)) {
+  if (0<(dwTargetSize=(DWORD)(pc->dwTargetSize-dwTargetSize))) {
     dwSourceSize=RingSourceSize(pRing,dwTargetSize);
 
     if (pRing->pMax<pRing->pRep+dwTargetSize) {
@@ -357,7 +357,7 @@ static DWORD RingWriteWrapped(Ring *pRing, RingWriteConfig *pc)
 
   RING_CONSISTENCY(pRing,pc->dwTargetSize,__func__, __LINE__,NULL,consistency);
 
-  return pc->dwSourceSize;
+  return (DWORD)pc->dwSourceSize;
 // cppcheck-suppress unusedLabelConfiguration
 consistency:
 range2:
@@ -403,7 +403,7 @@ DWORD RingWrite(Ring *pRing, LPCSTR pData, SIZE_T dwSize)
   RingWriteConfig c={
     pData,                    // LPCSTR pData;
     dwSize,                   // SIZE_T dwSourceSize;
-    RingTargetSize(pRing,dwSize),
+    RingTargetSize(pRing,(const DWORD)dwSize),
                               // SIZE_T dwTargetSize;
   };
 
@@ -411,7 +411,7 @@ DWORD RingWrite(Ring *pRing, LPCSTR pData, SIZE_T dwSize)
 
   if (pRing->dwAvailable<c.dwTargetSize) {
     c.dwTargetSize=pRing->dwAvailable;
-    c.dwSourceSize=RingSourceSize(pRing,c.dwTargetSize);
+    c.dwSourceSize=RingSourceSize(pRing,(const DWORD)c.dwTargetSize);
   }
 
   if (0<c.dwTargetSize) {
@@ -457,7 +457,7 @@ DWORD RingWrite(Ring *pRing, LPCSTR pData, SIZE_T dwSize)
 
   RING_CONSISTENCY(pRing,0,__func__, __LINE__,NULL,consistency2);
 
-  return c.dwSourceSize;
+  return (DWORD)c.dwSourceSize;
 // cppcheck-suppress unusedLabel
 consistency2:
 overflow:
@@ -492,7 +492,7 @@ static DWORD RingReadUnwrappedEx(Ring *pRing, RingReadConfig *pc)
         consistency);
   }
 
-  return pc->dwSize;
+  return (DWORD)pc->dwSize;
 // cppcheck-suppress unusedLabel
 consistency:
 range:
@@ -501,11 +501,11 @@ range:
 
 static DWORD RingReadWrappedEx(Ring *pRing, RingReadConfig *pc)
 {
-  DWORD dwOffs1=pRing->pMax-pRing->pTail;
-  DWORD dwOffs2=pRing->pHead-pRing->pRep;
+  DWORD dwOffs1=(DWORD)(pRing->pMax-pRing->pTail);
+  DWORD dwOffs2=(DWORD)(pRing->pHead-pRing->pRep);
   DWORD dwCopySize;
 
-  dwCopySize=pc->dwSize<dwOffs1?pc->dwSize:dwOffs1;
+  dwCopySize=(DWORD)(pc->dwSize<dwOffs1?pc->dwSize:dwOffs1);
 
   if (RING_COPY&pc->uFlags) {
     if (pc->pData<pc->pRep||pc->pMax<pc->pData+dwCopySize) {
@@ -531,7 +531,7 @@ static DWORD RingReadWrappedEx(Ring *pRing, RingReadConfig *pc)
 
   // is there something left to read?
   if (dwCopySize<pc->dwSize) {
-    if (dwOffs2<(dwCopySize=pc->dwSize-dwCopySize)) {
+    if (dwOffs2<(dwCopySize=(DWORD)(pc->dwSize-dwCopySize))) {
       pc->pError->Cleanup(pc->pError);
       DMESSAGEV("%s: overread",__func__);
       goto overread;
@@ -561,7 +561,7 @@ static DWORD RingReadWrappedEx(Ring *pRing, RingReadConfig *pc)
     }
   }
 
-  return pc->dwSize;
+  return (DWORD)pc->dwSize;
 // cppcheck-suppress unusedLabel
 consistency2:
 range2:
@@ -631,7 +631,7 @@ DWORD RingReadEx(Ring *pRing, LPSTR pData, SIZE_T dwSize, UINT uFlags,
 
   RING_CONSISTENCY(pRing,0,__func__, __LINE__,pError,consistency2);
 
-  return dwSize;
+  return (DWORD)dwSize;
 // cppcheck-suppress unusedLabel
 consistency2:
 overread:
@@ -650,11 +650,17 @@ DWORD RingRead(Ring *pRing, LPSTR pData, SIZE_T dwSize, RingIOError *pError)
 void RingCopyMemory(PVOID *Client, PVOID Destination, const VOID *Source,
     SIZE_T Length)
 {
+  __try
+  {
   memcpy(
     Destination,              // _In_  PVOID Destination,
     Source,                   // _In_  const VOID *Source,
     Length                    // _In_  SIZE_T Length
   );
+  }
+  __except (EXCEPTION_EXECUTE_HANDLER)
+  {
+  }
 }
 
 #if defined (YA_DEBUG) // {

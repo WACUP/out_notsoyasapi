@@ -38,6 +38,9 @@
     <None Include="rc\text1.bin">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="out_notsoyasapi.def">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="rc\out_notsoyasapi.rc">

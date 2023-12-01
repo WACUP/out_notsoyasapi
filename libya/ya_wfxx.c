@@ -32,9 +32,9 @@ void WFXXSetup(WAVEFORMATEXTENSIBLE *pwfxx, int samplerate, int numchannels,
   WAVEFORMATEX *pwfx=&pwfxx->Format;
 
   pwfx->wFormatTag=WAVE_FORMAT_EXTENSIBLE;
-  pwfx->nChannels=numchannels;
+  pwfx->nChannels=(WORD)numchannels;
   pwfx->nSamplesPerSec=samplerate;
-  pwfx->wBitsPerSample=bitspersamp;
+  pwfx->wBitsPerSample=(WORD)bitspersamp;
   pwfx->cbSize=(sizeof *pwfxx)-(sizeof *pwfx);
   ////
   pwfx->nBlockAlign=pwfx->nChannels*(pwfx->wBitsPerSample>>3);

@@ -269,11 +269,11 @@ int TimeMigrate(Time *pTime, Connection *pConnect)
     }
 
     // cppcheck-suppress overlappingWriteUnion
-    pGapless->u64Position=pGapless->xSeconds*pTime->u64Frequency+0.5;
+    pGapless->u64Position=(UINT64)(pGapless->xSeconds*pTime->u64Frequency+0.5);
     // cppcheck-suppress overlappingWriteUnion
-    pPause->u64Position=pPause->xSeconds*pTime->u64Frequency+0.5;
+    pPause->u64Position=(UINT64)(pPause->xSeconds*pTime->u64Frequency+0.5);
     // cppcheck-suppress overlappingWriteUnion
-    pCurrent->u64Position=pCurrent->xSeconds*pTime->u64Frequency+0.5;
+    pCurrent->u64Position=(UINT64)(pCurrent->xSeconds*pTime->u64Frequency+0.5);
   }
 
   //difference=*pCurrent;

@@ -49,10 +49,10 @@ extern "C" void SetupWasabiServices(Out_Module *_plugin)
 		if (WASABI_API_LNG == NULL)
 		{
 			ServiceBuild(WASABI_API_SVC, WASABI_API_LNG, languageApiGUID);
-			WASABI_API_START_LANG(_plugin->hDllInstance, OutNotSoYASAPILangGUID);
 
-			StringCchPrintf(pluginTitle, ARRAYSIZE(pluginTitle), WASABI_API_LNGSTRINGW(IDS_PLUGIN_NAME), TEXT(PLUGIN_VERSION));
-			_plugin->description = (char*)pluginTitle;
+			WASABI_API_START_LANG_DESC(WASABI_API_LNG, _plugin->hDllInstance,
+									   OutNotSoYASAPILangGUID, IDS_PLUGIN_NAME,
+									   TEXT(PLUGIN_VERSION), &_plugin->description);
 		}
 
 		if (WASABI_API_MEMMGR == NULL)

@@ -33,7 +33,7 @@ static int vmessagea(const char *format, va_list ap)
                                 // _In_      UINT uType
   );
 
-  return wp-buf;
+  return (int)(wp-buf);
 }
 
 static int vmessagew(const wchar_t *format, va_list ap)
@@ -51,7 +51,7 @@ static int vmessagew(const wchar_t *format, va_list ap)
                                 // _In_      UINT uType
   );
 
-  return wp-buf;
+  return (int)(wp-buf);
 }
 
 void messagea(int force, HRESULT x, HRESULT *y, const char *m, ...)

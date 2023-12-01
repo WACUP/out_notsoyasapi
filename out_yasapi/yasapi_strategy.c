@@ -43,7 +43,7 @@ static HRESULT InitializePush(Player *pPlayer)
 
 static LONGLONG IntervalPush(Player *pPlayer, LONGLONG time)
 {
-  return MulDiv(time,1,2);
+  return MulDiv((int)time,1,2);
 }
 
 static void SetTimerPush(Player *pPlayer, LONGLONG time, BOOL bFlush)
@@ -167,11 +167,11 @@ static LONGLONG IntervalPull(Player *pPlayer, LONGLONG time)
 {
     switch (pPlayer->open.eShareMode) {
     case AUDCLNT_SHAREMODE_SHARED:
-      return MulDiv(time,1,2);
+      return MulDiv((int)time,1,2);
     case AUDCLNT_SHAREMODE_EXCLUSIVE:
       return time;
     default:
-      return MulDiv(time,1,2);
+      return MulDiv((int)time,1,2);
     }
 }
 

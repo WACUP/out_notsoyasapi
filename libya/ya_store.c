@@ -83,8 +83,10 @@ int StoreCreate(Store *pStore)
 // cleanup:
 //  CloseHandle(pStore->hAvailable);
 available:
+  if (pStore->hMutex) {
   CloseHandle(pStore->hMutex);
   pStore->hMutex=NULL;
+  }
 mutex:
   while (0<i) {
     --i;
@@ -99,11 +101,15 @@ void StoreDestroy(Store *pStore)
   int i;
 
   DPUTS(0,"  destroying store available semaphore\n");
+  if (pStore->hAvailable) {
   CloseHandle(pStore->hAvailable);
   pStore->hAvailable=NULL;
+  }
   DPUTS(0,"  destroying store mutex\n");
+  if (pStore->hMutex) {
   CloseHandle(pStore->hMutex);
   pStore->hMutex=NULL;
+  }
 
   i=STORE_SIZE;
 

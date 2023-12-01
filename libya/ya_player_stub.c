@@ -104,8 +104,10 @@ create_thread:
   /////////////////////////////////////////////////////////////////////////////
   return pStub;
 run:
+  if (pStub->hThread) {
   CloseHandle(pStub->hThread);
   pStub->hThread=NULL;
+  }
 thread:
   StoreDestroy(&pStub->store);
 store:
@@ -125,11 +127,13 @@ void PlayerStubDestroy(PlayerStub *pStub)
 #else // } {
     PLAYER_STUB_SEND(pStub,1,pStub->lpVtbl->GetStamp(pStub->pPlayer),PlayerPing);
 #endif // }
+    if (pStub->hThread) {
     DPUTS(0,"  waiting for thread to die\n");
     WaitForSingleObject(pStub->hThread,INFINITE);
     DPUTS(0,"  destroying thread\n");
     CloseHandle(pStub->hThread);
 	pStub->hThread=NULL;
+    }
     DPUTS(0,"  destroying store\n");
     StoreDestroy(&pStub->store);
     DPUTS(0,"  destroying queue\n");
@@ -242,7 +246,7 @@ int PlayerStubSendV(PlayerStub *pStub, int exit, int stamp,
   /*pRequest=*/QueueLockWrite(pQueue,pResult,exit,stamp,pPlayerProc,ap);
 #endif // }
   QueueUnlockWrite(pQueue,pResult);
-    state=pResult->state;
+    state=(int)pResult->state;
   StorePut(pStore,pResult);
 
   return state;

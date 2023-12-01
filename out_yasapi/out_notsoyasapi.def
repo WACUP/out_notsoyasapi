@@ -1,0 +1,6 @@
+LIBRARY	"out_notsoyasapi"
+EXPORTS
+winampGetOutModule @1
+winampGetOutPrefs @2
+winampGetOutModeChange @3
+winampUninstallPlugin @4

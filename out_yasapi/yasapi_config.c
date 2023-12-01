@@ -113,12 +113,12 @@ static void SetPull(HWND hDlg, int bPull)
 
 static int GetShareMode(HWND hDlg)
 {
-  return SendDlgItemMessage(hDlg,IDC_COMBOBOX_SHAREMODE,CB_GETCURSEL,0,0);
+  return (int)SendDlgItemMessage(hDlg,IDC_COMBOBOX_SHAREMODE,CB_GETCURSEL,0,0);
 }
 
 static int GetPull(HWND hDlg)
 {
-  return SendDlgItemMessage(hDlg,IDC_COMBOBOX_PULL,CB_GETCURSEL,0,0);
+  return (int)SendDlgItemMessage(hDlg,IDC_COMBOBOX_PULL,CB_GETCURSEL,0,0);
 }
 
 static int GetAutoConvertPCM(HWND hDlg)
@@ -470,11 +470,9 @@ static void ConfigDeviceDelete(ConfigDevice *pConfigDevice)
 // set progress bar.
 static void ConfigUpdateProgress(HWND hWnd, WORD wParam)
 {
-  LRESULT lMin=SendMessage(hWnd,PBM_GETRANGE,TRUE,0);
-  LRESULT lMax=SendMessage(hWnd,PBM_GETRANGE,FALSE,0);
-  WORD wPos=lMin+MulDiv(lMax-lMin,wParam,USHRT_MAX);
-
-  SendMessage(hWnd,PBM_SETPOS,wPos,0);
+  const LRESULT lMin=SendMessage(hWnd,PBM_GETRANGE,TRUE,0),
+                lMax=SendMessage(hWnd,PBM_GETRANGE,FALSE,0);
+  SendMessage(hWnd,PBM_SETPOS,(lMin+MulDiv((int)(lMax-lMin),wParam,USHRT_MAX)),0);
 }
 
 static void ConfigSyncVisualization(HWND hDlg, Config *pConfig)
@@ -1045,12 +1043,12 @@ void ConfigSave(Config *pConfig)
 	if (pConfig != NULL) {
 		Player *pPlayer = pConfig->pPlayer;
 		HWND hComboBox = GetDlgItem(pConfig->hDlg, IDC_COMBOBOX_DEVICE);
-		DWORD cDevice = SendMessage(hComboBox, CB_GETCURSEL, 0, 0);
+		DWORD cDevice = (DWORD)SendMessage(hComboBox, CB_GETCURSEL, 0, 0);
 		if (cDevice != CB_ERR) {
 		ConfigDevice *pConfigDevice = (ConfigDevice *)SendMessage(hComboBox,
 			CB_GETITEMDATA, cDevice, 0);
 
-			if (pConfigDevice && (pConfigDevice != CB_ERR)) {
+			if (pConfigDevice && (pConfigDevice != (ConfigDevice *)CB_ERR)) {
 			// should be called before the lock in order to not dead-lock this window.
 			ConfigGet(pConfig);
 
@@ -1107,16 +1105,16 @@ static void ConfigOnSelChangeComboBox(HWND hDlg,Config *pConfig,
     HWND hComboBox)
 {
   Player *pPlayer=pConfig->pPlayer;
-  DWORD cDevice=SendMessage(hComboBox,CB_GETCURSEL,0,0);
+  DWORD cDevice=(DWORD)SendMessage(hComboBox,CB_GETCURSEL,0,0);
   if (cDevice == CB_ERR)
     goto label;
 
   ConfigDevice *pConfigDevice=(ConfigDevice *)SendMessage(hComboBox,
       CB_GETITEMDATA,cDevice,0);
-  if (pConfigDevice == CB_ERR)
+  if (pConfigDevice == (ConfigDevice *)CB_ERR)
     goto label;
 
-  DWORD nLen=SendMessage(hComboBox,CB_GETLBTEXTLEN,cDevice,0);
+  DWORD nLen=(DWORD)SendMessage(hComboBox,CB_GETLBTEXTLEN,cDevice,0);
   wchar_t *pwszLabel;
 
   if (!pConfigDevice) {

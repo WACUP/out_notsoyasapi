@@ -64,7 +64,7 @@ int PlayerCreate(Player *pPlayer, HINSTANCE hModule, const wchar_t *path)
   DPRINTF(0,"  > %s <\n",__func__);
 
   /////////////////////////////////////////////////////////////////////////////
-  memset(pPlayer,0,sizeof *pPlayer);
+  memset(pPlayer,0,sizeof(pPlayer));
   pPlayer->hDlgConfig=NULL;
 
   /////////////////////////////////////////////////////////////////////////////
@@ -436,7 +436,7 @@ retry:
     DPRINTF(0,"    choosen: %I64d hns\n",hnsDevicePeriod);
 
     if (1.0<qShareSize) {
-      hnsDevicePeriod=qShareSize*hnsDevicePeriod+0.5;
+      hnsDevicePeriod=(REFERENCE_TIME)(qShareSize*hnsDevicePeriod+0.5);
       DPRINTF(0,"  device period scaled by %.02f"
           " (device period: %I64d)\n",
           qShareSize,hnsDevicePeriod);
@@ -483,7 +483,7 @@ retry:
         //    The buffer size is (REFERENCE_TIME)((10000.0 * 1000 /
         //    WAVEFORMATEX.nSamplesPerSecond * nFrames) + 0.5). In this
         //    formula, nFrames is the buffer size retrieved by GetBufferSize.
-        hnsDevicePeriod=YASAPI_FRAMES_TIMER(pPlayer->connect.uFrames,pwfx)+0.5;
+        hnsDevicePeriod=(REFERENCE_TIME)(YASAPI_FRAMES_TIMER(pPlayer->connect.uFrames,pwfx)+0.5);
 
 #if 0 // {
         // save hnsDevicePeriod into device options.
@@ -780,10 +780,10 @@ int PlayerCreateRing(Player *pPlayer)
   DPRINTF(0,"  > %s <\n",__func__);
 
   // setup the ring buffer ////////////////////////////////////////////////////
-  pConnect->uFramesMin=qRingFill*pConnect->uFrames+0.5;
+  pConnect->uFramesMin=(UINT32)(qRingFill*pConnect->uFrames+0.5);
   DPRINTF(0,"  START AUDIO CLIENT: %d frames\n",pConnect->uFramesMin);
 
-  uBufSize=qRingSize*pConnect->uFrames+0.5;
+  uBufSize=(UINT32)(qRingSize*pConnect->uFrames+0.5);
   // "nBlockAlign" reflects "bMono2Stereo", i.e. is in target units.
   uBufSize*=pwfx->nBlockAlign;
 
@@ -834,11 +834,11 @@ int PlayerReallocRing(Player *pPlayer)
   DPRINTF(0,"  > %s <\n",__func__);
 
   // setup the ring buffer ////////////////////////////////////////////////////
-  pPlayer->connect.uFramesMin=qRingFill*pPlayer->connect.uFrames+0.5;
+  pPlayer->connect.uFramesMin=(UINT32)(qRingFill*pPlayer->connect.uFrames+0.5);
   DPRINTF(0,"  START AUDIO CLIENT: %d frames\n",
       pPlayer->connect.uFramesMin);
 
-  uBufSize=qRingSize*pPlayer->connect.uFrames+0.5;
+  uBufSize=(UINT32)(qRingSize*pPlayer->connect.uFrames+0.5);
   // "nBlockAlign" reflects "bMono2Stereo".
   uBufSize*=pwfx->nBlockAlign;
 
@@ -1174,7 +1174,7 @@ int PlayerCanWrite(Player *pPlayer, Request *pRequest)
     if (pPlayer->open.dwBufSize<pPlayer->open.ring.dwWritten)
       dwAvailable=0;
     else
-      dwAvailable=pPlayer->open.dwBufSize-pPlayer->open.ring.dwWritten;
+      dwAvailable=(DWORD)(pPlayer->open.dwBufSize-pPlayer->open.ring.dwWritten);
 #else // } {
     dwAvailable=pPlayer->open.ring.dwAvailable;
 #endif // }
@@ -1198,7 +1198,7 @@ int PlayerGetWriteSize(Player *pPlayer, UINT32 uFramesPadding,
   	pc->uFramesWrite-=uFramesPadding;
 
   pc->dwSize=pc->uFramesWrite*pwfx->nBlockAlign;
-  pc->dwWrite=pPlayer->open.ring.dwWritten;
+  pc->dwWrite=(DWORD)pPlayer->open.ring.dwWritten;
 
   if (pc->dwWrite<pc->dwSize) {
     if (bUnderflow&&pPlayer->state<PLAYER_STATE_DRAIN_1) {
@@ -1276,8 +1276,8 @@ int PlayerPlay(Player *pPlayer, UINT32 uFramesPadding, int bUnderflow)
   }
 
   if (PlayerGetDlgConfig(pPlayer)) {
-    wRing=MulDiv(USHRT_MAX,pRing->dwWritten,pRing->pMax-pRing->pRep);
-    wShared=MulDiv(USHRT_MAX,uFramesPadding,pConnect->uFrames);
+    wRing=(WORD)MulDiv(USHRT_MAX,(int)pRing->dwWritten,(int)(pRing->pMax-pRing->pRep));
+    wShared=(WORD)MulDiv(USHRT_MAX,uFramesPadding,pConnect->uFrames);
     PlayerPostUpdate(pPlayer,wRing,wShared);
   }
 
@@ -1396,7 +1396,7 @@ int PlayerTryStart(Player *pPlayer, int bUnderflow)
   const Disconnect *pDisconnect=pPlayer->open.pDisconnect;
   const WAVEFORMATEX *pwfx=&pPlayer->open.wfxx.Format;
   const Ring *pRing=&pPlayer->open.ring;
-  UINT32 uFramesRingWritten=pRing->dwWritten/pwfx->nBlockAlign;
+  UINT32 uFramesRingWritten=(UINT32)pRing->dwWritten/pwfx->nBlockAlign;
   HANDLE hTask=NULL;
   IAudioClient *pClient = NULL;
   UINT32 uFramesPadding;
@@ -1594,7 +1594,7 @@ int PlayerFlush(Player *pPlayer, Request *pRequest)
     }
 
     PlayerKill(pPlayer,1,PLAYER_STATE_CONNECTED);
-    return ms + 0.5;
+    return (int)(ms + 0.5);
   }
   else
     return 0;
@@ -1704,7 +1704,7 @@ int PlayerPause(Player *pPlayer, Request *pRequest)
 #endif // }
   }
 
-  return ms + 0.5;
+  return (int)(ms + 0.5);
 time2:
 get2:
 get1:
@@ -1745,7 +1745,7 @@ int PlayerGetTime(Player *pPlayer, Request *pRequest)
   }
 null:
 invalid:
-  return ms + 0.5;
+  return (int)(ms + 0.5);
 time:
 state:
   return -1;

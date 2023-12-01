@@ -28,7 +28,7 @@ int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,
 
   DPRINTF(0,"  > %s <\n",__func__);
 
-  if (!pcstrId||!pcstrId[0]) {
+  if (!(pcstrId > (LPWSTR)65536)||!pcstrId[0]) {
     // for some WINE based setups this may not be working
     // so we'll abort instead of continuing & crashing...
     if (!pEnumerator) {
