@@ -786,7 +786,7 @@ static PageVMT *GetDeviceVMT(void)
 static INT_PTR CALLBACK BuffersProc(HWND hDlg, UINT uMsg, WPARAM wParam,
     LPARAM lParam)
 {
-  Config *pConfig=(Config *)GetWindowLongPtrW(hDlg,GWLP_USERDATA);
+  const Config *pConfig=(const Config *)GetWindowLongPtrW(hDlg,GWLP_USERDATA);
 
   switch (uMsg) {
   case WM_INITDIALOG:

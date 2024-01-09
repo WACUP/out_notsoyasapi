@@ -195,7 +195,7 @@ BEGIN
             VALUE "FileDescription", "Output Plug-in"
             VALUE "FileVersion", "1.4.16.0"
             VALUE "InternalName", "out_notsoyasapi.dll"
-            VALUE "LegalCopyright", "Copyright © 2015-2016 Peter Belkner, Not So YASAPI modifications by Darren Owen aka DrO © 2016-2023"
+            VALUE "LegalCopyright", "Copyright © 2015-2016 Peter Belkner, Not So YASAPI modifications by Darren Owen aka DrO © 2016-2024"
             VALUE "OriginalFilename", "out_notsoyasapi.dll"
             VALUE "ProductName", "Not So YASAPI"
             VALUE "ProductVersion", "1.4.16.0"

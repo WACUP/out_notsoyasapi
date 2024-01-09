@@ -64,8 +64,7 @@ int PlayerCreate(Player *pPlayer, HINSTANCE hModule, const wchar_t *path)
   DPRINTF(0,"  > %s <\n",__func__);
 
   /////////////////////////////////////////////////////////////////////////////
-  memset(pPlayer,0,sizeof(pPlayer));
-  pPlayer->hDlgConfig=NULL;
+  memset(pPlayer,0,sizeof(*pPlayer));
 
   /////////////////////////////////////////////////////////////////////////////
   pPlayer->options.path=path;

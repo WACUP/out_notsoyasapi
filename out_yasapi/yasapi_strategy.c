@@ -163,7 +163,7 @@ static HRESULT InitializePull(Player *pPlayer)
   }
 }
 
-static LONGLONG IntervalPull(Player *pPlayer, LONGLONG time)
+static LONGLONG IntervalPull(const Player *pPlayer, LONGLONG time)
 {
     switch (pPlayer->open.eShareMode) {
     case AUDCLNT_SHAREMODE_SHARED:
@@ -184,7 +184,7 @@ static void SetTimerPull(Player *pPlayer, LONGLONG time, BOOL bFlush)
   }
 }
 
-static BOOL NeedDevicePeriodPull(Player *pPlayer)
+static BOOL NeedDevicePeriodPull(const Player *pPlayer)
 {
   switch (pPlayer->open.eShareMode) {
   case AUDCLNT_SHAREMODE_SHARED:
@@ -196,7 +196,7 @@ static BOOL NeedDevicePeriodPull(Player *pPlayer)
   }
 }
 
-static BOOL NeedPaddingPull(Player *pPlayer)
+static BOOL NeedPaddingPull(const Player *pPlayer)
 {
   switch (pPlayer->open.eShareMode) {
   case AUDCLNT_SHAREMODE_SHARED:
