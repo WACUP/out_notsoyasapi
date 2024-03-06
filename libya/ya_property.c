@@ -41,7 +41,7 @@ void PropertiesSave(const Property *pProperty, const PropertyIOConfig *c)
 ///////////////////////////////////////////////////////////////////////////////
 void PropertySaveInt(const wchar_t *group, const wchar_t *key, int n, const wchar_t *path)
 {
-  wchar_t buf[YA_PROPERTY_SIZE] = {0};
+  wchar_t buf[YA_PROPERTY_SIZE]={0};
 
   I2WStr(n, buf, ARRAYSIZE(buf));
 
@@ -73,7 +73,7 @@ static void IntTypeSave(const Property *pProperty, const PropertyIOConfig *c)
 {
   PropertySaveInt(c->group,pProperty->key,
                   PROPERTY_INT(pProperty,c->pData),
-      c->path);
+                  c->path);
 }
 
 const PropertyType gcIntType={
@@ -85,8 +85,8 @@ const PropertyType gcIntType={
 extern float safe_w_to_f(LPCWSTR str);
 static void DoubleTypeLoad(const Property *pProperty, PropertyIOConfig *c)
 {
-  wchar_t set[YA_PROPERTY_SIZE] = {0};
-  wchar_t get[YA_PROPERTY_SIZE] = {0};
+  wchar_t set[YA_PROPERTY_SIZE]={0};
+  wchar_t get[YA_PROPERTY_SIZE]={0};
 
   // cppcheck-suppress invalidPointerCast
   StringCchPrintf(set,YA_PROPERTY_SIZE,L"%f",PROPERTY_DOUBLE(pProperty,c->pDefault));
@@ -116,7 +116,7 @@ static void DoubleTypeLoad(const Property *pProperty, PropertyIOConfig *c)
 static void DoubleTypeSave(const Property *pProperty,
     const PropertyIOConfig *c)
 {
-  wchar_t buf[YA_PROPERTY_SIZE] = {0};
+  wchar_t buf[YA_PROPERTY_SIZE]={0};
 
   // cppcheck-suppress invalidPointerCast
   StringCchPrintf(buf,YA_PROPERTY_SIZE,L"%f",PROPERTY_DOUBLE(pProperty,c->pData));

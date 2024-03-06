@@ -154,7 +154,7 @@ int ResultCreate(Result *pResult)
   /////////////////////////////////////////////////////////////////////////////
   return 0;
 // cleanup:
-  //CloseHandle(pResult->hEvent);
+// CloseHandle(pResult->hEvent);
 event:
   return -1;
 }
@@ -422,7 +422,7 @@ int QueueCreate(Queue *pQueue)
   /////////////////////////////////////////////////////////////////////////////
   return 0;
 // cleanup:
-  //CloseHandle(pQueue->hMutex);
+// CloseHandle(pQueue->hMutex);
 mutex:
   CloseHandle(pQueue->hWritten);
 written:

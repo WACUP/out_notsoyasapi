@@ -263,24 +263,24 @@ int RingReallocAvailable(Ring *pRing, SIZE_T dwAvailable)
 static DWORD RingWriteUnwrapped(Ring *pRing, RingWriteConfig *pc)
 {
   if (pRing && pc) {
-  if (0<pc->dwSourceSize) {
-    if (pRing->pHead<pRing->pRep||pRing->pMax<pRing->pHead+pc->dwTargetSize) {
-      DMESSAGE("write operation out of range");
-      goto range;
+    if (0<pc->dwSourceSize) {
+      if (pRing->pHead<pRing->pRep||pRing->pMax<pRing->pHead+pc->dwTargetSize) {
+        DMESSAGE("write operation out of range");
+        goto range;
+      }
+
+      pRing->Copy(
+        pRing->pClient,
+        pRing->pHead,     // _In_  PVOID Destination,
+        pc->pData,        // _In_  const VOID *Source,
+        pc->dwTargetSize  // _In_  SIZE_T Length
+      );
+
+      pc->pData+=pc->dwSourceSize;
+      pRing->pHead+=pc->dwTargetSize;
     }
 
-    pRing->Copy(
-      pRing->pClient,
-      pRing->pHead,     // _In_  PVOID Destination,
-      pc->pData,        // _In_  const VOID *Source,
-      pc->dwTargetSize  // _In_  SIZE_T Length
-    );
-
-    pc->pData+=pc->dwSourceSize;
-    pRing->pHead+=pc->dwTargetSize;
-  }
-
-  RING_CONSISTENCY(pRing,pc->dwTargetSize,__func__, __LINE__,NULL,consistency);
+    RING_CONSISTENCY(pRing,pc->dwTargetSize,__func__, __LINE__,NULL,consistency);
 
     return (DWORD)pc->dwSourceSize;
   }
@@ -447,8 +447,8 @@ DWORD RingWrite(Ring *pRing, LPCSTR pData, SIZE_T dwSize)
     }
 
 	if (pRing) {
-    pRing->dwWritten+=c.dwTargetSize;
-    pRing->dwAvailable-=c.dwTargetSize;
+		pRing->dwWritten+=c.dwTargetSize;
+		pRing->dwAvailable-=c.dwTargetSize;
 	}
 	else {
 		goto consistency1;
@@ -652,11 +652,11 @@ void RingCopyMemory(PVOID *Client, PVOID Destination, const VOID *Source,
 {
   __try
   {
-  memcpy(
-    Destination,              // _In_  PVOID Destination,
-    Source,                   // _In_  const VOID *Source,
-    Length                    // _In_  SIZE_T Length
-  );
+    memcpy(
+      Destination,              // _In_  PVOID Destination,
+      Source,                   // _In_  const VOID *Source,
+      Length                    // _In_  SIZE_T Length
+    );
   }
   __except (EXCEPTION_EXECUTE_HANDLER)
   {

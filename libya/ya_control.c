@@ -30,8 +30,8 @@ extern LPWSTR GetLangString(const UINT id);
 HWND ControlCreateToolTip(HWND hDlg/*, HINSTANCE hInstance*/)
 {
   HWND hwndTip = CreateWindowExW(
-    0,                  // _In_     DWORD     dwExStyle,
-    TOOLTIPS_CLASSW,    // _In_opt_ LPCTSTR   lpClassName,
+    WS_EX_NOPARENTNOTIFY | WS_EX_TOPMOST,  // _In_     DWORD     dwExStyle,
+    TOOLTIPS_CLASS,     // _In_opt_ LPCTSTR   lpClassName,
     NULL,               // _In_opt_ LPCTSTR   lpWindowName,
     WS_POPUP|TTS_ALWAYSTIP/*|TTS_BALLOON*/,
                         // _In_     DWORD     dwStyle,

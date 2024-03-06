@@ -391,7 +391,7 @@ retry:
      if (pPlayer->options.device.bSRCDefaultQuality) {
 	   // cppcheck-suppress ConfigurationNotChecked
        dwStreamFlags|=AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY;
-  }
+	 }
   }
 
   pPlayer->open.dwStreamFlags=dwStreamFlags;
@@ -441,7 +441,7 @@ retry:
           qShareSize,hnsDevicePeriod);
     }
   }
-    pPlayer->open.hnsDevicePeriod=hnsDevicePeriod;
+  pPlayer->open.hnsDevicePeriod=hnsDevicePeriod;
 
   // initialize the audio client //////////////////////////////////////////////
   DPUTS(0,"  going to initialize\n");

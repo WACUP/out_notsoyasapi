@@ -83,13 +83,13 @@ static void PlayerDestroyRun(Player *pPlayer)
   // so we'll abort instead of continuing & crashing...
   if (pEnumerator) {
 #if defined (YASAPI_NOTIFY) // {
-  /////////////////////////////////////////////////////////////////////////////
-  DPUTS(0,"  removing notify\n");
-  PlayerRemoveNotify(pPlayer);
+    /////////////////////////////////////////////////////////////////////////////
+    DPUTS(0,"  removing notify\n");
+    PlayerRemoveNotify(pPlayer);
 #endif // }
 
-  DPUTS(0,"  destroying device enumerator\n");
-  pEnumerator->lpVtbl->Release(pEnumerator);
+    DPUTS(0,"  destroying device enumerator\n");
+    pEnumerator->lpVtbl->Release(pEnumerator);
   }
 }
 

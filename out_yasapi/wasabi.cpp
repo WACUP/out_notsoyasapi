@@ -100,7 +100,7 @@ extern "C" LPWSTR GetTextResource(const UINT id, LPWSTR* text)
 
 void __cdecl about(HWND hWndParent)
 {
-	wchar_t message[4096] = {0};
+	wchar_t message[4096] = { 0 };
     LPWSTR text = GetTextResource(IDR_ABOUT_GZ, &text);
 
 	StringCchPrintf(message, ARRAYSIZE(message), text, TEXT(PLUGIN_VERSION),

@@ -870,14 +870,14 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
 
     if (!cDevice) {
       uLen=0;
-      uLen+=(UINT)wcslen(L"Default Device -- ");
+      uLen+= 18/*/(UINT)wcslen(L"Default Device -- ")/**/;
       uLen+=(UINT)wcslen(pConfigDevice->vName.pwszVal);
 
       if (NULL==(pwszLabel=YA_MALLOC((uLen+1)*(sizeof *pwszLabel))))
         goto label;
 
       StringCchCopy(pwszLabel,uLen,L"Default Device -- ");
-	  labelLen=(UINT)wcslen(pwszLabel);
+	  labelLen=18/*/(UINT)wcslen(pwszLabel)/**/;
 	  uLen-=labelLen;
       StringCchCopy(pwszLabel+labelLen,uLen,pConfigDevice->vName.pwszVal);
     }
@@ -893,7 +893,7 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
 
     SendMessage(hComboBox,CB_SETITEMDATA,cDevice,(LPARAM)pConfigDevice);
 
-    if (0==cDevice&&0==pOptions->common.szId[0])
+    if (0==cDevice && 0==pOptions->common.szId[0])
       nDevice=cDevice+1;
     else if (0==wcscmp(pConfigDevice->pstrId,pOptions->common.szId))
       nDevice=cDevice+1;
@@ -912,7 +912,7 @@ static int ConfigInitPage(HWND hDlg, HWND hWndTab, Config *pConfig, int nPage)
   wchar_t buf[128]={0};
   PageTemplate *pTemplate=gaTemplates+nPage;
   Page *pPage=pConfig->aPages+nPage;
-  TCITEM tie = {0};
+  TCITEM tie={0};
   RECT rc={0};
 
   pPage->vmt=pTemplate->GetVMT();
@@ -1045,19 +1045,19 @@ void ConfigSave(Config *pConfig)
 		HWND hComboBox = GetDlgItem(pConfig->hDlg, IDC_COMBOBOX_DEVICE);
 		DWORD cDevice = (DWORD)SendMessage(hComboBox, CB_GETCURSEL, 0, 0);
 		if (cDevice != CB_ERR) {
-		ConfigDevice *pConfigDevice = (ConfigDevice *)SendMessage(hComboBox,
-			CB_GETITEMDATA, cDevice, 0);
+			ConfigDevice *pConfigDevice = (ConfigDevice *)SendMessage(hComboBox,
+													CB_GETITEMDATA, cDevice, 0);
 
 			if (pConfigDevice && (pConfigDevice != (ConfigDevice *)CB_ERR)) {
-			// should be called before the lock in order to not dead-lock this window.
-			ConfigGet(pConfig);
+				// should be called before the lock in order to not dead-lock this window.
+				ConfigGet(pConfig);
 
                 OptionsDeviceSave(&pPlayer->options.device,pConfigDevice->pstrId,
                                   pPlayer->options.path);
                 OptionsCommonSave(&pPlayer->options.common,0,pPlayer->options.path);
+			}
 		}
 	}
-}
 }
 
 void ConfigSaveSpecific(Config *pConfig)

@@ -138,19 +138,19 @@ void QueuePopEvent(Queue *pQueue)
 void QueueLockMutex(Queue *pQueue)
 {
   if (pQueue && pQueue->hMutex) {
-  WaitForSingleObjectEx(
-    pQueue->hMutex,   // _In_ HANDLE hHandle,
-    1000/*/INFINITE/**/,  // _In_ DWORD  dwMilliseconds,
-    TRUE/*/FALSE/**/      // _In_ BOOL   bAlertable
-  );
-}
+    WaitForSingleObjectEx(
+      pQueue->hMutex,       // _In_ HANDLE hHandle,
+      1000/*/INFINITE/**/,  // _In_ DWORD  dwMilliseconds,
+      TRUE/*/FALSE/**/      // _In_ BOOL   bAlertable
+    );
+  }
 }
 
 void QueueUnlockMutex(Queue *pQueue)
 {
   if (pQueue && pQueue->hMutex) {
-  ReleaseMutex(pQueue->hMutex);
-}
+    ReleaseMutex(pQueue->hMutex);
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -168,13 +168,13 @@ Request *QueueLock(Queue *pQueue, const QueueStrategy *pStrategy)
     memcpy(aHandles+1,pQueue->aHandles,pQueue->nEvents*(sizeof *aHandles));
 retry:
   if (pQueue)
-  dwCode=WaitForMultipleObjectsEx(
-    1+pQueue->nEvents,    // _In_       DWORD  nCount,
-    aHandles,             // _In_ const HANDLE *lpHandles,
-    FALSE,                // _In_       BOOL   bWaitAll,
-    INFINITE,             // _In_       DWORD  dwMilliseconds,
-    bAlertable            // _In_       BOOL   bAlertable
-  );
+    dwCode=WaitForMultipleObjectsEx(
+      1+pQueue->nEvents,    // _In_       DWORD  nCount,
+      aHandles,             // _In_ const HANDLE *lpHandles,
+      FALSE,                // _In_       BOOL   bWaitAll,
+      INFINITE,             // _In_       DWORD  dwMilliseconds,
+      bAlertable            // _In_       BOOL   bAlertable
+    );
   else
     return 0;
 
@@ -222,13 +222,13 @@ Request *QueueLock(Queue *pQueue, const QueueStrategy *pStrategy,
     ahHandles[nCount++]=hEvent;
 retry:
   if (pQueue)
-  dwCode=WaitForMultipleObjectsEx(
-    nCount,           // _In_       DWORD  nCount,
-    ahHandles,        // _In_ const HANDLE *lpHandles,
-    FALSE,            // _In_       BOOL   bWaitAll,
-    INFINITE,         // _In_       DWORD  dwMilliseconds,
-    bAlertable        // _In_       BOOL   bAlertable
-  );
+    dwCode=WaitForMultipleObjectsEx(
+      nCount,           // _In_       DWORD  nCount,
+      ahHandles,        // _In_ const HANDLE *lpHandles,
+      FALSE,            // _In_       BOOL   bWaitAll,
+      INFINITE,         // _In_       DWORD  dwMilliseconds,
+      bAlertable        // _In_       BOOL   bAlertable
+    );
   else
     return 0;
 
@@ -266,8 +266,8 @@ void QueueUnlock(Queue *pQueue, const QueueStrategy *pStrategy,
   ppRequest=pStrategy->GetRequest(pQueue);
 
   if (ppRequest)
-  if (++*ppRequest==pQueue->mp)
-    *ppRequest=pQueue->aRequest;
+    if (++*ppRequest==pQueue->mp)
+      *ppRequest=pQueue->aRequest;
 
   if (pResult)
     SetEvent(pResult->hEvent);
@@ -288,25 +288,25 @@ Request *QueueLockWrite(Queue *pQueue, Result *pResult, int exit, int stamp,
 #endif // }
 {
   if (pQueue) {
-  Request *pRequest;
+    Request *pRequest;
 
 #if defined (YA_EVENT_STACK) // {
-  pRequest=QueueLock(pQueue,&cqsWrite);
+    pRequest=QueueLock(pQueue,&cqsWrite);
 #else // } {
-  pRequest=QueueLock(pQueue,&cqsWrite,NULL,NULL,NULL);
+    pRequest=QueueLock(pQueue,&cqsWrite,NULL,NULL,NULL);
 #endif // }
     if (pRequest) {
-  pRequest->pResult=pResult;
-  pRequest->exit=exit;
-  pRequest->stamp=stamp;
+      pRequest->pResult = pResult;
+      pRequest->exit = exit;
+      pRequest->stamp = stamp;
 #if (YA_DEBUG) // {
-  pRequest->id=id;
+      pRequest->id = id;
 #endif // }
-  pRequest->pPlayerProc=pPlayerProc;
-  pRequest->ap=ap;
+      pRequest->pPlayerProc = pPlayerProc;
+      pRequest->ap = ap;
 
-  return pRequest;
-}
+      return pRequest;
+    }
   }
   return NULL;
 }

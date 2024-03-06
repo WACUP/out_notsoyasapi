@@ -181,7 +181,7 @@ int open(const int samplerate, const int numchannels, const int bitspersamp,
   if (PLAYER_SEND(&player,PlayerDeviceCreateV)<0)
     return -1;
 
-    bReset=0;
+  bReset = 0;
 
 #if defined (YASAPI_GAPLESS) // {
   if (player.state<PLAYER_STATE_PAUSE) {
@@ -242,15 +242,15 @@ int write(const char *buf, const int len)
   return 0;
 #else // } {
   if (buf && (len > 0)) {
-  DPRINTF(3,"%s (%s)\n",__func__,player.base.pszFileName);
+    DPRINTF(3,"%s (%s)\n",__func__,player.base.pszFileName);
 
-  if ((ref_true!=last_pause)&&PLAYER_SEND(&player,PlayerWrite,buf,len)<0)
-    return 1;
-  else {
-    writtentime+=len;
+    if ((ref_true!=last_pause)&&PLAYER_SEND(&player,PlayerWrite,buf,len)<0)
+      return 1;
+    else {
+      writtentime+=len;
     }
   }
-    return 0;
+  return 0;
 #endif // }
 }
 
@@ -357,7 +357,7 @@ void flush(int t)
 int getoutputtime(void)
 {
   return (int)((ref_true != last_pause) ? GetTime(((PLAYER_STATE_PLAY <= player.state) ?
-		  PLAYER_SEND(&player, PlayerGetTime) : 0)) - start_t + w_offset : w_offset);
+			 PLAYER_SEND(&player, PlayerGetTime) : 0)) - start_t + w_offset : w_offset);
 }
 
 int getwrittentime(void)
@@ -375,7 +375,7 @@ int getwrittentime(void)
 
     ms += (int)w_offset;
   }
-   return ms;
+  return ms;
 }
 
 Out_Module plugin =

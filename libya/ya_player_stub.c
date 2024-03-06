@@ -105,8 +105,8 @@ create_thread:
   return pStub;
 run:
   if (pStub->hThread) {
-  CloseHandle(pStub->hThread);
-  pStub->hThread=NULL;
+    CloseHandle(pStub->hThread);
+    pStub->hThread=NULL;
   }
 thread:
   StoreDestroy(&pStub->store);
@@ -128,11 +128,11 @@ void PlayerStubDestroy(PlayerStub *pStub)
     PLAYER_STUB_SEND(pStub,1,pStub->lpVtbl->GetStamp(pStub->pPlayer),PlayerPing);
 #endif // }
     if (pStub->hThread) {
-    DPUTS(0,"  waiting for thread to die\n");
-    WaitForSingleObject(pStub->hThread,INFINITE);
-    DPUTS(0,"  destroying thread\n");
-    CloseHandle(pStub->hThread);
-	pStub->hThread=NULL;
+      DPUTS(0,"  waiting for thread to die\n");
+      WaitForSingleObject(pStub->hThread,INFINITE);
+      DPUTS(0,"  destroying thread\n");
+      CloseHandle(pStub->hThread);
+	  pStub->hThread=NULL;
     }
     DPUTS(0,"  destroying store\n");
     StoreDestroy(&pStub->store);
@@ -235,21 +235,21 @@ int PlayerStubSendV(PlayerStub *pStub, int exit, int stamp,
 #endif // }
 {
   if (pStub) {
-  Store *pStore=&pStub->store;
-  Queue *pQueue=&pStub->queue;
-  int state;
+    Store *pStore=&pStub->store;
+    Queue *pQueue=&pStub->queue;
+    int state;
 
-  Result *pResult=StoreGet(pStore);
+    Result *pResult=StoreGet(pStore);
 #if defined (YA_DEBUG) // {
-  /*pRequest=*/QueueLockWrite(pQueue,pResult,exit,stamp,id,pPlayerProc,ap);
+    /*pRequest=*/QueueLockWrite(pQueue,pResult,exit,stamp,id,pPlayerProc,ap);
 #else // } {
-  /*pRequest=*/QueueLockWrite(pQueue,pResult,exit,stamp,pPlayerProc,ap);
+    /*pRequest=*/QueueLockWrite(pQueue,pResult,exit,stamp,pPlayerProc,ap);
 #endif // }
-  QueueUnlockWrite(pQueue,pResult);
+    QueueUnlockWrite(pQueue,pResult);
     state=(int)pResult->state;
-  StorePut(pStore,pResult);
+    StorePut(pStore,pResult);
 
-  return state;
+    return state;
   }
   return 0;
 }
