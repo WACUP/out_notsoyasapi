@@ -2096,6 +2096,8 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
   const Convert *pTarget=&pPlayer->open.target;
   int nVolume=pPlayer->options.common.bVolume
       ?pPlayer->base.nVolume:YASAPI_MAX_VOLUME;
+  int nPan=pPlayer->options.common.bVolume
+      ?pPlayer->base.nPan:0;
   int k;
 #else // } {
   double qVolume=pPlayer->base.qVolume;
@@ -2127,7 +2129,7 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
 
 #if defined (YASAPI_FORCE24BIT) // {
   if (!PlayerFormatChanged(pPlayer)) {
-    if (YASAPI_MAX_VOLUME==nVolume) {
+    if ((YASAPI_MAX_VOLUME==nVolume) && (nPan==0)) {
       memcpy(
         Destination,            // _In_  PVOID Destination,
         Source,                 // _In_  const VOID *Source,
@@ -2135,8 +2137,27 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
       );
     }
     else {
+      int nChannel=0;
       while (wp<mp) {
-        CopySampleIndirect(wp,m,rp,k,nVolume);
+
+        int nVol=nVolume;
+        // TODO: for now only supporting stereo
+        //       but would be nice to do mono &
+        //       others where it's a viability.
+        if ((nPan!=0) && (pSource->nChannels==2)) {
+          if (!nChannel && (nPan>0)) {
+            nVol*=((127-nPan)/127.f);
+          }
+          else if ((nChannel==1) && (nPan<0)) {
+            nVol*=((127-abs(nPan))/127.f);
+          }
+          ++nChannel;
+          if (nChannel>1) {
+            nChannel=0;
+          }
+        }
+
+        CopySampleIndirect(wp,m,rp,k,nVol);
         rp+=k;
         wp+=m;
       }
@@ -2150,16 +2171,31 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
           // remember the last write pointer (lwp)
           lwp=wp;
 
-          if (YASAPI_MAX_VOLUME==nVolume)
+          // TODO: for now only supporting stereo
+          //       but would be nice to do mono &
+          //       others where it's a viability.
+          int nVol=nVolume;
+          if ((nPan!=0) && (pSource->nChannels==2))
+          {
+            if (!nChannel && (nPan>0)) {
+              nVol*=((127-nPan)/127.f);
+            }
+            else if ((nChannel==1) && (nPan<0)) {
+              nVol*=((127-abs(nPan))/127.f);
+            }
+          }
+
+          if (YASAPI_MAX_VOLUME==nVol)
             CopySampleDirect(wp,m,rp,k);
           else
-            CopySampleIndirect(wp,m,rp,k,nVolume);
+            CopySampleIndirect(wp,m,rp,k,nVol);
 
           rp+=k;
           wp+=m;
         }
         else {
           // mono: duplicate the last channel (lwp is last wp)
+          // TODO: support panning
           memcpy(
             wp,                 // _In_  PVOID Destination,
             lwp,                // _In_  const VOID *Source,

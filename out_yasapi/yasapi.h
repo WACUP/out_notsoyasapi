@@ -56,7 +56,7 @@ extern Out_Module plugin;
 ///////////////////////////////////////////////////////////////////////////////
 #if ! defined (YASAPI_VER) // {
   #define YASAPI_VER            1.7.25
-  #define PLUGIN_VERSION        "1.4.17"
+  #define PLUGIN_VERSION        "1.5"
 #endif // }
 
 #define YASAPI_VERSION          YA_STR(YASAPI_VER)
@@ -465,6 +465,7 @@ struct _Player {
     //const wchar_t *pszFileName;
 #if defined (YASAPI_FORCE24BIT) // {
     int nVolume;
+    int nPan;
 #else // } {
     double qVolume;
 #endif // }

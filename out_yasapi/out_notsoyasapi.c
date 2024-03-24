@@ -341,6 +341,9 @@ void setvolume(const int volume)
 
 void setpan(const int pan)
 {
+  if (player.options.common.bVolume) {
+    player.base.nPan=pan;
+  }
 }
 
 void flush(int t)
