@@ -129,7 +129,7 @@ void PlayerStubDestroy(PlayerStub *pStub)
 #endif // }
     if (pStub->hThread) {
       DPUTS(0,"  waiting for thread to die\n");
-      WaitForSingleObject(pStub->hThread,INFINITE);
+      WaitForSingleObjectEx(pStub->hThread,5000/*/INFINITE/**/, TRUE);
       DPUTS(0,"  destroying thread\n");
       CloseHandle(pStub->hThread);
 	  pStub->hThread=NULL;

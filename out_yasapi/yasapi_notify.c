@@ -294,15 +294,20 @@ malloc:
 
 void PlayerRemoveNotify(Player *pPlayer)
 {
-  IMMDeviceEnumerator *pEnumerator=pPlayer->run.pEnumerator;
-  IMMNotificationClient *pNotify=pPlayer->run.pNotify;
+  if (pPlayer) {
+    IMMNotificationClient *pNotify=pPlayer->run.pNotify;
+    IMMDeviceEnumerator *pEnumerator=pPlayer->run.pEnumerator;
+    if (pEnumerator) {
+      DPRINTF(0,"  >> %s <<\n",__func__);
 
-  DPRINTF(0,"  >> %s <<\n",__func__);
+      pEnumerator->lpVtbl->UnregisterEndpointNotificationCallback(pEnumerator,
+        (IMMNotificationClient *)pNotify  // [in] IMMNotificationClient *pNotify
+      );
+    }
 
-  pEnumerator->lpVtbl->UnregisterEndpointNotificationCallback(pEnumerator,
-    (IMMNotificationClient *)pNotify  // [in] IMMNotificationClient *pNotify
-  );
-
-  pNotify->lpVtbl->Release(pNotify);
+    if (pNotify->lpVtbl) {
+      pNotify->lpVtbl->Release(pNotify);
+    }
+  }
 }
 #endif // }

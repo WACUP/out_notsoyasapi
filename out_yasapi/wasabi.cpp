@@ -32,7 +32,7 @@ extern "C" void* safe_calloc(const size_t size)
 	return WASABI_API_MEMMGR->sysMalloc(size);
 }
 
-extern "C" void safe_free(void* ptr)
+extern "C" void __forceinline safe_free(void* ptr)
 {
 	WASABI_API_MEMMGR->sysFree(ptr);
 }

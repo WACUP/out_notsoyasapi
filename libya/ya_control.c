@@ -368,8 +368,7 @@ static void SliderCascadeSetSliderWidth(HWND hDlg, int idc, int idcParent)
   lWidth+=SliderCascadeGetHumbleWidth(hWnd);
 
   GetWindowRect(hWnd,&rc);
-  ScreenToClient(hDlg,(LPPOINT)&rc.left);
-  ScreenToClient(hDlg,(LPPOINT)&rc.right);
+  MapWindowPoints(HWND_DESKTOP,hDlg,(LPPOINT)&rc,2);
 
   MoveWindow(
     hWnd,                 // _In_  HWND hWnd,

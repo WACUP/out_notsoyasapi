@@ -61,7 +61,7 @@ void* yamalloc(const size_t size)
     return safe_calloc(size);
 }
 
-extern void safe_free(void* ptr);
+extern void __forceinline safe_free(void* ptr);
 void yafree(void *ptr)
 {
     safe_free(ptr);
