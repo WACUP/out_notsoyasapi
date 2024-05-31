@@ -2045,43 +2045,55 @@ static void CopySampleDirect(char *wp, int m, const char *rp, int k)
 {
   int l=m-k;
 
-  if (0<l) {
-    memset(wp,0,l);
-    wp+=l;
+  __try
+  {
+    if (0<l) {
+      memset(wp,0,l);
+      wp+=l;
+    }
+
+    // copy source to the temorary location.
+    memcpy(
+      wp,                   // _In_  PVOID Destination,
+      rp,                   // _In_  const VOID *Source,
+      k                     // _In_  SIZE_T Length
+    );
+
+    //wp+=k;
   }
-
-  // copy source to the temorary location.
-  memcpy(
-    wp,                   // _In_  PVOID Destination,
-    rp,                   // _In_  const VOID *Source,
-    k                     // _In_  SIZE_T Length
-  );
-
-  //wp+=k;
+  __except (EXCEPTION_EXECUTE_HANDLER)
+  {
+  }
 }
 
 static void CopySampleIndirect(char *wp, int m, const char *rp, int k,
     int nVolume)
 {
-  int32_t i32=0;
-  char *i32wp=((char *)&i32)+(sizeof i32)-k;
-  const char *i32rp=((const char *)&i32)+(sizeof i32)-m;
+  __try
+  {
+    int32_t i32=0;
+    char *i32wp=((char *)&i32)+(sizeof i32)-k;
+    const char *i32rp=((const char *)&i32)+(sizeof i32)-m;
 
-  // copy source to the temorary location.
-  memcpy(
-    i32wp,                // _In_  PVOID Destination,
-    rp,                   // _In_  const VOID *Source,
-    k                     // _In_  SIZE_T Length
-  );
+    // copy source to the temorary location.
+    memcpy(
+      i32wp,                // _In_  PVOID Destination,
+      rp,                   // _In_  const VOID *Source,
+      k                     // _In_  SIZE_T Length
+    );
 
-  i32=MulDiv(i32,nVolume,YASAPI_MAX_VOLUME);
+    i32=MulDiv(i32,nVolume,YASAPI_MAX_VOLUME);
 
-  // copy the temorary location to the target.
-  memcpy(
-    wp,                   // _In_  PVOID Destination,
-    i32rp,                // _In_  const VOID *Source,
-    m                     // _In_  SIZE_T Length
-  );
+    // copy the temorary location to the target.
+    memcpy(
+      wp,                   // _In_  PVOID Destination,
+      i32rp,                // _In_  const VOID *Source,
+      m                     // _In_  SIZE_T Length
+    );
+  }
+  __except (EXCEPTION_EXECUTE_HANDLER)
+  {
+  }
 }
 #endif // }
 

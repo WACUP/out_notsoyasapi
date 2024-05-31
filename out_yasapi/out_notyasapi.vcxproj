@@ -119,6 +119,7 @@ copy "$(TargetDir)\$(ProjectName).dll" "..\..\installer\wacup_files\Plugins" /y
     <ClInclude Include="yasapi_guid.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="out_notsoyasapi.def" />
     <None Include="rc\about.bin" />
     <None Include="rc\about.bin.gz" />
     <None Include="rc\text1.bin" />
