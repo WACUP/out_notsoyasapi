@@ -183,7 +183,6 @@ module:
 void PlayerDestroy(Player *pPlayer)
 {
   if (PLAYER_STATE_BASE<pPlayer->state)
-	// cppcheck-suppress syntaxError
     PLAYER_SEND(pPlayer,PlayerKillV);
 
   if (PLAYER_STATE_NULL<pPlayer->state)
@@ -385,11 +384,9 @@ retry:
 
   if (AUDCLNT_SHAREMODE_SHARED==eShareMode
         &&pPlayer->options.device.bAutoConvertPCM) {
-	  // cppcheck-suppress ConfigurationNotChecked
       dwStreamFlags|=AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM;
 
      if (pPlayer->options.device.bSRCDefaultQuality) {
-	   // cppcheck-suppress ConfigurationNotChecked
        dwStreamFlags|=AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY;
 	 }
   }

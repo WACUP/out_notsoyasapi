@@ -211,7 +211,6 @@ static void SliderTypeSet(const Control *pControl, HWND hDlg,
     const void *pData)
 {
   const ControlSliderConfig *config=pControl->config;
-  // cppcheck-suppress invalidPointerCast
   double x=VALUE_DOUBLE(pData,config->offset);
   HWND hWndCtl=GetDlgItem(hDlg,config->idcSlider);
   LRESULT lMin=SendMessage(hWndCtl,TBM_GETRANGEMIN,0,0);
@@ -241,7 +240,6 @@ static void SliderTypeGet(const Control *pControl, HWND hDlg,
     void *pData)
 {
   const ControlSliderConfig *config=pControl->config;
-  // cppcheck-suppress invalidPointerCast
   VALUE_DOUBLE(pData,config->offset)=SliderTypeGetSlider(pControl,hDlg);
 }
 
@@ -461,7 +459,6 @@ static void SliderCascadeTypeSet(const Control *pControl, HWND hDlg,
     if (idcSliderParent)
       SliderCascadeSetSliderWidth(hDlg,idcSlider,idcSliderParent);
 
-    // cppcheck-suppress invalidPointerCast
     x=VALUE_DOUBLE(pData,list->offset);
     SliderCascadeSetSlider(hDlg,idcSlider,&lWidthParent,min,max,x);
     SliderCascadeSetStatic(hDlg,list->idcStatic,list->format,x);
@@ -481,7 +478,6 @@ static void SliderCascadeTypeGet(const Control *pControl, HWND hDlg,
   int idc;
 
   while (0<(idc=list->idcSlider)) {
-    // cppcheck-suppress invalidPointerCast
     VALUE_DOUBLE(pData,list->offset)=SliderCascadeGetSlider(hDlg,idc,
         &lWidthParent,min,max);
     ++list;

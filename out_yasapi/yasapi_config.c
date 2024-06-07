@@ -425,7 +425,6 @@ static ConfigDevice *ConfigDeviceNew(Config *pConfig, int nDevice)
 
   /////////////////////////////////////////////////////////////////////////////
   hr=pProperties->lpVtbl->GetValue(pProperties,
-    // cppcheck-suppress ConfigurationNotChecked
     &PKEY_Device_FriendlyName,    // [in]  REFPROPERTYKEY key,
     &pConfigDevice->vName         // [out] PROPVARIANT    *pv
   );

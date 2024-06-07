@@ -88,7 +88,6 @@ static void DoubleTypeLoad(const Property *pProperty, PropertyIOConfig *c)
   wchar_t set[YA_PROPERTY_SIZE]={0};
   wchar_t get[YA_PROPERTY_SIZE]={0};
 
-  // cppcheck-suppress invalidPointerCast
   StringCchPrintf(set,YA_PROPERTY_SIZE,L"%f",PROPERTY_DOUBLE(pProperty,c->pDefault));
 
   GetPrivateProfileStringW(
@@ -100,13 +99,11 @@ static void DoubleTypeLoad(const Property *pProperty, PropertyIOConfig *c)
     c->path           // _In_   LPCTSTR lpFileName
   );
 
-  // cppcheck-suppress invalidPointerCast
   // instead of using the runtime version we'll
   // swap out for a wacup core provided method
   // that'll do what's needed to be local safe.
   /*PROPERTY_DOUBLE(pProperty,c->pData)=_wtof(get);/*/
   PROPERTY_DOUBLE(pProperty,c->pData)=safe_w_to_f(get);/**/
-  // cppcheck-suppress invalidPointerCast
   DWPRINTF(0,L"%soption \"%s\": %f (%f)\n",
       c->pfx,pProperty->key,
       PROPERTY_DOUBLE(pProperty,c->pData),
@@ -118,7 +115,6 @@ static void DoubleTypeSave(const Property *pProperty,
 {
   wchar_t buf[YA_PROPERTY_SIZE]={0};
 
-  // cppcheck-suppress invalidPointerCast
   StringCchPrintf(buf,YA_PROPERTY_SIZE,L"%f",PROPERTY_DOUBLE(pProperty,c->pData));
 
   WritePrivateProfileStringW(

@@ -218,7 +218,6 @@ static HRESULT STDMETHODCALLTYPE PlayerNotifyOnDefaultDeviceChanged(
   if (eRender==flow&&eCommunications==role) {
     if (NULL==pPlayer->device.szId) {
       DPUTS(0,"  GOING TO CLOSE\n");
-	  // cppcheck-suppress syntaxError
       PLAYER_SEND(pPlayer,PlayerClose);
     }
     else if (pwstrDefaultDeviceId!=NULL &&

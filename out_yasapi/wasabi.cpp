@@ -106,6 +106,7 @@ void __cdecl about(HWND hWndParent)
 	StringCchPrintf(message, ARRAYSIZE(message), text, TEXT(PLUGIN_VERSION),
 					// cppcheck-suppress ConfigurationNotChecked
 					TEXT(YASAPI_VERSION), WACUP_AUTHOR_STRW,
+					// cppcheck-suppress unknownMacro
 					TEXT("2016-") WACUP_COPYRIGHT, TEXT(__DATE__));
 	AboutMessageBox(hWndParent, message, GetLangString(IDS_ABOUT_TITLE));
 

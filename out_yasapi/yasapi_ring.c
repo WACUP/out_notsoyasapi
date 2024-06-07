@@ -463,7 +463,6 @@ consistency2:
 overflow:
 unwrapped:
 wrapped:
-// cppcheck-suppress unusedLabel
 consistency1:
   return (DWORD)-1;
 }

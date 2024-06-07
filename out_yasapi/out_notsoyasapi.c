@@ -73,7 +73,6 @@ static LRESULT CALLBACK PluginWinampProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 
       if (PlayerIsUnderfow(&player)&&PlayerHasChanged(&player,out_module))
 	  {
-		// cppcheck-suppress syntaxError
 		PLAYER_SEND(&player,PlayerClose);
 	  }
       break;
@@ -203,7 +202,6 @@ int open(const int samplerate, const int numchannels, const int bitspersamp,
   }
 
   if (PLAYER_STATE_RUN<player.state) {
-	// cppcheck-suppress syntaxError
     while (PLAYER_SEND(&player,PlayerIsPlaying))
       Sleep(1);
   }

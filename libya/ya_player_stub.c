@@ -92,7 +92,6 @@ create_thread:
     goto run;
   }
 #else // } {
-  // cppcheck-suppress syntaxError
   if (PLAYER_STUB_SEND(pStub,0,lpVtbl->GetStamp(pPlayer),PlayerPing)<0) {
     DMESSAGE("running");
     goto run;

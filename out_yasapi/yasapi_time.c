@@ -229,11 +229,8 @@ int TimeMigrate(Time *pTime, Connection *pConnect)
 #if defined (YASAPI_CONVERT_TIME) // {
   if (pTime->u64Frequency) {
     if (TIME_TIME==eTimeTag) {
-      // cppcheck-suppress overlappingWriteUnion
       pGapless->xSeconds=(double)pGapless->u64Position/pTime->u64Frequency;
-      // cppcheck-suppress overlappingWriteUnion
       pPause->xSeconds=(double)pPause->u64Position/pTime->u64Frequency;
-      // cppcheck-suppress overlappingWriteUnion
       pCurrent->xSeconds=(double)pCurrent->u64Position/pTime->u64Frequency;
       pTime->u64Frequency=0ull;
     }
@@ -245,22 +242,16 @@ int TimeMigrate(Time *pTime, Connection *pConnect)
         goto frequency;
       }
 
-      // cppcheck-suppress overlappingWriteUnion
       pGapless->u64Position=pGapless->xSeconds*pTime->u64Frequency+0.5;
-      // cppcheck-suppress overlappingWriteUnion
       pPause->u64Position=pPause->xSeconds*pTime->u64Frequency+0.5;
-      // cppcheck-suppress overlappingWriteUnion
       pCurrent->u64Position=pCurrent->xSeconds*pTime->u64Frequency+0.5;
     }
   }
 #endif // }
 
   if (pTime->u64Frequency) {
-    // cppcheck-suppress overlappingWriteUnion
     pGapless->xSeconds=(double)pGapless->u64Position/pTime->u64Frequency;
-	// cppcheck-suppress overlappingWriteUnion
     pPause->xSeconds=(double)pPause->u64Position/pTime->u64Frequency;
-	// cppcheck-suppress overlappingWriteUnion
     pCurrent->xSeconds=(double)pCurrent->u64Position/pTime->u64Frequency;
   
     if (ConnectionGetFrequency(pConnect,&pTime->u64Frequency)<0) {
@@ -268,11 +259,8 @@ int TimeMigrate(Time *pTime, Connection *pConnect)
       goto frequency;
     }
 
-    // cppcheck-suppress overlappingWriteUnion
     pGapless->u64Position=(UINT64)(pGapless->xSeconds*pTime->u64Frequency+0.5);
-    // cppcheck-suppress overlappingWriteUnion
     pPause->u64Position=(UINT64)(pPause->xSeconds*pTime->u64Frequency+0.5);
-    // cppcheck-suppress overlappingWriteUnion
     pCurrent->u64Position=(UINT64)(pCurrent->xSeconds*pTime->u64Frequency+0.5);
   }
 
