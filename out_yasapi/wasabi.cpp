@@ -8,7 +8,6 @@
 #include <loader/hook/squash.h>
 #include <loader/loader/utils.h>
 #include <resource.h>
-#include <../wacup_version.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -104,10 +103,8 @@ void __cdecl about(HWND hWndParent)
     LPWSTR text = GetTextResource(IDR_ABOUT_GZ, &text);
 
 	StringCchPrintf(message, ARRAYSIZE(message), text, TEXT(PLUGIN_VERSION),
-					// cppcheck-suppress ConfigurationNotChecked
-					TEXT(YASAPI_VERSION), WACUP_AUTHOR_STRW,
-					// cppcheck-suppress unknownMacro
-					TEXT("2016-") WACUP_COPYRIGHT, TEXT(__DATE__));
+					TEXT(YASAPI_VERSION), WACUP_Author(),
+					WACUP_Copyright(), TEXT(__DATE__));
 	AboutMessageBox(hWndParent, message, GetLangString(IDS_ABOUT_TITLE));
 
 	if (text)
