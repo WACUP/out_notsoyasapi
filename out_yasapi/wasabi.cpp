@@ -90,27 +90,22 @@ extern "C" LPWSTR GetTextResource(const UINT id, LPWSTR* text)
 {
 	// the resource is utf-8 encoded so we convert
 	// before passing it on to then be displayed
-	DWORD data_size = 0;
-	unsigned char *data = (unsigned char *)WASABI_API_LOADRESFROMFILEW(L"GZ",
-										   MAKEINTRESOURCEW(id), &data_size);
-	DecompressResource(data, data_size, (unsigned char**)text, 0, true);
+	*text = (LPWSTR)DecompressResourceText(WASABI_API_LNG_HINST,
+							   WASABI_API_ORIG_HINST, id, true);
 	return *text;
 }
 
 void __cdecl about(HWND hWndParent)
 {
 	wchar_t message[4096] = { 0 };
-    LPWSTR text = GetTextResource(IDR_ABOUT_GZ, &text);
 
-	StringCchPrintf(message, ARRAYSIZE(message), text, TEXT(PLUGIN_VERSION),
-					TEXT(YASAPI_VERSION), WACUP_Author(),
-					WACUP_Copyright(), TEXT(__DATE__));
+	const unsigned char* output = DecompressResourceText(WASABI_API_LNG_HINST, WASABI_API_ORIG_HINST, IDR_ABOUT_GZ, true);
+
+	StringCchPrintf(message, ARRAYSIZE(message), (LPCWSTR)output, TEXT(PLUGIN_VERSION),
+					TEXT(YASAPI_VERSION), WACUP_Author(), WACUP_Copyright(), TEXT(__DATE__));
 	AboutMessageBox(hWndParent, message, GetLangString(IDS_ABOUT_TITLE));
 
-	if (text)
-	{
-		safe_free(text);
-	}
+	safe_free((void*)output);
 }
 
 extern "C" float safe_w_to_f(LPCWSTR str)
