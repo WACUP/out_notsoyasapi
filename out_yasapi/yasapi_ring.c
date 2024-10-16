@@ -269,12 +269,19 @@ static DWORD RingWriteUnwrapped(Ring *pRing, RingWriteConfig *pc)
         goto range;
       }
 
-      pRing->Copy(
-        pRing->pClient,
-        pRing->pHead,     // _In_  PVOID Destination,
-        pc->pData,        // _In_  const VOID *Source,
-        pc->dwTargetSize  // _In_  SIZE_T Length
-      );
+      __try
+      {
+        pRing->Copy(
+          pRing->pClient,
+          pRing->pHead,     // _In_  PVOID Destination,
+          pc->pData,        // _In_  const VOID *Source,
+          pc->dwTargetSize  // _In_  SIZE_T Length
+        );
+      }
+      __except (EXCEPTION_EXECUTE_HANDLER)
+      {
+        goto consistency;
+      }
 
       pc->pData+=pc->dwSourceSize;
       pRing->pHead+=pc->dwTargetSize;

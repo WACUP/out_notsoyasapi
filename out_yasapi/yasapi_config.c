@@ -453,19 +453,6 @@ malloc:
   return NULL;
 }
 
-static void ConfigDeviceDelete(ConfigDevice *pConfigDevice)
-{
-  IMMDevice *pDevice=pConfigDevice->pDevice;
-  LPWSTR pstrId=pConfigDevice->pstrId;
-  IPropertyStore *pProperties=pConfigDevice->pProperties;
-
-  ClearPropVariant(&pConfigDevice->vName);
-  pProperties->lpVtbl->Release(pProperties);
-  pDevice->lpVtbl->Release(pDevice);
-  MemFreeCOM(pstrId);
-  YA_FREE(pConfigDevice);
-}
-
 // set progress bar.
 static void ConfigUpdateProgress(HWND hWnd, WORD wParam)
 {
@@ -1082,18 +1069,32 @@ static void ConfigEndDialog(HWND hDlg, Config *pConfig, INT_PTR nResult)
 {
 	if (pConfig != NULL)
 	{
-		HWND hComboBox = GetDlgItem(hDlg, IDC_COMBOBOX_DEVICE);
-		int nDevices = 1 + pConfig->nDevices;
+    	int nDevices = 1 + pConfig->nDevices;
 
-		pConfig->pPlayer->hDlgConfig = NULL;
+        if (pConfig->pPlayer) {
+            pConfig->pPlayer->hDlgConfig = NULL;
+        }
 
 		while (0 < nDevices) {
 			ConfigDevice *pConfigDevice
-				= (ConfigDevice *)SendMessage(hComboBox, CB_GETITEMDATA, --nDevices, 0);
+				= (ConfigDevice *)SendDlgItemMessage(hDlg, IDC_COMBOBOX_DEVICE, CB_GETITEMDATA, --nDevices, 0);
 
-			if (pConfigDevice) {
-				ConfigDeviceDelete(pConfigDevice);
-				SendMessage(hComboBox, CB_SETITEMDATA, nDevices, (LPARAM)NULL);
+			if (pConfigDevice && (pConfigDevice != (ConfigDevice*)CB_ERR)) {
+                IMMDevice* pDevice = pConfigDevice->pDevice;
+                LPWSTR pstrId = pConfigDevice->pstrId;
+                IPropertyStore* pProperties = pConfigDevice->pProperties;
+
+                ClearPropVariant(&pConfigDevice->vName);
+                if (pProperties) {
+                    pProperties->lpVtbl->Release(pProperties);
+                }
+                if (pDevice) {
+                    pDevice->lpVtbl->Release(pDevice);
+                }
+                MemFreeCOM(pstrId);
+                YA_FREE(pConfigDevice);
+
+                SendDlgItemMessage(hDlg, IDC_COMBOBOX_DEVICE, CB_SETITEMDATA, nDevices, (LPARAM)NULL);
 			}
 		}
 	}

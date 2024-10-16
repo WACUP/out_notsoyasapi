@@ -958,6 +958,9 @@ connect:
 execution:
 #endif // }
 #endif // }
+  // TODO if there's a failure there's a load
+  //      of handles being leaked. so need to
+  //      improve that to avoid a bad failure
   PlayerDeviceDestroy(&pPlayer->device);
 device:
 state:
