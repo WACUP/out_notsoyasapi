@@ -327,13 +327,17 @@ void setvolume(const int volume)
   enum { DEBUG=3 };
 
   if (player.options.common.bVolume&&-666!=volume) {
+    if (AllowOutputVolumeControl()) {
 #if defined (YASAPI_FORCE24BIT) // {
-    player.base.nVolume=volume;
-    DPRINTF(DEBUG,"%s: %.2f\n",__func__,(double)volume/YASAPI_MAX_VOLUME);
+      player.base.nVolume=volume;
+      DPRINTF(DEBUG,"%s: %.2f\n",__func__,(double)volume/YASAPI_MAX_VOLUME);
 #else // } {
-    player.base.qVolume=255==volume?1.0:(double)volume/255;
-    DPRINTF(DEBUG,"%s: %.2f\n",__func__,player.base.qVolume);
+      player.base.qVolume=255==volume?1.0:(double)volume/255;
+      DPRINTF(DEBUG,"%s: %.2f\n",__func__,player.base.qVolume);
 #endif // }
+	} else {
+      player.base.nVolume=YASAPI_MAX_VOLUME;
+	}
   }
 }
 

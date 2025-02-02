@@ -7,7 +7,7 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "afxres.h"
+#include "winres.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -32,7 +32,7 @@ END
 
 2 TEXTINCLUDE 
 BEGIN
-    "#include ""afxres.h""\r\n"
+    "#include ""winres.h""\r\n"
     "\0"
 END
 
@@ -175,8 +175,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,5,4,0
- PRODUCTVERSION 1,5,4,0
+ FILEVERSION 1,6,0,0
+ PRODUCTVERSION 1,6,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -193,12 +193,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "WACUP"
             VALUE "FileDescription", "Output Plug-in"
-            VALUE "FileVersion", "1.5.4.0"
+            VALUE "FileVersion", "1.6.0.0"
             VALUE "InternalName", "out_notsoyasapi.dll"
-            VALUE "LegalCopyright", "Copyright © 2015-2016 Peter Belkner, Not So YASAPI modifications by Darren Owen aka DrO © 2016-2024"
+            VALUE "LegalCopyright", "Copyright © 2015-2016 Peter Belkner, Not So YASAPI modifications by Darren Owen aka DrO © 2016-2025"
             VALUE "OriginalFilename", "out_notsoyasapi.dll"
             VALUE "ProductName", "Not So YASAPI"
-            VALUE "ProductVersion", "1.5.4.0"
+            VALUE "ProductVersion", "1.6.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -270,7 +270,7 @@ STRINGTABLE
 BEGIN
     IDS_DEFAULT             "Default"
     IDS_MINIMUM             "Minimum"
-    IDS_DEVICE_PERIOD       "Should the buffer size calculation be based on the default\nor on the minimum device periode as proposed by WASAPI."
+    IDS_DEVICE_PERIOD       "Should the buffer size calculation be based on the default\nor on the minimum device period as proposed by WASAPI."
     IDS_SHARE_SIZE          "A factor the plug-in should apply to\nthe device period proposed by WASAPI."
     IDS_RING_SIZE           "The number of samples the plug-in should be able to buffer between\nhaving received them from WACUP and before sending to the device.\n\nMust be at least as much being able to cache before starting to play."
     IDS_RING_FILL           "The number of samples the plug-in should have received\nfrom WACUP before starting to play. This must be at least\nthe size of the buffer the plug-in shares with the device."

@@ -581,6 +581,7 @@ static INT_PTR CALLBACK CommonProc(HWND hDlg, UINT uMsg, WPARAM wParam,
 	EnableControl(hDlg,IDC_COMBOBOX_SLEEP,FALSE);
 #endif // }
 #endif // }
+    EnableControl(hDlg, IDC_CHECKBOX_VOLUME, AllowOutputVolumeControl());
     return TRUE;
   case WM_COMMAND:
     switch (LOWORD(wParam)) {
