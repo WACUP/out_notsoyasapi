@@ -167,6 +167,11 @@ int open(const int samplerate, const int numchannels, const int bitspersamp,
 
   DPRINTF(0,"%s (%s)\n",__func__,player.base.pszFileName);
 
+  if (!loaded)
+  {
+	  return -1;
+  }
+
   reset();
   /*if (out_module) {
 	  free(out_module);
