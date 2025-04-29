@@ -232,7 +232,7 @@ static HRESULT STDMETHODCALLTYPE PlayerNotifyOnDefaultDeviceChanged(
       // stopping by the user in-order for a clean stop.
       //DPUTS(0,"  GOING TO CLOSE\n");
 	  //PLAYER_SEND(pPlayer,PlayerClose);
-	  PostEOF();
+	  PostEOF(FALSE);
 	}
   }
 

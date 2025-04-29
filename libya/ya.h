@@ -34,6 +34,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <winamp/wa_ipc.h>
+#define WA_UTILS_SIMPLE
+#include <../loader/loader/utils.h>
 
 #ifdef __cpluplus
 extern "C" {
@@ -150,8 +152,8 @@ extern "C" {
   #define YA_MALLOC(size)       GlobalAlloc(GMEM_FIXED,size)
   #define YA_FREE(p)            GlobalFree(p)
 #else // } {
-  #define YA_MALLOC(size)       yamalloc(size)
-  #define YA_FREE(ptr)          yafree(ptr)
+  #define YA_MALLOC(size)       SafeMalloc(size)
+  #define YA_FREE(ptr)          SafeFree(ptr)
 #endif // }
 
 #define YA_INT_MAX(n)           (~(~0ull<<((n)-1)))
@@ -159,8 +161,7 @@ extern "C" {
 ///////////////////////////////////////////////////////////////////////////////
 const wchar_t *basenamew(const wchar_t *s);
 wchar_t *yapath(wchar_t *file);
-void* yamalloc(const size_t size);
-void yafree(void *ptr);
+
 void messagea(int force, HRESULT x, HRESULT *y, const char *m, ...);
 void messagew(int force, HRESULT x, HRESULT *y, const wchar_t *m, ...);
 

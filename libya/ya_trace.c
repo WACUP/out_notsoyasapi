@@ -138,7 +138,7 @@ int TraceCreate(Trace *pTrace, const char *label, const wchar_t *path,
 
     GetSystemTime(&time);
 
-    StringCchPrintf(pp,
+    PrintfCch(pp,
       (sizeof filepath)-len,
       L"-%04d"            // wYear
       L"-%02d"            // wMonth

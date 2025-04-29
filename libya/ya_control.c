@@ -19,6 +19,8 @@
  */
 #include <ya.h>
 #include <commctrl.h>
+#define WA_UTILS_SIMPLE
+#include <../loader/loader/utils.h>
 
 #define CONTROL_TYPE_MAGIC "control_type_magic"
 
@@ -202,7 +204,7 @@ static void SliderTypeSetStatic(const Control *pControl, HWND hDlg,
 
   if (config->format) {
     wchar_t buf[SIZE]={0};
-    StringCchPrintf(buf,SIZE,GetLangString(config->format),x);
+    PrintfCch(buf,SIZE,GetLangString(config->format),x);
     SetDlgItemTextW(hDlg,config->idcStatic,buf);
   }
 }
@@ -323,7 +325,7 @@ static void SliderCascadeSetStatic(HWND hDlg, int idc, UINT/*const wchar_t **/fo
   if (format) {
     enum { SIZE=128 };
     wchar_t buf[SIZE]={0};
-    StringCchPrintf(buf,SIZE,GetLangString(format),x);
+    PrintfCch(buf,SIZE,GetLangString(format),x);
     SetDlgItemTextW(hDlg,idc,buf);
   }
 }

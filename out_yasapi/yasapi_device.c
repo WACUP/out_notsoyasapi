@@ -82,7 +82,7 @@ int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,
     }
     pPlayerDevice->szId=CoTaskMemAlloc(uLen * 2);
     if (pPlayerDevice->szId) {
-      StringCchCopy(pPlayerDevice->szId, uLen, pcstrId);
+      CopyCchStr(pPlayerDevice->szId, uLen, pcstrId);
     }
   }
 

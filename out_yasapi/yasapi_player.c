@@ -96,7 +96,7 @@ int PlayerCreate(Player *pPlayer, HINSTANCE hModule, const wchar_t *path)
     goto module;
   }
 
-  //pPlayer->base.pszFileName=safe_wcsdup(basenamew(aszModuleName));
+  //pPlayer->base.pszFileName=SafeWideDup(basenamew(aszModuleName));
   DPRINTF(0,"  got module name: \"%s\"\n",pPlayer->base.pszFileName);
   //pPlayer->base.hModule=hModule;
 

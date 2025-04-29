@@ -66,7 +66,7 @@ static LRESULT CALLBACK PluginWinampProc(HWND hWnd, UINT uMsg, WPARAM wParam,
       DPRINTF(0,"  WM_WA_IPC/IPC_CB_OUTPUTCHANGED: \"%s\"\n",m);
 
       if (m && *m) {
-        StringCchCopy(out_module, ARRAYSIZE(out_module), m);
+        CopyCchStr(out_module, ARRAYSIZE(out_module), m);
 	  } else {
         out_module[0] = 0;
       }
@@ -173,10 +173,7 @@ int open(const int samplerate, const int numchannels, const int bitspersamp,
   }
 
   reset();
-  /*if (out_module) {
-	  free(out_module);
-  }
-  out_module = safe_wcsdup(player.base.pszFileName);*/
+  //out_module = SafeWideDupFreeOld(player.base.pszFileName,out_module);
 
   numchan = numchannels;
   srate = samplerate;
@@ -530,15 +527,18 @@ __declspec(dllexport) BOOL __cdecl winampGetOutPrefs(prefsDlgRecW* prefs)
 	// page to be placed as a child of the 'Output' node (why not)
 	if (prefs)
 	{
-		// TODO localise
-		prefs->hInst = plugin.hDllInstance/*WASABI_API_LNG_HINST*/;
-		prefs->dlgID = IDD_CONFIG;
-		prefs->name = GetLangStringDup(IDS_WASAPI);
-		prefs->proc = (void *)ConfigProc;
-		prefs->where = 9;
-		prefs->_id = 52;
-		output_prefs = prefs;
-		return TRUE;
+		if (output_prefs == NULL)
+		{
+			// TODO localise
+			prefs->hInst = plugin.hDllInstance/*WASABI_API_LNG_HINST*/;
+			prefs->dlgID = IDD_CONFIG;
+			prefs->name = GetLangStringDup(IDS_WASAPI);
+			prefs->proc = (void*)ConfigProc;
+			prefs->where = 9;
+			prefs->_id = 52;
+			output_prefs = prefs;
+			return TRUE;
+		}
 	}
 	return FALSE;
 }

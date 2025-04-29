@@ -863,10 +863,10 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
       if (NULL==(pwszLabel=YA_MALLOC((uLen+1)*(sizeof *pwszLabel))))
         goto label;
 
-      StringCchCopy(pwszLabel,uLen,L"Default Device -- ");
+      CopyCchStr(pwszLabel,uLen,L"Default Device -- ");
 	  labelLen=18/*/(UINT)wcslen(pwszLabel)/**/;
 	  uLen-=labelLen;
-      StringCchCopy(pwszLabel+labelLen,uLen,pConfigDevice->vName.pwszVal);
+      CopyCchStr(pwszLabel+labelLen,uLen,pConfigDevice->vName.pwszVal);
     }
     else
       pwszLabel=pConfigDevice->vName.pwszVal;
@@ -987,7 +987,7 @@ void ConfigSet(Config *pConfig, LPWSTR pstrId, wchar_t *pwszLabel)
   int cPage;
   Page *pPage;
 
-  StringCchCopy(pConfig->options.common.szId, ARRAYSIZE(pConfig->options.common.szId), pstrId);
+  CopyCchStr(pConfig->options.common.szId, ARRAYSIZE(pConfig->options.common.szId), pstrId);
 
   ControlsSet(gcaCoreDeviceControls,pConfig->hDlg,&pConfig->options.device);
 
