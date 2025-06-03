@@ -58,8 +58,8 @@ static IPlayer gcIPlayer={
 // Create PLAYER_STATE_RUN ////////////////////////////////////////////////////
 int PlayerCreate(Player *pPlayer, HINSTANCE hModule, const wchar_t *path)
 {
-  int nLen;
-  wchar_t aszModuleName[MAX_PATH] = {0};
+  //int nLen;
+  wchar_t aszModuleName[MAX_PATH]/* = {0}*/;
 
   DPRINTF(0,"  > %s <\n",__func__);
 
@@ -85,7 +85,7 @@ int PlayerCreate(Player *pPlayer, HINSTANCE hModule, const wchar_t *path)
 #endif // }
 
   /////////////////////////////////////////////////////////////////////////////
-  nLen=GetModuleFileName(
+  /*nLen=*/GetModuleFileName(
     hModule,                  // _In_opt_ HMODULE hModule,
     aszModuleName,            // _Out_    LPTSTR  lpFilename,
     ARRAYSIZE(aszModuleName)  // _In_     DWORD   nSize

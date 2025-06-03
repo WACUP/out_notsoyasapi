@@ -126,6 +126,9 @@ void PlayerStubDestroy(PlayerStub *pStub)
 #else // } {
     PLAYER_STUB_SEND(pStub,1,pStub->lpVtbl->GetStamp(pStub->pPlayer),PlayerPing);
 #endif // }
+#if 1
+    WaitForThreadToClose(&pStub->hThread,5000/*/INFINITE/**/);
+#else
     if (CheckThreadHandleIsValid(&pStub->hThread)) {
       DPUTS(0,"  waiting for thread to die\n");
       WaitForSingleObjectEx(pStub->hThread,5000/*/INFINITE/**/, TRUE);
@@ -135,6 +138,7 @@ void PlayerStubDestroy(PlayerStub *pStub)
 	    pStub->hThread=NULL;
       }
     }
+#endif
     DPUTS(0,"  destroying store\n");
     StoreDestroy(&pStub->store);
     DPUTS(0,"  destroying queue\n");

@@ -21,8 +21,6 @@ api_service* WASABI_API_SVC = NULL;
 extern "C" HINSTANCE WASABI_API_LNG_HINST = 0;
 HINSTANCE WASABI_API_ORIG_HINST = 0;
 
-static wchar_t pluginTitle[256] = {0};
-
 extern "C" void SetupWasabiServices(Out_Module *_plugin)
 {
 	// load all of the required wasabi services from the winamp client
@@ -73,7 +71,7 @@ extern "C" LPWSTR GetTextResource(const UINT id, LPWSTR* text)
 
 void __cdecl about(HWND hWndParent)
 {
-	wchar_t message[4096] = { 0 };
+	wchar_t message[4096]/* = { 0 }*/;
 
 	const unsigned char* output = DecompressResourceText(WASABI_API_LNG_HINST, WASABI_API_ORIG_HINST, IDR_ABOUT_GZ, NULL, true);
 
