@@ -931,6 +931,9 @@ static int ConfigInitPage(HWND hDlg, HWND hWndTab, Config *pConfig, int nPage)
     2                 // _In_    UINT    cPoints
   );
 
+  UXThemeFunc((WPARAM)pPage->hDlg);
+  DarkModeSetup(pPage->hDlg);
+
   SetWindowPos(pPage->hDlg,hWndTab/*HWND_TOP*/,rc.left,rc.top,0,0,
       SWP_NOSIZE|SWP_HIDEWINDOW|SWP_NOACTIVATE);
   code=0;
@@ -958,8 +961,6 @@ static int ConfigInitTabControl(HWND hDlg, Config *pConfig, int idc)
       DMESSAGE("initializing page");
       goto param;
     }
-
-	UXThemeFunc((WPARAM)pConfig->aPages[nPageCreate].hDlg);
   }
   BringWindowToTop(hWndTab);
   SendMessage(hWndTab,TCM_SETCURSEL,pConfig->options.common.nPage,0);
@@ -1268,14 +1269,14 @@ void ConfigDialog(Player *pPlayer, Config *pConfig, HWND hWndParent)
   HRESULT hr = -1;
 
   if (nNumPages!=NUM_PAGES) {
-    MessageBoxA(
+    /*MessageBoxA(
       NULL,                     // _In_opt_ HWND    hWnd,
       "Inconsistent number of pages.",
                                 // _In_opt_ LPCTSTR lpText,
       "YASAPI Error Message",   // _In_opt_ LPCTSTR lpCaption,
       MB_SYSTEMMODAL|MB_ICONERROR
                                 // _In_     UINT    uType
-    );
+    );*/
 
     goto pages;
   }

@@ -520,7 +520,9 @@ INT_PTR CALLBACK ConfigProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 extern LPWSTR GetLangStringDup(const UINT id);
 
-__declspec(dllexport) BOOL __cdecl winampGetOutPrefs(prefsDlgRecW* prefs)
+__declspec(dllexport) BOOL __cdecl winampGetOutPrefs(prefsDlgRecW* prefs, const int mode)
+{
+	if (!mode)
 {
 	// this is called when the preferences window is being created
 	// and is used for the delayed registering of a native prefs
@@ -535,6 +537,14 @@ __declspec(dllexport) BOOL __cdecl winampGetOutPrefs(prefsDlgRecW* prefs)
 		prefs->where = 9;
 		prefs->_id = 52;
 		output_prefs = prefs;
+		}
+	}
+	else
+	{
+		if (output_prefs != NULL)
+		{
+			output_prefs = (prefsDlgRecW*)RemovePrefsPage((WPARAM)output_prefs, TRUE);
+		}
 	}
 	return !!output_prefs;
 }
