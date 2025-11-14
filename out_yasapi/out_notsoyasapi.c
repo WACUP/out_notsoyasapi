@@ -334,7 +334,7 @@ void setvolume(const int volume)
       player.base.nVolume=volume;
       DPRINTF(DEBUG,"%s: %.2f\n",__func__,(double)volume/YASAPI_MAX_VOLUME);
 #else // } {
-      player.base.qVolume=255==volume?1.0:(double)volume/255;
+      player.base.qVolume=255==volume?1.f:(double)volume/ YASAPI_MAX_VOLUME;
       DPRINTF(DEBUG,"%s: %.2f\n",__func__,player.base.qVolume);
 #endif // }
 	} else {
@@ -523,20 +523,20 @@ extern LPWSTR GetLangStringDup(const UINT id);
 __declspec(dllexport) BOOL __cdecl winampGetOutPrefs(prefsDlgRecW* prefs, const int mode)
 {
 	if (!mode)
-{
-	// this is called when the preferences window is being created
-	// and is used for the delayed registering of a native prefs
-	// page to be placed as a child of the 'Output' node (why not)
-	if (prefs)
 	{
-		// TODO localise
-		prefs->hInst = plugin.hDllInstance/*WASABI_API_LNG_HINST*/;
-		prefs->dlgID = IDD_CONFIG;
-		prefs->name = GetLangStringDup(IDS_WASAPI);
-		prefs->proc = (void*)ConfigProc;
-		prefs->where = 9;
-		prefs->_id = 52;
-		output_prefs = prefs;
+		// this is called when the preferences window is being created
+		// and is used for the delayed registering of a native prefs
+		// page to be placed as a child of the 'Output' node (why not)
+		if (prefs)
+		{
+			// TODO localise
+			prefs->hInst = plugin.hDllInstance/*WASABI_API_LNG_HINST*/;
+			prefs->dlgID = IDD_CONFIG;
+			prefs->name = GetLangStringDup(IDS_WASAPI);
+			prefs->proc = (void*)ConfigProc;
+			prefs->where = 9;
+			prefs->_id = 52;
+			output_prefs = prefs;
 		}
 	}
 	else

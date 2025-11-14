@@ -2066,8 +2066,7 @@ static void CopySampleDirect(char *wp, int m, const char *rp, int k)
   }
 }
 
-static void CopySampleIndirect(char *wp, int m, const char *rp, int k,
-    int nVolume)
+static void CopySampleIndirect(char *wp, const int m, const char *rp, const int k, const float nVolume)
 {
   __try
   {
@@ -2082,7 +2081,7 @@ static void CopySampleIndirect(char *wp, int m, const char *rp, int k,
       k                     // _In_  SIZE_T Length
     );
 
-    i32=MulDiv(i32,nVolume,YASAPI_MAX_VOLUME);
+    i32=(int32_t)((i32*nVolume)/YASAPI_MAX_VOLUME);
 
     // copy the temorary location to the target.
     memcpy(
@@ -2106,7 +2105,7 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
 #if defined (YASAPI_FORCE24BIT) // {
   const Convert *pSource=&pPlayer->open.source;
   const Convert *pTarget=&pPlayer->open.target;
-  int nVolume=pPlayer->options.common.bVolume
+  float nVolume=pPlayer->options.common.bVolume
       ?pPlayer->base.nVolume:YASAPI_MAX_VOLUME;
   int nPan=pPlayer->options.common.bVolume
       ?pPlayer->base.nPan:0;
@@ -2152,7 +2151,7 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
       int nChannel=0;
       while (wp<mp) {
 
-        int nVol=nVolume;
+        float nVol=nVolume;
         // TODO: for now only supporting stereo
         //       but would be nice to do mono &
         //       others where it's a viability.
@@ -2186,7 +2185,7 @@ void PlayerCopyMemory(PVOID p, PVOID Destination, const VOID *Source,
           // TODO: for now only supporting stereo
           //       but would be nice to do mono &
           //       others where it's a viability.
-          int nVol=nVolume;
+          float nVol=nVolume;
           if ((nPan!=0) && (pSource->nChannels==2))
           {
             if (!nChannel && (nPan>0)) {
