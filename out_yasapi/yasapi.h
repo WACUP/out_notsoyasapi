@@ -56,7 +56,7 @@ extern Out_Module plugin;
 ///////////////////////////////////////////////////////////////////////////////
 #if ! defined (YASAPI_VER) // {
   #define YASAPI_VER            1.7.25
-  #define PLUGIN_VERSION        "1.6.7"
+  #define PLUGIN_VERSION        "1.6.8"
 #endif // }
 
 #define YASAPI_VERSION          YA_STR(YASAPI_VER)
@@ -273,9 +273,9 @@ struct _OptionsCommon {
   wchar_t szId[YASAPI_ID_SIZE];
   int bMono2Stereo;
   int bVolume;
-#if defined (YASAPI_SURROUND) // {
+/*#if defined (YASAPI_SURROUND) // {
   int bSurround;
-#endif // }
+#endif // }*/
 #if defined (YASAPI_GAPLESS) // {
   int bGapless;
   int bDisconnect;
@@ -498,9 +498,9 @@ struct _Player {
     const Disconnect *pDisconnect;
     WAVEFORMATEXTENSIBLE wfxx;
     WORD wBytesPerSample;
-#if defined (YASAPI_SURROUND) // {
+/*#if defined (YASAPI_SURROUND) // {
     int bSurround;
-#endif // }
+#endif // }*/
 #if defined (YASAPI_FORCE24BIT) // {
     Convert source;
     Convert target;

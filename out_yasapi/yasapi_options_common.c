@@ -23,9 +23,9 @@
 static const Property gcaCommonProperties[]={
   { L"id",&gcStringType,offsetof(OptionsCommon,szId),YASAPI_ID_SIZE },
   { L"mono2stereo",&gcIntType,offsetof(OptionsCommon,bMono2Stereo),0 },
-#if defined (YASAPI_SURROUND) // {
+/*#if defined (YASAPI_SURROUND) // {
   { L"surround",&gcIntType,offsetof(OptionsCommon,bSurround),0 },
-#endif // }
+#endif // }*/
   { L"volume",&gcIntType,offsetof(OptionsCommon,bVolume),0 },
 #if defined (YASAPI_GAPLESS) // {
   { L"gapless",&gcIntType,offsetof(OptionsCommon,bGapless),0 },
@@ -86,9 +86,9 @@ const OptionsCommon *OptionsCommonDefault(void)
   if (!initialized) {
     options.bMono2Stereo=TRUE;
 	options.bVolume=TRUE;
-#if defined (YASAPI_SURROUND) // {
+/*#if defined (YASAPI_SURROUND) // {
     options.bSurround=FALSE;
-#endif // }
+#endif // }*/
 #if defined (YASAPI_GAPLESS) // {
     options.bGapless=TRUE;
     options.bDisconnect=TRUE;

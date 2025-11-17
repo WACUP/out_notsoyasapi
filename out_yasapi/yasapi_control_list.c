@@ -57,10 +57,10 @@ static const ControlComboBoxConfig gcCheckUnderflowConfig=
 #endif // }
 #endif // }
 
-#if defined (YASAPI_SURROUND) // {
+/*#if defined (YASAPI_SURROUND) // {
 static const ControlCheckBoxConfig gcSurround=
   { IDC_CHECKBOX_SURROUND,offsetof(OptionsCommon,bSurround),0,1,IDS_SURROUND_MODE };
-#endif // }
+#endif // }*/
 
 ////////////////
 static const ControlCheckBoxConfig gcFormatSupported=
@@ -100,9 +100,9 @@ const Control gcaCommonControls[]={
   { &gcComboBoxType,&gcCheckUnderflowConfig },
 #endif // }
 #endif // }
-#if defined (YASAPI_SURROUND) // {
+/*#if defined (YASAPI_SURROUND) // {
   { &gcCheckBoxType,&gcSurround },
-#endif // }
+#endif // }*/
   { &gcCheckBoxType,&gcFormatSupported },
   { &gcComboBoxType,&gcAudioClockConfig },
   { &gcCheckBoxType,&gcVisualizationConfig },

@@ -679,9 +679,9 @@ void PlayerCreateWFXX(Player *pPlayer, Request *pRequest)
   Convert *pSource=&pPlayer->open.source;
   Convert *pTarget=&pPlayer->open.target;
 #endif // }
-#if defined (YASAPI_SURROUND) // {
+/*#if defined (YASAPI_SURROUND) // {
   int bSurround;
-#endif // }
+#endif // }*/
 
   DPRINTF(0,"  > %s (%d, %d, %d) <\n",
       __func__,srate,numchan,bps);
@@ -749,10 +749,10 @@ void PlayerCreateWFXX(Player *pPlayer, Request *pRequest)
 #endif // }
 
 #if defined (YASAPI_SURROUND) // {
-  bSurround=pPlayer->open.bSurround=pPlayer->options.common.bSurround;
-  WFXXSetup(pwfxx,srate,pTarget->nChannels,(pTarget->nBytesPerSample<<3),bSurround,FALSE);
+  //bSurround=pPlayer->open.bSurround=pPlayer->options.common.bSurround;
+  WFXXSetup(pwfxx,srate,pTarget->nChannels,(pTarget->nBytesPerSample<<3),WantSurroundPlayback(),FALSE);
 #else // } {
-  WFXXSetup(pwfxx,samplerate,pTarget->nChannels,(pTarget->nBytesPerSample<<3),FALSE,FALSE);
+  WFXXSetup(pwfxx,srate,pTarget->nChannels,(pTarget->nBytesPerSample<<3),FALSE,FALSE);
 #endif // }
   pPlayer->open.wBytesPerSample=pwfx->wBitsPerSample>>3;
 }

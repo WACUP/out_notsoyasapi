@@ -190,9 +190,9 @@ int open(const int samplerate, const int numchannels, const int bitspersamp,
   }
   else if (bGapless&&bReset) {
     //bChange=bChange/*||wcscmp(device.szId,player.device.szId)*/;
-#if defined (YASAPI_SURROUND) // {
+/*#if defined (YASAPI_SURROUND) // {
     bChange=bChange||player.options.common.bSurround!=player.open.bSurround;
-#endif // }
+#endif // }*/
     bChange=bChange||numchannels!=nChannels;
     bChange=bChange||samplerate!=nSamplesPerSec;
     bChange=bChange||bitspersamp!=wBitsPerSample;

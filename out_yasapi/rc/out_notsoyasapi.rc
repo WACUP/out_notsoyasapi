@@ -68,11 +68,11 @@ BEGIN
     CONTROL         "",IDC_PROGRESSBAR_RING,"msctls_progress32",0x0,63,90,197,12
     RTEXT           "Shared Buffer:",IDC_STATIC_SHARED,9,109,50,9
     CONTROL         "",IDC_PROGRESSBAR_SHARED,"msctls_progress32",0x0,63,107,197,12
-    CONTROL         "",IDC_TABCONTROL,"SysTabControl32",WS_TABSTOP,5,131,262,165
+    CONTROL         "",IDC_TABCONTROL,"SysTabControl32",WS_TABSTOP,5,131,262,143
     PUSHBUTTON      "Defaults",IDC_BUTTON_DEFAULT,216,129,50,13
 END
 
-IDD_PAGE_BUFFERS DIALOGEX 0, 0, 255, 140
+IDD_PAGE_BUFFERS DIALOGEX 0, 0, 255, 130
 STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | DS_CONTROL | DS_CENTER | WS_CHILD
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
@@ -86,7 +86,57 @@ BEGIN
     LTEXT           "Start Playing: 2.00 X size of shared buffer",IDC_STATIC_RING_FILL,5,106,203,8
 END
 
+#if defined(APSTUDIO_INVOKED) || !defined(YASAPI_SURROUND)
+IDD_PAGE_COMMON DIALOGEX 0, 0, 215, 130
+STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | DS_CONTROL | DS_CENTER | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "Enable volume control",IDC_CHECKBOX_VOLUME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,5,202,8
+    CONTROL         "Enable gapless playback",IDC_CHECKBOX_GAPLESS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,19,202,8
+    CONTROL         "Automatically disconnect when idle",IDC_CHECKBOX_DISCONNECT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,32,194,8
+    CONTROL         "Convert mono input to stereo",IDC_CHECKBOX_MONO2STEREO,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,45,202,8
+    CONTROL         "Check format is supported on initialisation",IDC_CHECKBOX_FORMAT_SUPPORTED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,58,202,8
+    CONTROL         "Show buffer usage",IDC_CHECKBOX_VISUALIZATION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,71,202,8
+    RTEXT           "Clock:",IDC_STATIC_LABEL_CLOCK,13,86,21,8
+    COMBOBOX        IDC_COMBOBOX_CLOCK,42,84,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    RTEXT           "Measure Time:",IDC_STATIC_LABEL_TIME_TAG,13,102,51,8
+    CONTROL         "Position (integer)",IDC_RADIOBUTTON_TIME_POSITION,
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,71,101,73,10
+    CONTROL         "Position/Frequency (floating point)",IDC_RADIOBUTTON_TIME_TIME,
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,71,113,131,10
+    RTEXT           "Debug:",IDC_STATIC_LABEL_DEBUG,283,92,24,9,NOT WS_VISIBLE
+    COMBOBOX        IDC_COMBOBOX_DEBUG,315,91,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | NOT WS_VISIBLE | WS_TABSTOP
+    CONTROL         "File",IDC_CHECKBOX_FILE,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,381,92,27,8
+    RTEXT           "Closing Console:",IDC_STATIC_LABEL_SLEEP,415,92,53,9,NOT WS_VISIBLE
+    COMBOBOX        IDC_COMBOBOX_SLEEP,473,91,39,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | NOT WS_VISIBLE | WS_TABSTOP
+END
+#endif
+
+IDD_PAGE_DEVICE DIALOGEX 0, 0, 215, 130
+STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | DS_CONTROL | DS_CENTER | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    RTEXT           "Share Mode:",IDC_STATIC_LABEL_SHAREMODE,4,7,44,8
+    COMBOBOX        IDC_COMBOBOX_SHAREMODE,52,5,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    CONTROL         "Auto convert to system samplerate",IDC_CHECKBOX_AUTOCONVERT_PCM,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,22,201,10
+    CONTROL         "Use improved sample rate conversion",IDC_CHECKBOX_SRC_DEFAULT_QUALITY,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,35,201,10
+    RTEXT           "Strategy:",IDC_STATIC_LABEL_SHAREMODE1,3,52,32,8
+    COMBOBOX        IDC_COMBOBOX_PULL,41,50,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    CONTROL         "Convert 16-bit audio streams to 24-bit",IDC_CHECKBOX_FORMAT_FORCE24BIT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,67,201,10
+END
+
+#if defined(APSTUDIO_INVOKED) || defined(YASAPI_SURROUND)
+#if defined(APSTUDIO_INVOKED)
+IDD_PAGE_COMMON$(YASAPI_SURROUND) DIALOGEX 0, 0, 215, 140
+#else
 IDD_PAGE_COMMON DIALOGEX 0, 0, 215, 140
+#endif
 STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | DS_CONTROL | DS_CENTER | WS_CHILD
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
@@ -113,22 +163,7 @@ BEGIN
     RTEXT           "Closing Console:",IDC_STATIC_LABEL_SLEEP,415,123,53,9,NOT WS_VISIBLE
     COMBOBOX        IDC_COMBOBOX_SLEEP,473,122,39,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | NOT WS_VISIBLE | WS_TABSTOP
 END
-
-IDD_PAGE_DEVICE DIALOGEX 0, 0, 215, 140
-STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | DS_CONTROL | DS_CENTER | WS_CHILD
-FONT 8, "MS Shell Dlg", 0, 0, 0x0
-BEGIN
-    RTEXT           "Share Mode:",IDC_STATIC_LABEL_SHAREMODE,4,7,44,8
-    COMBOBOX        IDC_COMBOBOX_SHAREMODE,52,5,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
-    CONTROL         "Auto convert to system samplerate",IDC_CHECKBOX_AUTOCONVERT_PCM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,22,201,10
-    CONTROL         "Use improved sample rate conversion",IDC_CHECKBOX_SRC_DEFAULT_QUALITY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,35,201,10
-    RTEXT           "Strategy:",IDC_STATIC_LABEL_SHAREMODE1,3,52,32,8
-    COMBOBOX        IDC_COMBOBOX_PULL,41,50,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
-    CONTROL         "Convert 16-bit audio streams to 24-bit",IDC_CHECKBOX_FORMAT_FORCE24BIT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,67,201,10
-END
+#endif
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -165,6 +200,12 @@ BEGIN
         LEFTMARGIN, 7
         TOPMARGIN, 7
     END
+
+    "IDD_PAGE_COMMON$(YASAPI_SURROUND)", DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -175,8 +216,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,6,7,0
- PRODUCTVERSION 1,6,7,0
+ FILEVERSION 1,6,8,0
+ PRODUCTVERSION 1,6,8,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -193,12 +234,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "WACUP"
             VALUE "FileDescription", "Output Plug-in"
-            VALUE "FileVersion", "1.6.7.0"
+            VALUE "FileVersion", "1.6.8.0"
             VALUE "InternalName", "out_notsoyasapi.dll"
             VALUE "LegalCopyright", "Copyright © 2015-2016 Peter Belkner, Not So YASAPI modifications by Darren Owen aka DrO © 2016-2025"
             VALUE "OriginalFilename", "out_notsoyasapi.dll"
             VALUE "ProductName", "Not So YASAPI"
-            VALUE "ProductVersion", "1.6.7.0"
+            VALUE "ProductVersion", "1.6.8.0"
         END
     END
     BLOCK "VarFileInfo"
