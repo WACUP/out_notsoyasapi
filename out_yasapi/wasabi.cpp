@@ -1,8 +1,8 @@
 #include <yasapi.h>
-#include <nu/servicebuilder.h>
-#include <wasabi/api/service/api_service.h>
+#include <nu/ServiceBuilder.h>
+#include <Wasabi/api/service/api_service.h>
 #include <Agave/Language/api_language.h>
-#include <wasabi/api/service/waServiceFactory.h>
+#include <Wasabi/api/service/waservicefactory.h>
 #include <loader/hook/get_api_service.h>
 #include <loader/hook/squash.h>
 #include <loader/loader/utils.h>

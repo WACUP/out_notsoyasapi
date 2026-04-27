@@ -18,6 +18,8 @@
  * along with libya.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <ya.h>
+
+#ifdef _DEBUG
 // TODO localise
 static int vmessagea(const char *format, va_list ap)
 {
@@ -53,6 +55,7 @@ static int vmessagew(const wchar_t *format, va_list ap)
 
   return (int)(wp-buf);
 }
+#endif
 
 void messagea(int force, HRESULT x, HRESULT *y, const char *m, ...)
 {

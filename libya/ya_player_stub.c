@@ -127,11 +127,11 @@ void PlayerStubDestroy(PlayerStub *pStub)
     PLAYER_STUB_SEND(pStub,1,pStub->lpVtbl->GetStamp(pStub->pPlayer),PlayerPing);
 #endif // }
 #if 1
-    WaitForThreadToClose(&pStub->hThread,5000/*/INFINITE/**/);
+    WaitForThreadToClose(&pStub->hThread,5000);
 #else
     if (CheckThreadHandleIsValid(&pStub->hThread)) {
       DPUTS(0,"  waiting for thread to die\n");
-      WaitForSingleObjectEx(pStub->hThread,5000/*/INFINITE/**/, TRUE);
+      WaitForSingleObjectEx(pStub->hThread,5000, TRUE);
       DPUTS(0,"  destroying thread\n");
       if (pStub->hThread) {
         CloseHandle(pStub->hThread);

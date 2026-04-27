@@ -80,7 +80,7 @@ int PlayerDeviceCreate(PlayerDevice *pPlayerDevice, LPCWSTR pcstrId,
     if (pPlayerDevice->szId) {
       MemFreeCOM(pPlayerDevice->szId);
     }
-    pPlayerDevice->szId=CoTaskMemAlloc(uLen * 2);
+    pPlayerDevice->szId=MemAllocCOM(uLen * 2);
     if (pPlayerDevice->szId) {
       CopyCchStr(pPlayerDevice->szId, uLen, pcstrId);
     }

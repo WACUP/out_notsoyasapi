@@ -458,7 +458,7 @@ static void ConfigUpdateProgress(HWND hWnd, WORD wParam)
 {
   const LRESULT lMin=SendMessage(hWnd,PBM_GETRANGE,TRUE,0),
                 lMax=SendMessage(hWnd,PBM_GETRANGE,FALSE,0);
-  SendMessage(hWnd,PBM_SETPOS,(lMin+MulDiv((int)(lMax-lMin),wParam,USHRT_MAX)),0);
+  SendMessage(hWnd,PBM_SETPOS,(WPARAM)(lMin+MulDiv((int)(lMax-lMin),wParam,USHRT_MAX)),0);
 }
 
 static void ConfigSyncVisualization(HWND hDlg, Config *pConfig)
@@ -773,12 +773,12 @@ static PageVMT *GetDeviceVMT(void)
 static INT_PTR CALLBACK BuffersProc(HWND hDlg, UINT uMsg, WPARAM wParam,
     LPARAM lParam)
 {
-  const Config *pConfig=(const Config *)GetWindowLongPtrW(hDlg,GWLP_USERDATA);
+  //const Config *pConfig=(const Config *)GetWindowLongPtrW(hDlg,GWLP_USERDATA);
 
   switch (uMsg) {
   case WM_INITDIALOG:
     // cppcheck-suppress unreadVariable
-    pConfig=(Config *)lParam;
+    //pConfig=(Config *)lParam;
     SetWindowLongPtrW(hDlg,GWLP_USERDATA,lParam);
     ControlsInit(gcaBuffersControls,hDlg/*,pConfig->hModule*/);
     return TRUE;
@@ -857,14 +857,14 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
 
     if (!cDevice) {
       uLen=0;
-      uLen+= 18/*/(UINT)wcslen(L"Default Device -- ")/**/;
+      uLen+= 18/*(UINT)wcslen(L"Default Device -- ")*/;
       uLen+=(UINT)wcslen(pConfigDevice->vName.pwszVal);
 
       if (NULL==(pwszLabel=YA_MALLOC((uLen+1)*(sizeof *pwszLabel))))
         goto label;
 
       CopyCchStr(pwszLabel,uLen,L"Default Device -- ");
-	  labelLen=18/*/(UINT)wcslen(pwszLabel)/**/;
+	  labelLen=18/*(UINT)wcslen(pwszLabel)*/;
 	  uLen-=labelLen;
       CopyCchStr(pwszLabel+labelLen,uLen,pConfigDevice->vName.pwszVal);
     }
@@ -886,7 +886,7 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
       nDevice=cDevice+1;
   }
 
-  SendMessage(hComboBox,CB_SETCURSEL,nDevice?nDevice-1:0,0);
+  SendMessage(hComboBox,CB_SETCURSEL,(WPARAM)(nDevice?nDevice-1:0),0);
 label:
 config:
   return;
@@ -1032,7 +1032,7 @@ void ConfigSave(Config *pConfig)
 		Player *pPlayer = pConfig->pPlayer;
 		HWND hComboBox = GetDlgItem(pConfig->hDlg, IDC_COMBOBOX_DEVICE);
 		DWORD cDevice = (DWORD)SendMessage(hComboBox, CB_GETCURSEL, 0, 0);
-		if (cDevice != CB_ERR) {
+		if (cDevice != (DWORD)CB_ERR) {
 			ConfigDevice *pConfigDevice = (ConfigDevice *)SendMessage(hComboBox,
 													CB_GETITEMDATA, cDevice, 0);
 
@@ -1108,7 +1108,7 @@ static void ConfigOnSelChangeComboBox(HWND hDlg,Config *pConfig,
 {
   Player *pPlayer=pConfig->pPlayer;
   DWORD cDevice=(DWORD)SendMessage(hComboBox,CB_GETCURSEL,0,0);
-  if (cDevice == CB_ERR)
+  if (cDevice == (DWORD)CB_ERR)
     goto label;
 
   ConfigDevice *pConfigDevice=(ConfigDevice *)SendMessage(hComboBox,
