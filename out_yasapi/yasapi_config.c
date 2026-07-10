@@ -123,13 +123,13 @@ static int GetPull(HWND hDlg)
 
 static int GetAutoConvertPCM(HWND hDlg)
 {
-  return IsDlgButtonChecked(hDlg,IDC_CHECKBOX_AUTOCONVERT_PCM);
+  return (IsDlgButtonChecked(hDlg,IDC_CHECKBOX_AUTOCONVERT_PCM)==BST_CHECKED);
 }
 
 #if defined (YASAPI_GAPLESS) // {
 static int GetGapless(HWND hDlg)
 {
-  return IsDlgButtonChecked(hDlg,IDC_CHECKBOX_GAPLESS);
+  return (IsDlgButtonChecked(hDlg,IDC_CHECKBOX_GAPLESS)==BST_CHECKED);
 }
 #endif // }
 
@@ -464,7 +464,7 @@ static void ConfigUpdateProgress(HWND hWnd, WORD wParam)
 static void ConfigSyncVisualization(HWND hDlg, Config *pConfig)
 {
   Player *pPlayer=pConfig->pPlayer;
-  BOOL bVisualization=IsDlgButtonChecked(hDlg,IDC_CHECKBOX_VISUALIZATION);
+  BOOL bVisualization=(IsDlgButtonChecked(hDlg,IDC_CHECKBOX_VISUALIZATION)==BST_CHECKED);
 
   if (!bVisualization) {
     // clear progress bars.
@@ -847,12 +847,13 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
 {
   Options *pOptions=&pConfig->pPlayer->options;
   HWND hComboBox=GetDlgItem(hDlg,idc);
-  UINT uLen,cDevice,nDevice=0,labelLen,comboWidth=0;
+  UINT uLen,cDevice,nDevice=0,labelLen;
+  INT comboWidth=0;
   ConfigDevice *pConfigDevice;
   wchar_t *pwszLabel;
 
   for (cDevice=0;cDevice<1+pConfig->nDevices;++cDevice) {
-    if (NULL==(pConfigDevice=ConfigDeviceNew(pConfig,cDevice)))
+    if (NULL==(pConfigDevice=ConfigDeviceNew(pConfig,(int)cDevice)))
       goto config;
 
     if (!cDevice) {
@@ -1071,7 +1072,7 @@ static void ConfigEndDialog(HWND hDlg, Config *pConfig, INT_PTR nResult)
 {
 	if (pConfig != NULL)
 	{
-    	int nDevices = 1 + pConfig->nDevices;
+    	int nDevices = 1 + (int)pConfig->nDevices;
 
         if (pConfig->pPlayer) {
             pConfig->pPlayer->hDlgConfig = NULL;
@@ -1266,7 +1267,7 @@ void ConfigDialog(Player *pPlayer, Config *pConfig, HWND hWndParent)
   IMMDeviceCollection *pCollection = 0;
   int nNumPages = (sizeof gaTemplates) / (sizeof *gaTemplates);
   UINT nDevices = 0;
-  HRESULT hr = -1;
+  HRESULT hr = E_FAIL;
 
   if (nNumPages!=NUM_PAGES) {
     /*MessageBoxA(

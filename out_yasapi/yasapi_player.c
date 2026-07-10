@@ -941,7 +941,11 @@ int PlayerOpen(Player *pPlayer, Request *pRequest)
     goto ring;
   }
 
+#if defined YASAPI_TIME_TAG
   if (TimeReset(&pPlayer->time,pPlayer->options.common.eTimeTag,
+#else
+  if (TimeReset(&pPlayer->time,
+#endif
       &pPlayer->connect)<0) {
     DMESSAGE("re-setting time offset");
     goto time;

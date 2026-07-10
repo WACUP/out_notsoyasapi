@@ -102,11 +102,6 @@ BEGIN
     CONTROL         "Show buffer usage",IDC_CHECKBOX_VISUALIZATION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,71,202,8
     RTEXT           "Clock:",IDC_STATIC_LABEL_CLOCK,13,86,21,8
     COMBOBOX        IDC_COMBOBOX_CLOCK,42,84,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
-    RTEXT           "Measure Time:",IDC_STATIC_LABEL_TIME_TAG,13,102,51,8
-    CONTROL         "Position (integer)",IDC_RADIOBUTTON_TIME_POSITION,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,71,101,73,10
-    CONTROL         "Position/Frequency (floating point)",IDC_RADIOBUTTON_TIME_TIME,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,71,113,131,10
     RTEXT           "Debug:",IDC_STATIC_LABEL_DEBUG,283,92,24,9,NOT WS_VISIBLE
     COMBOBOX        IDC_COMBOBOX_DEBUG,315,91,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | NOT WS_VISIBLE | WS_TABSTOP
     CONTROL         "File",IDC_CHECKBOX_FILE,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,381,92,27,8
@@ -216,8 +211,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,6,9,0
- PRODUCTVERSION 1,6,9,0
+ FILEVERSION 1,6,10,0
+ PRODUCTVERSION 1,6,10,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -234,12 +229,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "WACUP"
             VALUE "FileDescription", "Output Plug-in"
-            VALUE "FileVersion", "1.6.9.0"
+            VALUE "FileVersion", "1.6.10.0"
             VALUE "InternalName", "out_notsoyasapi.dll"
             VALUE "LegalCopyright", "Copyright © 2015-2016 Peter Belkner, Not So YASAPI modifications by Darren Owen aka DrO © 2016-2026"
             VALUE "OriginalFilename", "out_notsoyasapi.dll"
             VALUE "ProductName", "Not So YASAPI"
-            VALUE "ProductVersion", "1.6.9.0"
+            VALUE "ProductVersion", "1.6.10.0"
         END
     END
     BLOCK "VarFileInfo"

@@ -161,7 +161,7 @@ int open(const int samplerate, const int numchannels, const int bitspersamp,
   const WAVEFORMATEX *pwfx=&pwfxx->Format;
   const WORD wBitsPerSample=pwfx->wBitsPerSample;
   const int nChannels=pwfx->nChannels;
-  const int nSamplesPerSec=pwfxx->Format.nSamplesPerSec;
+  const int nSamplesPerSec=(const int)pwfxx->Format.nSamplesPerSec;
   int bChange=0;
 #endif // }
 

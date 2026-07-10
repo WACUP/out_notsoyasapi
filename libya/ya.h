@@ -391,9 +391,9 @@ struct _Request {
 ///////////////////////////////////////////////////////////////////////////////
 struct _QueueStrategy {
   const char *name;
-  HANDLE (*GetSemaphoreDown)(Queue *pQueue);
-  HANDLE (*GetSemaphoreUp)(Queue *pQueue);
-  BOOL (*IsAlertable)(Queue *pQueue);
+  HANDLE (*GetSemaphoreDown)(const Queue *pQueue);
+  HANDLE (*GetSemaphoreUp)(const Queue *pQueue);
+  BOOL (*IsAlertable)(const Queue *pQueue);
   Request **(*GetRequest)(Queue *pQueue);
 #if defined (YA_DEBUG) // {
   void (*Inc)(Queue *pQueue);

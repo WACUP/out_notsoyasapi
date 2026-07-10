@@ -81,11 +81,13 @@ static const ControlCheckBoxConfig gcVisualizationConfig=
   { IDC_CHECKBOX_VISUALIZATION,offsetof(OptionsCommon,bVisualization),0,1,IDS_VISUALISE_BUFFERS };
 
 #if defined (YASAPI_GAPLESS) // {
+#if defined YASAPI_TIME_TAG
 static const ControlRadioButtonConfig gcTimeTagRadioButtons[]={
   { IDC_RADIOBUTTON_TIME_POSITION,offsetof(OptionsCommon,eTimeTag),TIME_POSITION,IDS_TIME_POSITION },
   { IDC_RADIOBUTTON_TIME_TIME,offsetof(OptionsCommon,eTimeTag),TIME_TIME,IDS_TIME_TIME },
   { 0,0,0,NULL }
 };
+#endif
 #endif // }
 
 ////////////////
@@ -95,7 +97,9 @@ const Control gcaCommonControls[]={
 #if defined (YASAPI_GAPLESS) // {
   { &gcCheckBoxType,&gcGapless },
   { &gcCheckBoxType,&gcDisconnect },
+#if defined YASAPI_TIME_TAG
   { &gcRadioButtonType,gcTimeTagRadioButtons },
+#endif
 #if defined (YASAPI_CHECK_UNDERFLOW) // {
   { &gcComboBoxType,&gcCheckUnderflowConfig },
 #endif // }

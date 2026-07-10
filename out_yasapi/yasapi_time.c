@@ -80,7 +80,7 @@ int TimeSegmentGet(TimeSegment *pSegment, UINT64 u64Frequency,
       goto frequency;
     }
 
-    pSegment->xSeconds=(double)u64Position/u64Frequency;
+    pSegment->xSeconds=(double)(u64Position/u64Frequency);
   }
 
   return 0;
@@ -91,7 +91,11 @@ invalid:
   return -1;
 }
 
+#if defined YASAPI_TIME_TAG
 int TimeReset(Time *pTime, TimeTag eTimeTag, Connection *pConnect)
+#else
+int TimeReset(Time *pTime, Connection *pConnect)
+#endif
 {
   enum { DEBUG=0 };
 
@@ -107,21 +111,28 @@ int TimeReset(Time *pTime, TimeTag eTimeTag, Connection *pConnect)
     goto null;
   }
 
+#if defined YASAPI_TIME_TAG
   switch (eTimeTag) {
   case TIME_POSITION:
+#endif
     if (ConnectionGetFrequency(pConnect,&pTime->u64Frequency)<0) {
       DMESSAGE("getting frequency");
       goto frequency;
     }
-
+#if defined YASAPI_TIME_TAG
     break;
   case TIME_TIME:
     pTime->u64Frequency=0ull;
     break;
   default:
     DMESSAGEV("tag mismatch: %d\n",eTimeTag);
+#else
+    else
+#endif
     goto tag;
+#if defined YASAPI_TIME_TAG
   }
+#endif
 
   TimeSegmentReset(&pTime->gapless,pTime->u64Frequency);
   TimeSegmentReset(&pTime->pause,pTime->u64Frequency);
@@ -250,9 +261,9 @@ int TimeMigrate(Time *pTime, Connection *pConnect)
 #endif // }
 
   if (pTime->u64Frequency) {
-    pGapless->xSeconds=(double)pGapless->u64Position/pTime->u64Frequency;
-    pPause->xSeconds=(double)pPause->u64Position/pTime->u64Frequency;
-    pCurrent->xSeconds=(double)pCurrent->u64Position/pTime->u64Frequency;
+    pGapless->xSeconds=(double)(pGapless->u64Position/pTime->u64Frequency);
+    pPause->xSeconds=(double)(pPause->u64Position/pTime->u64Frequency);
+    pCurrent->xSeconds=(double)(pCurrent->u64Position/pTime->u64Frequency);
   
     if (ConnectionGetFrequency(pConnect,&pTime->u64Frequency)<0) {
       DMESSAGE("getting frequency");
@@ -306,8 +317,8 @@ int TimeGetMS(Time *pTime, Connection *pConnect, double *pms)
   }
 
   if (pTime->u64Frequency) {
-    *pms=1000.0*(pCurrent->u64Position+pPause->u64Position
-        -pGapless->u64Position)/pTime->u64Frequency;
+    *pms=(1000.0*(pCurrent->u64Position+pPause->u64Position
+        -pGapless->u64Position)/pTime->u64Frequency);
   }
   else
     *pms=1000.0*(pCurrent->xSeconds+pPause->xSeconds

@@ -56,7 +56,7 @@ extern Out_Module plugin;
 ///////////////////////////////////////////////////////////////////////////////
 #if ! defined (YASAPI_VER) // {
   #define YASAPI_VER            1.7.25
-  #define PLUGIN_VERSION        "1.6.9"
+  #define PLUGIN_VERSION        "1.6.10"
 #endif // }
 
 #define YASAPI_VERSION          YA_STR(YASAPI_VER)
@@ -148,7 +148,9 @@ typedef enum _PlayerState PlayerState;
 typedef struct _RingIOError RingIOError;
 typedef struct _Ring Ring;
 
+#if defined YASAPI_TIME_TAG
 typedef enum _TimeTag TimeTag;
+#endif
 typedef struct _OptionsCommon OptionsCommon;
 typedef struct _OptionsDevice OptionsDevice;
 typedef struct _Options Options;
@@ -263,10 +265,12 @@ enum _OptionsSize {
   YASAPI_ID_SIZE=64
 };
 
+#if defined YASAPI_TIME_TAG
 enum _TimeTag {
   TIME_POSITION,
   TIME_TIME
 };
+#endif
 
 struct _OptionsCommon {
   // Persistent fields have to be of type "int", "double" or "wchar_t[]".
@@ -279,7 +283,9 @@ struct _OptionsCommon {
 #if defined (YASAPI_GAPLESS) // {
   int bGapless;
   int bDisconnect;
+#if defined YASAPI_TIME_TAG
   TimeTag eTimeTag;
+#endif
 #if defined (YASAPI_CHECK_UNDERFLOW) // {
   int nCheckUnderflow;
 #endif // }
@@ -386,7 +392,11 @@ struct _Time {
   TimeSegment current;
 };
 
+#if defined YASAPI_TIME_TAG
 int TimeReset(Time *pTime, TimeTag eTimeTag, Connection *pConnect);
+#else
+int TimeReset(Time *pTime, Connection *pConnect);
+#endif
 int TimePause(Time *pTime, Connection *pConnect);
 void TimeFlush(Time *pTime);
 int TimeGapless(Time *pTime, Connection *pConnect);

@@ -30,7 +30,9 @@ static const Property gcaCommonProperties[]={
 #if defined (YASAPI_GAPLESS) // {
   { L"gapless",&gcIntType,offsetof(OptionsCommon,bGapless),0 },
   { L"disconnect",&gcIntType,offsetof(OptionsCommon,bDisconnect),0 },
+#if defined YASAPI_TIME_TAG
   { L"gapless_offset",&gcIntType,offsetof(OptionsCommon,eTimeTag),0 },
+#endif
 #if defined (YASAPI_CHECK_UNDERFLOW) // {
   { L"check_underflow",&gcIntType,offsetof(OptionsCommon,nCheckUnderflow),0 },
 #endif // }
@@ -92,7 +94,9 @@ const OptionsCommon *OptionsCommonDefault(void)
 #if defined (YASAPI_GAPLESS) // {
     options.bGapless=TRUE;
     options.bDisconnect=TRUE;
+#if defined YASAPI_TIME_TAG
     options.eTimeTag=TIME_POSITION;
+#endif
 #if defined (YASAPI_CHECK_UNDERFLOW) // {
     options.nCheckUnderflow=500;
 #endif // }

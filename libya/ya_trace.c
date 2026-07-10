@@ -398,7 +398,6 @@ void TraceControlsInit(HWND hDlg)
 			  SendDlgItemMessage(hDlg, *pIdc, CB_SETCURSEL, 0, 0);
 			  break;
 		  case IDC_IS_LABEL_DEBUG:
-			  break;
 		  case IDC_IS_LABEL_SLEEP:
 			  break;
 		  }

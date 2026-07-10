@@ -55,7 +55,7 @@ void PropertySaveInt(const wchar_t *group, const wchar_t *key, int n, const wcha
 
 static void IntTypeLoad(const Property *pProperty, PropertyIOConfig *c)
 {
-  PROPERTY_INT(pProperty,c->pData)=GetPrivateProfileIntW(
+  PROPERTY_INT(pProperty,c->pData)=(int)GetPrivateProfileIntW(
     (c->group ? c->group : L"default"),         // _In_  LPCTSTR lpAppName,
     pProperty->key,   // _In_  LPCTSTR lpKeyName,
     PROPERTY_INT(pProperty,c->pDefault),

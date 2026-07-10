@@ -30,7 +30,7 @@ static HANDLE ReadGetSemaphoreUp(const Queue *pQueue)
   return pQueue->hAvailable;
 }
 
-static BOOL ReadIsAlertable(Queue *pQueue)
+static BOOL ReadIsAlertable(const Queue *pQueue)
 {
   return TRUE;
 }
