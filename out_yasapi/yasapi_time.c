@@ -126,11 +126,7 @@ int TimeReset(Time *pTime, Connection *pConnect)
     break;
   default:
     DMESSAGEV("tag mismatch: %d\n",eTimeTag);
-#else
-    else
-#endif
     goto tag;
-#if defined YASAPI_TIME_TAG
   }
 #endif
 
@@ -139,7 +135,9 @@ int TimeReset(Time *pTime, Connection *pConnect)
   TimeSegmentReset(&pTime->current,pTime->u64Frequency);
 
   return 0;
-tag:
+#if defined YASAPI_TIME_TAG
+  tag:
+#endif
 frequency:
 null:
 invalid:
