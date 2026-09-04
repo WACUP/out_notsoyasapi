@@ -61,8 +61,8 @@ BEGIN
     COMBOBOX        IDC_COMBOBOX_DEVICE,59,22,201,100,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
     RTEXT           "Share Mode:",IDC_STATIC_LABEL_SHAREMODE,10,41,45,8
     COMBOBOX        IDC_COMBOBOX_SHAREMODE,59,39,100,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
-    RTEXT           "Strategy:",IDC_STATIC_LABEL_SHAREMODE1,10,58,45,8
-    COMBOBOX        IDC_COMBOBOX_PULL,59,56,100,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    RTEXT           "Strategy:",IDC_STATIC_LABEL_SHAREMODE1,10,58,45,8,WS_DISABLED
+    COMBOBOX        IDC_COMBOBOX_PULL,59,56,100,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_DISABLED | WS_TABSTOP
     GROUPBOX        "Buffer Usage",IDC_STATIC,5,78,261,48
     RTEXT           "Ring Buffer:",IDC_STATIC_RING,9,92,50,9
     CONTROL         "",IDC_PROGRESSBAR_RING,"msctls_progress32",0x0,63,90,197,12
@@ -120,8 +120,8 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,22,201,10
     CONTROL         "Use improved sample rate conversion",IDC_CHECKBOX_SRC_DEFAULT_QUALITY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,35,201,10
-    RTEXT           "Strategy:",IDC_STATIC_LABEL_SHAREMODE1,3,52,32,8
-    COMBOBOX        IDC_COMBOBOX_PULL,41,50,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_TABSTOP
+    RTEXT           "Strategy:",IDC_STATIC_LABEL_SHAREMODE1,3,52,32,8,WS_DISABLED
+    COMBOBOX        IDC_COMBOBOX_PULL,41,50,48,30,CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_DISABLED | WS_TABSTOP
     CONTROL         "Convert 16-bit audio streams to 24-bit",IDC_CHECKBOX_FORMAT_FORCE24BIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,67,201,10
 END
@@ -211,8 +211,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,6,11,0
- PRODUCTVERSION 1,6,11,0
+ FILEVERSION 1,6,12,0
+ PRODUCTVERSION 1,6,12,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -229,12 +229,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "WACUP"
             VALUE "FileDescription", "Output Plug-in"
-            VALUE "FileVersion", "1.6.11.0"
+            VALUE "FileVersion", "1.6.12.0"
             VALUE "InternalName", "out_notsoyasapi.dll"
             VALUE "LegalCopyright", "Copyright © 2015-2016 Peter Belkner, Not So YASAPI modifications by Darren Owen aka DrO © 2016-2026"
             VALUE "OriginalFilename", "out_notsoyasapi.dll"
             VALUE "ProductName", "Not So YASAPI"
-            VALUE "ProductVersion", "1.6.11.0"
+            VALUE "ProductVersion", "1.6.12.0"
         END
     END
     BLOCK "VarFileInfo"

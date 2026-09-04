@@ -20,7 +20,6 @@
 #ifndef __YA_H__ // {
 #define __YA_H__
 #include <windows.h>
-#include <strsafe.h>
 #include <mmreg.h>
 #include <stdarg.h>
 #ifdef HAVE_STDINT_H

@@ -106,10 +106,12 @@ static void SetShareMode(HWND hDlg, int eShareMode)
 	SendDlgItemMessage(hDlg,IDC_COMBOBOX_SHAREMODE,CB_SETCURSEL,eShareMode,0);
 }
 
+#if defined (YASAPI_PULL) // {
 static void SetPull(HWND hDlg, int bPull)
 {
 	SendDlgItemMessage(hDlg,IDC_COMBOBOX_PULL,CB_SETCURSEL,bPull,0);
 }
+#endif // }
 
 static int GetShareMode(HWND hDlg)
 {
@@ -720,10 +722,12 @@ static INT_PTR CALLBACK DeviceProc(HWND hDlg, UINT uMsg, WPARAM wParam,
       ConfigSetGlobalShareMode(pConfig,GetShareMode(hDlg));
       ConfigOnShareMode(pConfig);
       return TRUE;
+#if defined (YASAPI_PULL) // {
     case IDC_COMBOBOX_PULL:
       ConfigSetGlobalPull(pConfig,GetPull(hDlg));
       ConfigOnPull(pConfig);
       return TRUE;
+#endif // }
     default:
       break;
     }
@@ -1206,10 +1210,12 @@ INT_PTR CALLBACK ConfigProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
       DeviceSetShareMode(pConfig,GetShareMode(hDlg));
       ConfigOnShareMode(pConfig);
       return TRUE;
+#if defined (YASAPI_PULL) // {
     case IDC_COMBOBOX_PULL:
       DeviceSetPull(pConfig,GetPull(hDlg));
       ConfigOnPull(pConfig);
       return TRUE;
+#endif // }
     case IDC_COMBOBOX_DEVICE:
       switch (HIWORD(wParam)) {
       case CBN_SELCHANGE:

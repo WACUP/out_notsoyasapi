@@ -24,7 +24,6 @@
 #include <yasapi_guid.h>
 #include <winamp/out.h>
 #include <winamp/wa_cup.h>
-#include <strsafe.h>
 #include <resource.h>
 
 #ifdef __cpluplus
@@ -56,7 +55,7 @@ extern Out_Module plugin;
 ///////////////////////////////////////////////////////////////////////////////
 #if ! defined (YASAPI_VER) // {
   #define YASAPI_VER            1.7.25
-  #define PLUGIN_VERSION        "1.6.11"
+  #define PLUGIN_VERSION        "1.6.12"
 #endif // }
 
 #define YASAPI_VERSION          YA_STR(YASAPI_VER)

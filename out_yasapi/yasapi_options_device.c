@@ -26,7 +26,9 @@ static const Property gcaDeviceProperties[]={
   { L"autoconvertpcm",&gcIntType,offsetof(OptionsDevice,bAutoConvertPCM),0 },
   { L"src_default_quality",&gcIntType,
       offsetof(OptionsDevice,bSRCDefaultQuality),0 },
+#if defined (YASAPI_PULL) // {
   { L"pull",&gcIntType,offsetof(OptionsDevice,bPull),0 },
+#endif // }
 #if defined (YASAPI_FORCE24BIT) // {
   { L"force24bit",&gcIntType,offsetof(OptionsDevice,bForce24Bit),0 },
 #endif // }
