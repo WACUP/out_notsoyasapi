@@ -845,13 +845,11 @@ static void ConfigOnSelChangeTabCtrl(HWND hDlg, Config *pConfig, HWND hWndTab)
   pConfig->options.common.nPage=nCurPage;
 }
 
-__declspec(dllimport) int _cdecl ResizeComboBoxDropDown(HWND hwndDlg, UINT id, const wchar_t *str, int width);
-
 static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
 {
   Options *pOptions=&pConfig->pPlayer->options;
   HWND hComboBox=GetDlgItem(hDlg,idc);
-  UINT uLen,cDevice,nDevice=0,labelLen;
+  UINT cDevice,nDevice=0,labelLen;
   INT comboWidth=0;
   ConfigDevice *pConfigDevice;
   wchar_t *pwszLabel;
@@ -860,25 +858,23 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
     if (NULL==(pConfigDevice=ConfigDeviceNew(pConfig,(int)cDevice)))
       goto config;
 
+    labelLen=(UINT)wcslen(pConfigDevice->vName.pwszVal);
     if (!cDevice) {
-      uLen=0;
-      uLen+= 18/*(UINT)wcslen(L"Default Device -- ")*/;
-      uLen+=(UINT)wcslen(pConfigDevice->vName.pwszVal);
+      UINT uLen=19+labelLen;
 
       if (NULL==(pwszLabel=YA_MALLOC((uLen+1)*(sizeof *pwszLabel))))
         goto label;
 
-      CopyCchStr(pwszLabel,uLen,L"Default Device -- ");
-	  labelLen=18/*(UINT)wcslen(pwszLabel)*/;
+      labelLen=(UINT)CopyCchStrEx(pwszLabel,uLen,L"Default Device -- ");
 	  uLen-=labelLen;
-      CopyCchStr(pwszLabel+labelLen,uLen,pConfigDevice->vName.pwszVal);
+      labelLen+=(UINT)CopyCchStrEx(pwszLabel+labelLen,uLen,pConfigDevice->vName.pwszVal);
     }
     else
       pwszLabel=pConfigDevice->vName.pwszVal;
 
     SendMessage(hComboBox,CB_ADDSTRING,0,(LPARAM)pwszLabel);
 
-	comboWidth = ResizeComboBoxDropDown(hDlg,idc,pwszLabel,comboWidth);
+	comboWidth=ResizeComboBoxDropDown(hDlg,idc,pwszLabel,labelLen,comboWidth);
 
     if (!cDevice)
       YA_FREE(pwszLabel);

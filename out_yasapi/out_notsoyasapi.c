@@ -38,7 +38,7 @@ static int last_pause=0;
 static int ref_true=1;
 static int loaded=0;
 
-static wchar_t *path;
+static const wchar_t *path;
 Player player={0};
 #if defined (YASAPI_GAPLESS) // {
 static int bReset;

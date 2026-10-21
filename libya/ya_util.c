@@ -20,7 +20,7 @@
 #include <ya.h>
 #include <../loader/loader/paths.h>
 
-const wchar_t *basenamew(const wchar_t *s)
+/*const wchar_t *basenamew(const wchar_t *s)
 {
   const wchar_t *p=s+wcslen(s);
 
@@ -28,29 +28,15 @@ const wchar_t *basenamew(const wchar_t *s)
     --p;
 
   return p;
-}
+}*/
 
-wchar_t *yapath(wchar_t *file)
+const wchar_t *yapath(const wchar_t *file)
 {
-  const winamp_paths* paths = GetPaths();
-  size_t len1,len2;
-  wchar_t *path;
-  const wchar_t *dir=paths->settings_sub_dir;
-
-  if (NULL==dir)
-    goto dir;
-
-  len1=wcslen(dir);
-  len2=wcslen(file);
-  path=(wchar_t *)YA_MALLOC(((len1+1)+(len2+1))*(sizeof *path));
-
-  if (NULL==path)
-    goto path;
-  
-  return (wchar_t *)CombinePath(path,paths->settings_sub_dir,file);
-// cleanup:
-  //YASAPI_FREE(path);
-path:
-dir:
-  return NULL;
+    static const wchar_t* path;
+    if (!path)
+{
+        wchar_t temp[MAX_PATH];
+        path = CombinePathDup(temp, GetPaths()->settings_sub_dir, file);
+    }
+    return path;
 }
