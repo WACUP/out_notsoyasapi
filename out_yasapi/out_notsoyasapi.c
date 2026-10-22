@@ -152,8 +152,7 @@ static void reset(void)
   last_pause=!ref_true;
 }
 
-int open(const int samplerate, const int numchannels, const int bitspersamp,
-							   const int bufferlenms, const int prebufferms)
+int open(OUT_OPEN_PARAM)
 {
 #if defined (YASAPI_GAPLESS) // {
   int bGapless=player.options.common.bGapless;
@@ -180,7 +179,11 @@ int open(const int samplerate, const int numchannels, const int bitspersamp,
   bps = bitspersamp;
 
   if (PLAYER_SEND(&player,PlayerDeviceCreateV)<0)
+  {
+	OutputNotSupported();
+	SleepEx(500, TRUE);
     return -1;
+  }
 
   bReset = 0;
 
