@@ -858,7 +858,7 @@ static void ConfigInitComboBox(HWND hDlg, Config *pConfig, int idc)
     if (NULL==(pConfigDevice=ConfigDeviceNew(pConfig,(int)cDevice)))
       goto config;
 
-    labelLen=(UINT)wcslen(pConfigDevice->vName.pwszVal);
+    labelLen=(pConfigDevice && pConfigDevice->vName.pwszVal ? (UINT)wcslen(pConfigDevice->vName.pwszVal) : 0);
     if (!cDevice) {
       UINT uLen=19+labelLen;
 

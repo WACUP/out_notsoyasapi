@@ -34,7 +34,7 @@ const wchar_t *yapath(const wchar_t *file)
 {
     static const wchar_t* path;
     if (!path)
-{
+    {
         wchar_t temp[MAX_PATH];
         path = CombinePathDup(temp, GetPaths()->settings_sub_dir, file);
     }
